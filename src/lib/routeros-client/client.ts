@@ -126,7 +126,7 @@ export class RouterOSClient extends EventEmitter {
    */
   write(
     command: string,
-    params: Record<string, string> = {},
+    params: Record<string, string | number> = {},
     query: string[] = [],
   ): Promise<RosReplyRow[]> {
     if (!this.socket) return Promise.reject(new Error("Not connected"));

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import Button from "~/components/button";
 import InlineError from "~/components/inline-error";
 import Input from "~/components/input";
@@ -6,6 +6,11 @@ import { useLoginMutation } from "~/serverfns/auth";
 
 export const Route = createFileRoute("/login")({
   component: RouteComponent,
+  loader: ({ context }) => {
+    if (context.user) {
+      throw redirect({ to: "/" });
+    }
+  },
 });
 
 function RouteComponent() {

@@ -12,15 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as authedRouteRouteImport } from './routes/(authed)/route'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as authedIndexRouteImport } from './routes/(authed)/index'
-import { Route as authedRouterosIdRouteRouteImport } from './routes/(authed)/$routerosId/route'
 import { Route as authedAppRouteRouteImport } from './routes/(authed)/app/route'
-import { Route as authedRouterosIdIndexRouteImport } from './routes/(authed)/$routerosId/index'
-import { Route as authedRouterosIdDhcpLeasesIndexRouteImport } from './routes/(authed)/$routerosId/dhcp-leases/index'
-import { Route as authedRouterosIdHotspotActivesRouteImport } from './routes/(authed)/$routerosId/hotspot/actives'
-import { Route as authedRouterosIdHotspotHostsRouteImport } from './routes/(authed)/$routerosId/hotspot/hosts'
-import { Route as authedRouterosIdHotspotProfilesRouteImport } from './routes/(authed)/$routerosId/hotspot/profiles'
-import { Route as authedRouterosIdHotspotUsersRouteImport } from './routes/(authed)/$routerosId/hotspot/users'
-import { Route as authedRouterosIdLogIndexRouteImport } from './routes/(authed)/$routerosId/log/index'
+import { Route as authedUsersRouteImport } from './routes/(authed)/users'
+import { Route as authedAppIndexRouteImport } from './routes/(authed)/app/index'
+import { Route as authedAppDhcpLeasesIndexRouteImport } from './routes/(authed)/app/dhcp-leases/index'
+import { Route as authedAppHotspotActivesRouteImport } from './routes/(authed)/app/hotspot/actives'
+import { Route as authedAppHotspotHostsRouteImport } from './routes/(authed)/app/hotspot/hosts'
+import { Route as authedAppLogIndexRouteImport } from './routes/(authed)/app/log/index'
+import { Route as authedAppHotspotProfilesIndexRouteImport } from './routes/(authed)/app/hotspot/profiles/index'
+import { Route as authedAppHotspotUsersIndexRouteImport } from './routes/(authed)/app/hotspot/users/index'
 
 const authedRouteRoute = authedRouteRouteImport.update({
   id: '/(authed)',
@@ -36,138 +36,135 @@ const authedIndexRoute = authedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedRouterosIdRouteRoute = authedRouterosIdRouteRouteImport.update({
-  id: '/$routerosId',
-  path: '/$routerosId',
-  getParentRoute: () => authedRouteRoute,
-} as any)
 const authedAppRouteRoute = authedAppRouteRouteImport.update({
   id: '/app',
   path: '/app',
   getParentRoute: () => authedRouteRoute,
 } as any)
-const authedRouterosIdIndexRoute = authedRouterosIdIndexRouteImport.update({
+const authedUsersRoute = authedUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => authedRouteRoute,
+} as any)
+const authedAppIndexRoute = authedAppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => authedRouterosIdRouteRoute,
+  getParentRoute: () => authedAppRouteRoute,
 } as any)
-const authedRouterosIdDhcpLeasesIndexRoute =
-  authedRouterosIdDhcpLeasesIndexRouteImport.update({
+const authedAppDhcpLeasesIndexRoute =
+  authedAppDhcpLeasesIndexRouteImport.update({
     id: '/dhcp-leases/',
     path: '/dhcp-leases/',
-    getParentRoute: () => authedRouterosIdRouteRoute,
+    getParentRoute: () => authedAppRouteRoute,
   } as any)
-const authedRouterosIdHotspotActivesRoute =
-  authedRouterosIdHotspotActivesRouteImport.update({
-    id: '/hotspot/actives',
-    path: '/hotspot/actives',
-    getParentRoute: () => authedRouterosIdRouteRoute,
+const authedAppHotspotActivesRoute = authedAppHotspotActivesRouteImport.update({
+  id: '/hotspot/actives',
+  path: '/hotspot/actives',
+  getParentRoute: () => authedAppRouteRoute,
+} as any)
+const authedAppHotspotHostsRoute = authedAppHotspotHostsRouteImport.update({
+  id: '/hotspot/hosts',
+  path: '/hotspot/hosts',
+  getParentRoute: () => authedAppRouteRoute,
+} as any)
+const authedAppLogIndexRoute = authedAppLogIndexRouteImport.update({
+  id: '/log/',
+  path: '/log/',
+  getParentRoute: () => authedAppRouteRoute,
+} as any)
+const authedAppHotspotProfilesIndexRoute =
+  authedAppHotspotProfilesIndexRouteImport.update({
+    id: '/hotspot/profiles/',
+    path: '/hotspot/profiles/',
+    getParentRoute: () => authedAppRouteRoute,
   } as any)
-const authedRouterosIdHotspotHostsRoute =
-  authedRouterosIdHotspotHostsRouteImport.update({
-    id: '/hotspot/hosts',
-    path: '/hotspot/hosts',
-    getParentRoute: () => authedRouterosIdRouteRoute,
-  } as any)
-const authedRouterosIdHotspotProfilesRoute =
-  authedRouterosIdHotspotProfilesRouteImport.update({
-    id: '/hotspot/profiles',
-    path: '/hotspot/profiles',
-    getParentRoute: () => authedRouterosIdRouteRoute,
-  } as any)
-const authedRouterosIdHotspotUsersRoute =
-  authedRouterosIdHotspotUsersRouteImport.update({
-    id: '/hotspot/users',
-    path: '/hotspot/users',
-    getParentRoute: () => authedRouterosIdRouteRoute,
-  } as any)
-const authedRouterosIdLogIndexRoute =
-  authedRouterosIdLogIndexRouteImport.update({
-    id: '/log/',
-    path: '/log/',
-    getParentRoute: () => authedRouterosIdRouteRoute,
+const authedAppHotspotUsersIndexRoute =
+  authedAppHotspotUsersIndexRouteImport.update({
+    id: '/hotspot/users/',
+    path: '/hotspot/users/',
+    getParentRoute: () => authedAppRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
-  '/$routerosId': typeof authedRouterosIdRouteRouteWithChildren
-  '/app': typeof authedAppRouteRoute
+  '/app': typeof authedAppRouteRouteWithChildren
+  '/users': typeof authedUsersRoute
   '/': typeof authedIndexRoute
-  '/$routerosId/': typeof authedRouterosIdIndexRoute
-  '/$routerosId/hotspot/actives': typeof authedRouterosIdHotspotActivesRoute
-  '/$routerosId/hotspot/hosts': typeof authedRouterosIdHotspotHostsRoute
-  '/$routerosId/hotspot/profiles': typeof authedRouterosIdHotspotProfilesRoute
-  '/$routerosId/hotspot/users': typeof authedRouterosIdHotspotUsersRoute
-  '/$routerosId/dhcp-leases/': typeof authedRouterosIdDhcpLeasesIndexRoute
-  '/$routerosId/log/': typeof authedRouterosIdLogIndexRoute
+  '/app/': typeof authedAppIndexRoute
+  '/app/hotspot/actives': typeof authedAppHotspotActivesRoute
+  '/app/hotspot/hosts': typeof authedAppHotspotHostsRoute
+  '/app/dhcp-leases/': typeof authedAppDhcpLeasesIndexRoute
+  '/app/log/': typeof authedAppLogIndexRoute
+  '/app/hotspot/profiles/': typeof authedAppHotspotProfilesIndexRoute
+  '/app/hotspot/users/': typeof authedAppHotspotUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
-  '/app': typeof authedAppRouteRoute
+  '/users': typeof authedUsersRoute
   '/': typeof authedIndexRoute
-  '/$routerosId': typeof authedRouterosIdIndexRoute
-  '/$routerosId/hotspot/actives': typeof authedRouterosIdHotspotActivesRoute
-  '/$routerosId/hotspot/hosts': typeof authedRouterosIdHotspotHostsRoute
-  '/$routerosId/hotspot/profiles': typeof authedRouterosIdHotspotProfilesRoute
-  '/$routerosId/hotspot/users': typeof authedRouterosIdHotspotUsersRoute
-  '/$routerosId/dhcp-leases': typeof authedRouterosIdDhcpLeasesIndexRoute
-  '/$routerosId/log': typeof authedRouterosIdLogIndexRoute
+  '/app': typeof authedAppIndexRoute
+  '/app/hotspot/actives': typeof authedAppHotspotActivesRoute
+  '/app/hotspot/hosts': typeof authedAppHotspotHostsRoute
+  '/app/dhcp-leases': typeof authedAppDhcpLeasesIndexRoute
+  '/app/log': typeof authedAppLogIndexRoute
+  '/app/hotspot/profiles': typeof authedAppHotspotProfilesIndexRoute
+  '/app/hotspot/users': typeof authedAppHotspotUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(authed)': typeof authedRouteRouteWithChildren
   '/login': typeof LoginRoute
-  '/(authed)/$routerosId': typeof authedRouterosIdRouteRouteWithChildren
-  '/(authed)/app': typeof authedAppRouteRoute
+  '/(authed)/app': typeof authedAppRouteRouteWithChildren
+  '/(authed)/users': typeof authedUsersRoute
   '/(authed)/': typeof authedIndexRoute
-  '/(authed)/$routerosId/': typeof authedRouterosIdIndexRoute
-  '/(authed)/$routerosId/hotspot/actives': typeof authedRouterosIdHotspotActivesRoute
-  '/(authed)/$routerosId/hotspot/hosts': typeof authedRouterosIdHotspotHostsRoute
-  '/(authed)/$routerosId/hotspot/profiles': typeof authedRouterosIdHotspotProfilesRoute
-  '/(authed)/$routerosId/hotspot/users': typeof authedRouterosIdHotspotUsersRoute
-  '/(authed)/$routerosId/dhcp-leases/': typeof authedRouterosIdDhcpLeasesIndexRoute
-  '/(authed)/$routerosId/log/': typeof authedRouterosIdLogIndexRoute
+  '/(authed)/app/': typeof authedAppIndexRoute
+  '/(authed)/app/hotspot/actives': typeof authedAppHotspotActivesRoute
+  '/(authed)/app/hotspot/hosts': typeof authedAppHotspotHostsRoute
+  '/(authed)/app/dhcp-leases/': typeof authedAppDhcpLeasesIndexRoute
+  '/(authed)/app/log/': typeof authedAppLogIndexRoute
+  '/(authed)/app/hotspot/profiles/': typeof authedAppHotspotProfilesIndexRoute
+  '/(authed)/app/hotspot/users/': typeof authedAppHotspotUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/login'
-    | '/$routerosId'
     | '/app'
+    | '/users'
     | '/'
-    | '/$routerosId/'
-    | '/$routerosId/hotspot/actives'
-    | '/$routerosId/hotspot/hosts'
-    | '/$routerosId/hotspot/profiles'
-    | '/$routerosId/hotspot/users'
-    | '/$routerosId/dhcp-leases/'
-    | '/$routerosId/log/'
+    | '/app/'
+    | '/app/hotspot/actives'
+    | '/app/hotspot/hosts'
+    | '/app/dhcp-leases/'
+    | '/app/log/'
+    | '/app/hotspot/profiles/'
+    | '/app/hotspot/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
-    | '/app'
+    | '/users'
     | '/'
-    | '/$routerosId'
-    | '/$routerosId/hotspot/actives'
-    | '/$routerosId/hotspot/hosts'
-    | '/$routerosId/hotspot/profiles'
-    | '/$routerosId/hotspot/users'
-    | '/$routerosId/dhcp-leases'
-    | '/$routerosId/log'
+    | '/app'
+    | '/app/hotspot/actives'
+    | '/app/hotspot/hosts'
+    | '/app/dhcp-leases'
+    | '/app/log'
+    | '/app/hotspot/profiles'
+    | '/app/hotspot/users'
   id:
     | '__root__'
     | '/(authed)'
     | '/login'
-    | '/(authed)/$routerosId'
     | '/(authed)/app'
+    | '/(authed)/users'
     | '/(authed)/'
-    | '/(authed)/$routerosId/'
-    | '/(authed)/$routerosId/hotspot/actives'
-    | '/(authed)/$routerosId/hotspot/hosts'
-    | '/(authed)/$routerosId/hotspot/profiles'
-    | '/(authed)/$routerosId/hotspot/users'
-    | '/(authed)/$routerosId/dhcp-leases/'
-    | '/(authed)/$routerosId/log/'
+    | '/(authed)/app/'
+    | '/(authed)/app/hotspot/actives'
+    | '/(authed)/app/hotspot/hosts'
+    | '/(authed)/app/dhcp-leases/'
+    | '/(authed)/app/log/'
+    | '/(authed)/app/hotspot/profiles/'
+    | '/(authed)/app/hotspot/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -198,13 +195,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedIndexRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/$routerosId': {
-      id: '/(authed)/$routerosId'
-      path: '/$routerosId'
-      fullPath: '/$routerosId'
-      preLoaderRoute: typeof authedRouterosIdRouteRouteImport
-      parentRoute: typeof authedRouteRoute
-    }
     '/(authed)/app': {
       id: '/(authed)/app'
       path: '/app'
@@ -212,92 +202,98 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedAppRouteRouteImport
       parentRoute: typeof authedRouteRoute
     }
-    '/(authed)/$routerosId/': {
-      id: '/(authed)/$routerosId/'
+    '/(authed)/users': {
+      id: '/(authed)/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof authedUsersRouteImport
+      parentRoute: typeof authedRouteRoute
+    }
+    '/(authed)/app/': {
+      id: '/(authed)/app/'
       path: '/'
-      fullPath: '/$routerosId/'
-      preLoaderRoute: typeof authedRouterosIdIndexRouteImport
-      parentRoute: typeof authedRouterosIdRouteRoute
+      fullPath: '/app/'
+      preLoaderRoute: typeof authedAppIndexRouteImport
+      parentRoute: typeof authedAppRouteRoute
     }
-    '/(authed)/$routerosId/dhcp-leases/': {
-      id: '/(authed)/$routerosId/dhcp-leases/'
+    '/(authed)/app/dhcp-leases/': {
+      id: '/(authed)/app/dhcp-leases/'
       path: '/dhcp-leases'
-      fullPath: '/$routerosId/dhcp-leases/'
-      preLoaderRoute: typeof authedRouterosIdDhcpLeasesIndexRouteImport
-      parentRoute: typeof authedRouterosIdRouteRoute
+      fullPath: '/app/dhcp-leases/'
+      preLoaderRoute: typeof authedAppDhcpLeasesIndexRouteImport
+      parentRoute: typeof authedAppRouteRoute
     }
-    '/(authed)/$routerosId/hotspot/actives': {
-      id: '/(authed)/$routerosId/hotspot/actives'
+    '/(authed)/app/hotspot/actives': {
+      id: '/(authed)/app/hotspot/actives'
       path: '/hotspot/actives'
-      fullPath: '/$routerosId/hotspot/actives'
-      preLoaderRoute: typeof authedRouterosIdHotspotActivesRouteImport
-      parentRoute: typeof authedRouterosIdRouteRoute
+      fullPath: '/app/hotspot/actives'
+      preLoaderRoute: typeof authedAppHotspotActivesRouteImport
+      parentRoute: typeof authedAppRouteRoute
     }
-    '/(authed)/$routerosId/hotspot/hosts': {
-      id: '/(authed)/$routerosId/hotspot/hosts'
+    '/(authed)/app/hotspot/hosts': {
+      id: '/(authed)/app/hotspot/hosts'
       path: '/hotspot/hosts'
-      fullPath: '/$routerosId/hotspot/hosts'
-      preLoaderRoute: typeof authedRouterosIdHotspotHostsRouteImport
-      parentRoute: typeof authedRouterosIdRouteRoute
+      fullPath: '/app/hotspot/hosts'
+      preLoaderRoute: typeof authedAppHotspotHostsRouteImport
+      parentRoute: typeof authedAppRouteRoute
     }
-    '/(authed)/$routerosId/hotspot/profiles': {
-      id: '/(authed)/$routerosId/hotspot/profiles'
-      path: '/hotspot/profiles'
-      fullPath: '/$routerosId/hotspot/profiles'
-      preLoaderRoute: typeof authedRouterosIdHotspotProfilesRouteImport
-      parentRoute: typeof authedRouterosIdRouteRoute
-    }
-    '/(authed)/$routerosId/hotspot/users': {
-      id: '/(authed)/$routerosId/hotspot/users'
-      path: '/hotspot/users'
-      fullPath: '/$routerosId/hotspot/users'
-      preLoaderRoute: typeof authedRouterosIdHotspotUsersRouteImport
-      parentRoute: typeof authedRouterosIdRouteRoute
-    }
-    '/(authed)/$routerosId/log/': {
-      id: '/(authed)/$routerosId/log/'
+    '/(authed)/app/log/': {
+      id: '/(authed)/app/log/'
       path: '/log'
-      fullPath: '/$routerosId/log/'
-      preLoaderRoute: typeof authedRouterosIdLogIndexRouteImport
-      parentRoute: typeof authedRouterosIdRouteRoute
+      fullPath: '/app/log/'
+      preLoaderRoute: typeof authedAppLogIndexRouteImport
+      parentRoute: typeof authedAppRouteRoute
+    }
+    '/(authed)/app/hotspot/profiles/': {
+      id: '/(authed)/app/hotspot/profiles/'
+      path: '/hotspot/profiles'
+      fullPath: '/app/hotspot/profiles/'
+      preLoaderRoute: typeof authedAppHotspotProfilesIndexRouteImport
+      parentRoute: typeof authedAppRouteRoute
+    }
+    '/(authed)/app/hotspot/users/': {
+      id: '/(authed)/app/hotspot/users/'
+      path: '/hotspot/users'
+      fullPath: '/app/hotspot/users/'
+      preLoaderRoute: typeof authedAppHotspotUsersIndexRouteImport
+      parentRoute: typeof authedAppRouteRoute
     }
   }
 }
 
-interface authedRouterosIdRouteRouteChildren {
-  authedRouterosIdIndexRoute: typeof authedRouterosIdIndexRoute
-  authedRouterosIdHotspotActivesRoute: typeof authedRouterosIdHotspotActivesRoute
-  authedRouterosIdHotspotHostsRoute: typeof authedRouterosIdHotspotHostsRoute
-  authedRouterosIdHotspotProfilesRoute: typeof authedRouterosIdHotspotProfilesRoute
-  authedRouterosIdHotspotUsersRoute: typeof authedRouterosIdHotspotUsersRoute
-  authedRouterosIdDhcpLeasesIndexRoute: typeof authedRouterosIdDhcpLeasesIndexRoute
-  authedRouterosIdLogIndexRoute: typeof authedRouterosIdLogIndexRoute
+interface authedAppRouteRouteChildren {
+  authedAppIndexRoute: typeof authedAppIndexRoute
+  authedAppHotspotActivesRoute: typeof authedAppHotspotActivesRoute
+  authedAppHotspotHostsRoute: typeof authedAppHotspotHostsRoute
+  authedAppDhcpLeasesIndexRoute: typeof authedAppDhcpLeasesIndexRoute
+  authedAppLogIndexRoute: typeof authedAppLogIndexRoute
+  authedAppHotspotProfilesIndexRoute: typeof authedAppHotspotProfilesIndexRoute
+  authedAppHotspotUsersIndexRoute: typeof authedAppHotspotUsersIndexRoute
 }
 
-const authedRouterosIdRouteRouteChildren: authedRouterosIdRouteRouteChildren = {
-  authedRouterosIdIndexRoute: authedRouterosIdIndexRoute,
-  authedRouterosIdHotspotActivesRoute: authedRouterosIdHotspotActivesRoute,
-  authedRouterosIdHotspotHostsRoute: authedRouterosIdHotspotHostsRoute,
-  authedRouterosIdHotspotProfilesRoute: authedRouterosIdHotspotProfilesRoute,
-  authedRouterosIdHotspotUsersRoute: authedRouterosIdHotspotUsersRoute,
-  authedRouterosIdDhcpLeasesIndexRoute: authedRouterosIdDhcpLeasesIndexRoute,
-  authedRouterosIdLogIndexRoute: authedRouterosIdLogIndexRoute,
+const authedAppRouteRouteChildren: authedAppRouteRouteChildren = {
+  authedAppIndexRoute: authedAppIndexRoute,
+  authedAppHotspotActivesRoute: authedAppHotspotActivesRoute,
+  authedAppHotspotHostsRoute: authedAppHotspotHostsRoute,
+  authedAppDhcpLeasesIndexRoute: authedAppDhcpLeasesIndexRoute,
+  authedAppLogIndexRoute: authedAppLogIndexRoute,
+  authedAppHotspotProfilesIndexRoute: authedAppHotspotProfilesIndexRoute,
+  authedAppHotspotUsersIndexRoute: authedAppHotspotUsersIndexRoute,
 }
 
-const authedRouterosIdRouteRouteWithChildren =
-  authedRouterosIdRouteRoute._addFileChildren(
-    authedRouterosIdRouteRouteChildren,
-  )
+const authedAppRouteRouteWithChildren = authedAppRouteRoute._addFileChildren(
+  authedAppRouteRouteChildren,
+)
 
 interface authedRouteRouteChildren {
-  authedRouterosIdRouteRoute: typeof authedRouterosIdRouteRouteWithChildren
-  authedAppRouteRoute: typeof authedAppRouteRoute
+  authedAppRouteRoute: typeof authedAppRouteRouteWithChildren
+  authedUsersRoute: typeof authedUsersRoute
   authedIndexRoute: typeof authedIndexRoute
 }
 
 const authedRouteRouteChildren: authedRouteRouteChildren = {
-  authedRouterosIdRouteRoute: authedRouterosIdRouteRouteWithChildren,
-  authedAppRouteRoute: authedAppRouteRoute,
+  authedAppRouteRoute: authedAppRouteRouteWithChildren,
+  authedUsersRoute: authedUsersRoute,
   authedIndexRoute: authedIndexRoute,
 }
 

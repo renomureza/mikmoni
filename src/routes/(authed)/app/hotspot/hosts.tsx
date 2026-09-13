@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/(authed)/$routerosId/hotspot/hosts")({
+export const Route = createFileRoute("/(authed)/app/hotspot/hosts")({
   component: RouteComponent,
 });
 

@@ -1,5 +1,6 @@
 import { Switch as SwitchPrimitive, SwitchRootProps } from "@base-ui/react";
 import { cn } from "cn";
+import InlineError from "./inline-error";
 
 export default function Switch({
   label,
@@ -20,7 +21,7 @@ export default function Switch({
         </SwitchPrimitive.Root>
         {label}
       </label>
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      <InlineError message={error} />
     </div>
   );
 }

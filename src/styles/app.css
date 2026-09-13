@@ -5,6 +5,8 @@
   --font-mono: "Geist Mono", monospace;
 
   --color-foreground: var(--color-neutral-900);
+
+  --container-8xl: 90rem;
 }
 
 @layer base {

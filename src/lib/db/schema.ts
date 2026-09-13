@@ -16,3 +16,5 @@ export const routeros = sqliteTable("routeros", {
   password: text().notNull(),
   tls: int({ mode: "boolean" }).notNull().default(false),
 });
+
+export type Routeros = typeof routeros.$inferSelect;

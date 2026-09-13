@@ -17,7 +17,7 @@ export interface RouterManagerOptions {
 export interface ManagedRouterClient {
   write(
     command: string,
-    params?: Record<string, string>,
+    params?: Record<string, string | number>,
     query?: string[],
   ): Promise<RosReplyRow[]>;
   listen(
@@ -46,7 +46,7 @@ export class RouterosClientManager {
   private async write(
     id: number,
     command: string,
-    params: Record<string, string>,
+    params: Record<string, string | number>,
     query: string[],
   ): Promise<RosReplyRow[]> {
     const client = await this.acquire(id);

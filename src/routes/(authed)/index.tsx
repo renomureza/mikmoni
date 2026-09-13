@@ -1,10 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  useCreateRouterosMutation,
-  useDeleteRouterosMutation,
-  useGetAllRouterosQuery,
-  useUpdateRouterosMutation,
-} from "~/services/routeros/client";
 import { useState } from "react";
 import Switch from "~/components/switch";
 import type z from "zod";
@@ -18,9 +12,24 @@ import {
 } from "lucide-react";
 import Button from "~/components/button";
 import { Popover } from "@base-ui/react";
+import {
+  ensureGetAllRouterosInfiniteQueryData,
+  useCreateRouterosMutation,
+  useDeleteRouterosMutation,
+  useGetAllRouterosSuspenseInfiniteQuery,
+  useUpdateRouterosMutation,
+  useUseRouterosMutation,
+} from "~/serverfns/routeros";
+import { cn } from "cn";
 
 export const Route = createFileRoute("/(authed)/")({
   component: RouteComponent,
+  loader: async ({ context }) => {
+    await ensureGetAllRouterosInfiniteQueryData({
+      opts: {},
+      queryClient: context.queryClient,
+    });
+  },
 });
 
 type RouterosFormState = {
@@ -225,12 +234,24 @@ function RouterosCard({
   };
 }) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
-
   const deleteRouterosMutation = useDeleteRouterosMutation();
 
+  const useRouterosMutation = useUseRouterosMutation();
+
   return (
-    <div className="bg-white relative px-4 py-4 flex overflow-hidden justify-between items-center border rounded-lg">
-      <button type="button" className="w-full text-left">
+    <div
+      className={cn(
+        "bg-white relative px-4 py-4 flex overflow-hidden justify-between items-center border rounded-lg",
+        useRouterosMutation.isPending && "pointer-events-none opacity-50",
+      )}
+    >
+      <button
+        type="button"
+        className="w-full text-left"
+        onClick={() => {
+          useRouterosMutation.mutate({ data: { id: routeros.id } });
+        }}
+      >
         <h2 className="font-semibold leading-tight">{routeros.name}</h2>
         <div className="text-neutral-600 leading-tight">
           {routeros.host}:{routeros.port}
@@ -287,13 +308,13 @@ function RouterosCard({
 }
 
 function RouteComponent() {
-  const routerosQuery = useGetAllRouterosQuery();
+  const routerosQuery = useGetAllRouterosSuspenseInfiniteQuery({});
   const [openAddRouterosModal, setOpenAddRouterosModal] = useState(false);
 
   return (
     <main className="max-w-5xl w-full px-4 space-y-6 mx-auto my-10">
       <div className="flex justify-between gap-2">
-        <h1 className="text-3xl font-semibold">RouterOS</h1>
+        <h1 className="text-2xl font-semibold">RouterOS</h1>
         <Dialog
           rootProps={{
             open: openAddRouterosModal,
@@ -301,10 +322,10 @@ function RouteComponent() {
           }}
           title="Add RouterOS"
           triggerProps={{
-            children: (
-              <>
+            render: (props) => (
+              <Button {...props} type="button">
                 <PlusIcon className="size-4" /> Add
-              </>
+              </Button>
             ),
           }}
         >

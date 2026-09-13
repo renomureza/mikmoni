@@ -2,6 +2,7 @@ import { useSession as createSession } from "@tanstack/react-start/server";
 
 type SessionUser = {
   userId: number;
+  routerosId?: number;
 };
 
 export function getSession() {
