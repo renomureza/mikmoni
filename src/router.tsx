@@ -4,9 +4,18 @@ import { setupRouterSsrQueryIntegration } from "@tanstack/react-router-ssr-query
 import { routeTree } from "./routeTree.gen";
 import { DefaultCatchBoundary } from "./components/DefaultCatchBoundary";
 import { NotFound } from "./components/NotFound";
+import { toast } from "sonner";
 
 export function getRouter() {
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      mutations: {
+        onError: (e) => {
+          toast.error(e.message || "Something went wrong");
+        },
+      },
+    },
+  });
 
   const router = createRouter({
     routeTree,
@@ -15,6 +24,7 @@ export function getRouter() {
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
   });
+
   setupRouterSsrQueryIntegration({
     router,
     queryClient,

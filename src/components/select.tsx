@@ -1,6 +1,7 @@
 import { Select as SelectPrimitive } from "@base-ui/react";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import InlineError from "./inline-error";
+import { cn } from "cn";
 
 type Option = {
   label: string;
@@ -18,6 +19,7 @@ export default function Select<
   label,
   placeholder = "Select...",
   error,
+  className,
 }: {
   options: readonly TOption[] | TOption[];
   value: TRequired extends true ? TOption["value"] : TOption["value"] | null;
@@ -28,9 +30,10 @@ export default function Select<
   label?: string;
   placeholder?: string;
   error?: string;
+  className?: string;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-1 w-full h-max">
+    <div className={cn("grid grid-cols-1 gap-1 w-full h-max", className)}>
       <SelectPrimitive.Root
         required={required}
         items={options}

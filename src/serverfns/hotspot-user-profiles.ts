@@ -16,7 +16,12 @@ import {
   expiredModeValues,
 } from "~/contants/hotspot-profile";
 import { authAndRouterosMiddleware } from "~/middlewares/auth";
-import { rateLimitSchema } from "~/utils/routeros";
+import {
+  extractOnLoginScriptPutFields,
+  getRouterOSDatePositions,
+  isISORouterOSDate,
+  rateLimitSchema,
+} from "~/utils/routeros";
 import { tryCatch } from "~/utils/utilities";
 
 type HotspotUserProfile = {
@@ -28,12 +33,6 @@ type HotspotUserProfile = {
   "on-login"?: string;
   "address-pool"?: string;
 };
-
-function extractPutFields(onLoginScript: string) {
-  const match = onLoginScript.match(/put\s*\(\s*"([^"]*)"\s*\)/);
-  if (!match) return [];
-  return match[1].split(",");
-}
 
 const $getHotspotUserProfiles = createServerFn()
   .middleware([authAndRouterosMiddleware])
@@ -47,8 +46,8 @@ const $getHotspotUserProfiles = createServerFn()
     )) as HotspotUserProfile[];
 
     return profiles.map(({ "on-login": onLoginScript, ...profile }) => {
-      const [, expireMode, price, validity, sellingPrice, , lockUser] =
-        extractPutFields(onLoginScript ?? "");
+      const { expireMode, lockUser, price, sellingPrice, validity } =
+        extractOnLoginScriptPutFields(onLoginScript ?? "");
 
       return {
         ...profile,
@@ -103,20 +102,41 @@ export function useGetHotspotUserProfilesSuspenseQuery() {
 function createBackgroundScript({
   expiredMode,
   profileName,
+  sampleDateFormat,
 }: {
   expiredMode: NonNullable<ExpiredModeValue>;
   profileName: string;
+  sampleDateFormat: string;
 }) {
   const modeScript =
     expiredMode === "rem" || expiredMode === "remc"
       ? "remove"
       : "set limit-uptime=1s";
 
+  const months = isISORouterOSDate(sampleDateFormat)
+    ? ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
+    : [
+        "jan",
+        "feb",
+        "mar",
+        "apr",
+        "may",
+        "jun",
+        "jul",
+        "aug",
+        "sep",
+        "oct",
+        "nov",
+        "dec",
+      ];
+
+  const datePositions = getRouterOSDatePositions(sampleDateFormat);
+
   return `:local dateint do={
-  :local montharray ( "jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec" );
-  :local days [ :pick $d 4 6 ];
-  :local month [ :pick $d 0 3 ];
-  :local year [ :pick $d 7 11 ];
+  :local montharray ( ${months.join(",")} );
+  :local days [ :pick $d ${datePositions.day.start} ${datePositions.day.end} ];
+  :local month [ :pick $d ${datePositions.month.start} ${datePositions.month.end} ];
+  :local year [ :pick $d ${datePositions.year.start} ${datePositions.year.end} ];
   :local monthint ([ :find $montharray $month]);
   :local month ($monthint + 1);
   :if ( [len $month] = 1) do={
@@ -138,8 +158,8 @@ function createBackgroundScript({
 :foreach i in [ /ip hotspot user find where profile="${profileName}" ] do={ 
   :local comment [ /ip hotspot user get $i comment]; 
   :local name [ /ip hotspot user get $i name]; 
-  :local gettime [:pic $comment 12 20]; 
-  :if ([:pic $comment 3] = "/" and [:pic $comment 6] = "/") do={
+  :local gettime [:pic $comment ${datePositions.time.start} ${datePositions.time.end}]; 
+  :if ([:pic $comment ${datePositions.firstSeparatorPosition}] = "${datePositions.separator}" and [:pic $comment ${datePositions.secondSeparatorPosition}] = "${datePositions.separator}") do={
     :local expd [$dateint d=$comment]; 
     :local expt [$timeint t=$gettime]; 
     :if (($expd < $today and $expt < $curtime) or ($expd < $today and $expt > $curtime) or ($expd = $today and $expt < $curtime)) do={ 
@@ -157,6 +177,7 @@ function createOnLoginScript({
   lockUsers,
   validity,
   profileName,
+  sampleDateFormat,
 }: {
   profileName: string;
   expiredMode?: ExpiredModeValue | null;
@@ -164,6 +185,7 @@ function createOnLoginScript({
   sellingPrice: number;
   lockUsers: boolean;
   validity: string;
+  sampleDateFormat: string;
 }) {
   const lockScript = lockUsers
     ? `[:local mac $"mac-address"; /ip hotspot user set mac-address=$mac [find where name=$user]];`
@@ -173,14 +195,16 @@ function createOnLoginScript({
     return `:put (",,${price},,,noexp,${lockUsers ? "Enable" : "Disable"},"); ${lockScript}`;
   }
 
+  const datePosition = getRouterOSDatePositions(sampleDateFormat);
+
   return `:put (",${expiredMode},${price},${validity},${sellingPrice},,${lockUsers ? "Enable" : "Disable"},"); 
 {
   :local comment [ /ip hotspot user get [/ip hotspot user find where name="$user"] comment]; 
   :local ucode [:pic $comment 0 2]; 
   :if ($ucode = "vc" or $ucode = "up" or $comment = "") do={ 
     :local date [ /system clock get date ];
-    :local year [ :pick $date 7 11 ];
-    :local month [ :pick $date 0 3 ]; 
+    :local year [ :pick $date ${datePosition.year.start} ${datePosition.year.end} ];
+    :local month [ :pick $date ${datePosition.month.start} ${datePosition.month.end} ]; 
     /sys sch add name="$user" disable=no start-date=$date interval="${validity}"; 
     :delay 5s; 
     :local exp [ /sys sch get [ /sys sch find where name="$user" ] next-run]; 
@@ -231,8 +255,8 @@ const createHotspotUserProfileInputSchema = z.object({
         "Use a combination of d/h/m in order, e.g. 1d5h30m, 1d, or 30m.",
       ),
   ]),
-  price: z.coerce.number().int().default(0),
-  sellingPrice: z.coerce.number().int().default(0),
+  price: z.coerce.number().int().min(0),
+  sellingPrice: z.coerce.number().int().min(0),
   lockUsers: z.boolean(),
   "parent-queue": z.string().nullish(),
 });
@@ -265,6 +289,10 @@ const $createHotspotUserProfile = createServerFn({ method: "POST" })
       name: profileName,
     } = validation.data;
 
+    const sampleDateFormat = await routerosClient
+      .write("/system/clock/print", { ".proplist": "date" })
+      .then((d) => d[0].date);
+
     const onLoginScript = createOnLoginScript({
       expiredMode,
       price,
@@ -272,6 +300,7 @@ const $createHotspotUserProfile = createServerFn({ method: "POST" })
       lockUsers,
       profileName,
       validity,
+      sampleDateFormat,
     });
 
     const res = await tryCatch(
@@ -294,7 +323,11 @@ const $createHotspotUserProfile = createServerFn({ method: "POST" })
         name: profileName,
         "start-time": `0${randomInt(1, 6)}:${randomInt(10, 60)}:${randomInt(10, 60)}`,
         interval: `00:02:${randomInt(10, 60)}`,
-        "on-event": createBackgroundScript({ expiredMode, profileName }),
+        "on-event": createBackgroundScript({
+          expiredMode,
+          profileName,
+          sampleDateFormat,
+        }),
         disabled: "no",
         comment: `Monitor Profile ${profileName}`,
       });
@@ -354,6 +387,10 @@ const $updateHotspotUserProfile = createServerFn({ method: "POST" })
       name: profileName,
     } = validation.data;
 
+    const sampleDateFormat = await routerosClient
+      .write("/system/clock/print", { ".proplist": "date" })
+      .then((d) => d[0].date);
+
     const onLoginScript = createOnLoginScript({
       expiredMode,
       price,
@@ -361,6 +398,7 @@ const $updateHotspotUserProfile = createServerFn({ method: "POST" })
       lockUsers,
       profileName,
       validity,
+      sampleDateFormat,
     });
 
     const profile = await routerosClient
@@ -411,7 +449,11 @@ const $updateHotspotUserProfile = createServerFn({ method: "POST" })
         name: profileName,
         "start-time": `0${randomInt(1, 6)}:${randomInt(10, 60)}:${randomInt(10, 60)}`,
         interval: `00:02:${randomInt(10, 60)}`,
-        "on-event": createBackgroundScript({ expiredMode, profileName }),
+        "on-event": createBackgroundScript({
+          expiredMode,
+          profileName,
+          sampleDateFormat,
+        }),
         disabled: "no",
         comment: `Monitor Profile ${profileName}`,
       };

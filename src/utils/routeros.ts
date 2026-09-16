@@ -93,7 +93,7 @@ export function formatBytes(bytes: string | number, decimals = 2) {
 /**
  * @returns {boolean} false (yyyy-mm-dd), true (mmm/dd/yyyy)
  */
-function isISORouterOSDate(dateStr: string): boolean {
+export function isISORouterOSDate(dateStr: string): boolean {
   const isoRegex = /^\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01])$/;
   return isoRegex.test(dateStr.trim());
 }
@@ -110,31 +110,87 @@ function isLegacyRouterOSDate(dateStr: string): boolean {
 export function getRouterOSDatePositions(dateStr: string) {
   const value = dateStr.trim();
 
-  const separator = isISORouterOSDate(value)
-    ? "-"
-    : isLegacyRouterOSDate(value)
-      ? "/"
-      : null;
+  const parts = (value: string, separator: string) => {
+    const [first, second, third] = value.split(separator);
 
-  if (!separator) {
-    throw new Error(`Unrecognized RouterOS date format: "${value}"`);
+    const firstStart = 0;
+    const firstEnd = firstStart + first.length;
+
+    const secondStart = firstEnd + 1;
+    const secondEnd = secondStart + second.length;
+
+    const thirdStart = secondEnd + 1;
+    const thirdEnd = thirdStart + third.length;
+
+    const timeStart = thirdEnd + 1;
+    const timeEnd = timeStart + "00:00:00".length;
+
+    return [
+      [firstStart, firstEnd],
+      [secondStart, secondEnd],
+      [thirdStart, thirdEnd],
+      [timeStart, timeEnd],
+    ];
+  };
+
+  if (isISORouterOSDate(value)) {
+    const separator = "-";
+    const [
+      [yearStart, yearEnd],
+      [monthStart, monthEnd],
+      [dayStart, dayEnd],
+      [startTime, startEnd],
+    ] = parts(value, separator);
+
+    return {
+      separator: separator,
+      firstSeparatorPosition: value.indexOf(separator),
+      secondSeparatorPosition: value.lastIndexOf(separator),
+      year: { start: yearStart, end: yearEnd },
+      month: { start: monthStart, end: monthEnd },
+      day: { start: dayStart, end: dayEnd },
+      time: { start: startTime, end: startEnd },
+    };
   }
 
-  const [year, month, day] = value.split(separator);
+  if (isLegacyRouterOSDate(value)) {
+    const separator = "/";
+    const [
+      [monthStart, monthEnd],
+      [dayStart, dayEnd],
+      [yearStart, yearEnd],
+      [startTime, startEnd],
+    ] = parts(value, separator);
 
-  const yearStart = 0;
-  const yearEnd = yearStart + year.length;
+    return {
+      separator: separator,
+      firstSeparatorPosition: value.indexOf(separator),
+      secondSeparatorPosition: value.lastIndexOf(separator),
+      month: { start: monthStart, end: monthEnd },
+      day: { start: dayStart, end: dayEnd },
+      year: { start: yearStart, end: yearEnd },
+      time: { start: startTime, end: startEnd },
+    };
+  }
 
-  const monthStart = yearEnd + 1;
-  const monthEnd = monthStart + month.length;
+  throw new Error(`Unrecognized RouterOS date format: "${value}"`);
+}
 
-  const dayStart = monthEnd + 1;
-  const dayEnd = dayStart + day.length;
+//
 
-  return {
-    separator: separator,
-    year: { start: yearStart, end: yearEnd },
-    month: { start: monthStart, end: monthEnd },
-    day: { start: dayStart, end: dayEnd },
-  };
+export function extractOnLoginScriptPutFields(onLoginScript: string) {
+  const match = onLoginScript.match(/put\s*\(\s*"([^"]*)"\s*\)/);
+  if (!match)
+    return {
+      expireMode: "",
+      price: "",
+      validity: "",
+      sellingPrice: "",
+      lockUser: "",
+    };
+
+  const [, expireMode, price, validity, sellingPrice, , lockUser] =
+    match[1].split(",");
+
+  return { expireMode, price, validity, sellingPrice, lockUser };
 }

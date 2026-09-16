@@ -11,33 +11,36 @@ import { authAndRouterosMiddleware } from "~/middlewares/auth";
 type Resource = {
   uptime: string;
   version: string;
-  "build-time": string;
-  "factory-software": string;
+  model?: string;
   "free-memory": string;
   "total-memory": string;
-  cpu: string;
-  "cpu-count": string;
-  "cpu-frequency": string;
   "cpu-load": string;
   "free-hdd-space": string;
   "total-hdd-space": string;
-  "write-sect-since-reboot": string;
-  "write-sect-total": string;
-  "architecture-name": string;
   "board-name": string;
-  platform: string;
 };
 
 const $getRouterosInfo = createServerFn()
   .middleware([authAndRouterosMiddleware])
   .handler(async ({ context }) => {
-    const resource = await context.routeros.client
-      .write("/system/resource/print")
-      .then((d) => d[0] as Resource);
+    const [resource, clock] = await Promise.all([
+      context.routerosClient
+        .write("/system/resource/print", {
+          ".proplist":
+            "uptime,version,free-memory,total-memory,cpu-load,total-hdd-space,free-hdd-space,board-name,model",
+        })
+        .then((d) => d[0] as Resource),
+      context.routerosClient
+        .write("/system/clock/print", {
+          ".proplist": "date,time,time-zone-name",
+        })
+        .then(
+          (d) =>
+            d[0] as { date: string; time: string; "time-zone-name": string },
+        ),
+    ]);
 
-    console.log(resource);
-
-    return { resource };
+    return { resource, clock };
   });
 
 function getRouterosInfoQueryOptions({

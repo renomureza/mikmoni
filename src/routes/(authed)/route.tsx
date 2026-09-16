@@ -15,9 +15,11 @@ import {
   LogOutIcon,
   LucideIcon,
   NetworkIcon,
+  PrinterIcon,
   RouterIcon,
   SettingsIcon,
   SquareTextIcon,
+  TicketIcon,
   UsersIcon,
   WifiIcon,
 } from "lucide-react";
@@ -63,6 +65,16 @@ const menus = [
     ],
   },
   {
+    icon: PrinterIcon,
+    title: "Quick Print",
+    to: "/app/quick-print",
+  },
+  {
+    icon: TicketIcon,
+    title: "Voucher Templates",
+    to: "/app/voucher-templates",
+  },
+  {
     icon: NetworkIcon,
     title: "DHCP Leases",
     to: "/app/dhcp-leases",
@@ -84,6 +96,11 @@ const generalMenus = [
     icon: UsersIcon,
     title: "Users",
     to: "/users",
+  },
+  {
+    icon: SettingsIcon,
+    title: "Settings",
+    to: "/settings",
   },
   // {
   //   icon: SettingsIcon,
@@ -107,7 +124,7 @@ function MenuWithChildren({
 }) {
   const [collapsed, setCollapsed] = useState(false);
   return (
-    <div className="flex flex-col [&_a:has(active)]:bg-red-50">
+    <div className="flex flex-col gap-0.5 [&_a:has(active)]:bg-red-50">
       <button
         type="button"
         className="flex w-full items-center gap-2 px-2.5 transition-all justify-between h-8 hover:bg-neutral-100 rounded-lg "
@@ -181,7 +198,7 @@ function RouteComponent() {
 
   return (
     <div className="flex size-full">
-      <div className="bg-white flex flex-col w-60 border-r h-screen sticky top-0">
+      <div className="bg-white flex flex-col w-60 shrink-0 border-r h-screen sticky top-0">
         <div className="border-b px-4 py-2">
           <Link to="/" className="text-lg font-semibold">
             Mikmoni
@@ -247,7 +264,7 @@ function RouteComponent() {
           </Popover.Root>
         </div>
       </div>
-      <div className="grow p-4">
+      <div className="grow p-4 min-w-0">
         <Outlet />
       </div>
     </div>

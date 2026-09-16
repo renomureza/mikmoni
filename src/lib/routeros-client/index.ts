@@ -3,7 +3,12 @@ import { RouterosClientManager } from "./client-manager";
 export { RouterOSClient } from "./client";
 
 export const clientManager = new RouterosClientManager({
-  idleTimeoutMillis: 30 * 60 * 1000, // 30 minutes
+  idleTimeoutMillis:
+    process.env.NODE_ENV === "production"
+      ? // 30 minutes
+        30 * 60 * 1000
+      : // 1 minutes
+        1 * 60 * 1000,
   connectTimeoutMillis: 6_000,
   getRouterosConfig: (id) => {
     return db.query.routeros.findFirst({

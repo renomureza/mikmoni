@@ -10,7 +10,7 @@ import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { redirect } from "@tanstack/react-router";
 import { eq } from "drizzle-orm";
 import { toast } from "sonner";
-import * as z from "zod/v4-mini";
+import * as z from "zod/v4";
 import { db, schema } from "~/lib/db";
 import { getSession } from "~/lib/session";
 import { authMiddleware } from "~/middlewares/auth";
@@ -21,7 +21,7 @@ import {
 import { RouterOSClient } from "~/lib/routeros-client";
 
 const useRouterosInputSchema = z.object({
-  id: z.coerce.number().check(z.int()),
+  id: z.coerce.number().int(),
 });
 
 type UseRouterosInputSchema = z.input<typeof useRouterosInputSchema>;
@@ -84,11 +84,11 @@ export function useUseRouterosMutation() {
 //
 
 const createRouterosInputSchema = z.object({
-  name: z.string().check(z.minLength(1), z.trim()),
-  host: z.string().check(z.minLength(1), z.trim()),
-  port: z.coerce.number().check(z.int(), z.minimum(0), z.maximum(65_535)),
-  user: z.string().check(z.minLength(1)),
-  password: z.string().check(z.minLength(1)),
+  name: z.string().min(1).trim(),
+  host: z.string().min(1).trim(),
+  port: z.coerce.number().int().min(0).max(65_535),
+  user: z.string().min(1),
+  password: z.string().min(1),
   tls: z.boolean(),
 });
 type CreateRouterosInput = z.input<typeof createRouterosInputSchema>;
@@ -132,8 +132,8 @@ export function useCreateRouterosMutation() {
 
 //
 
-const updateRouterosInputSchema = z.extend(createRouterosInputSchema, {
-  id: z.coerce.number().check(z.int(), z.minimum(1)),
+const updateRouterosInputSchema = createRouterosInputSchema.extend({
+  id: z.coerce.number().int().min(1),
 });
 
 type UpdateRouterosInputSchema = z.input<typeof updateRouterosInputSchema>;
@@ -321,7 +321,7 @@ export function useGetAllRouterosSuspenseInfiniteQuery(
 //
 
 const getRouterosInputSchema = z.object({
-  id: z.coerce.number().check(z.int(), z.minimum(1)),
+  id: z.coerce.number().int().min(1),
 });
 
 type GetRouterosInputSchema = z.input<typeof getRouterosInputSchema>;

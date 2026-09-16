@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useState } from "react";
 import { Combobox as ComboboxPrimitive } from "@base-ui/react/combobox";
 import { ChevronDownIcon, XIcon } from "lucide-react";
 import InlineError from "./inline-error";
+import { cn } from "cn";
 
 type Option = {
   label: string;
@@ -25,6 +26,7 @@ export default function ComboboxSingle<TOption extends Option>({
   value,
   onChange,
   error,
+  className,
 }: {
   options: TOption[];
   label?: string;
@@ -32,6 +34,7 @@ export default function ComboboxSingle<TOption extends Option>({
   value?: TOption["value"] | null;
   onChange: (value: TOption["value"] | null) => void;
   error?: string;
+  className?: string;
 }) {
   const id = useId();
   const [searchResults, setSearchResults] = useState<TOption[]>(options);
@@ -103,7 +106,7 @@ export default function ComboboxSingle<TOption extends Option>({
         setSearchResults(result);
       }}
     >
-      <div className="relative grid grid-cols-1 gap-1 w-full">
+      <div className={cn("relative grid grid-cols-1 gap-1 w-full", className)}>
         {label && (
           <label htmlFor={id} className="font-medium">
             {label}
@@ -139,12 +142,12 @@ export default function ComboboxSingle<TOption extends Option>({
             <div className="max-h-[min(var(--available-height),22.5rem)] overflow-y-auto overscroll-contain p-1 scroll-pt-1 scroll-pb-1">
               <ComboboxPrimitive.Empty>
                 {emptyMessage ? (
-                  <div className="py-5 text-center text-neutral-600 space-y-0.5">
+                  <div className="py-5 text-center px-2 text-neutral-600 space-y-0.5">
                     {emptyMessage}
                   </div>
                 ) : null}
               </ComboboxPrimitive.Empty>
-              <ComboboxPrimitive.List>
+              <ComboboxPrimitive.List className="space-y-0.5">
                 {(opt: TOption) => (
                   <ComboboxPrimitive.Item
                     key={opt.value}

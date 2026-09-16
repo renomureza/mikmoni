@@ -26,11 +26,13 @@ export const routerosMiddleware = createMiddleware().server(
       throw redirect({ to: "/" });
     }
 
+    const routerosClient = clientManager.getClient(routeros.id);
     return next({
       context: {
+        routerosClient,
         routeros: {
           ...routeros,
-          client: clientManager.getClient(routeros.id),
+          client: routerosClient,
         },
       },
     });

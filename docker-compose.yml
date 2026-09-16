@@ -1,8 +1,6 @@
 services:
   routeros:
-    # image: evilfreelancer/docker-routeros:6.49.21
     image: evilfreelancer/docker-routeros:7.23.5
-    # restart: unless-stopped
     cap_add:
       - NET_ADMIN
     devices:
@@ -20,6 +18,35 @@ services:
       - default
       - routeros_net
 
+  routeros6:
+    image: evilfreelancer/docker-routeros:6.49.21
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+      - /dev/kvm # omit on Apple Silicon (no KVM there; container uses QEMU emulation)
+    ports:
+      - "8000:80"
+      - "2232:22"
+      - "2233:23"
+      - "8738:8728"
+      - "8739:8729"
+      - "8391:8291"
+    volumes:
+      - ./docker-data/routeros6_data:/data
+    networks:
+      - default
+      - routeros6_net
+
+  # hotspot-client-test:
+  #   image: alpine
+  #   cap_add:
+  #     - NET_ADMIN
+  #   networks:
+  #     - routeros6_net
+  #     # - default # tambahkan ini supaya bisa akses internet untuk apk add
+  #   command: sleep infinity
+
   mikhmon:
     image: trianwar/mikhmon:latest
     ports:
@@ -28,30 +55,7 @@ services:
       - ./docker-data/mikhmon:/var/www/mikhmon
 
 networks:
+  routeros6_net:
+    driver: bridge
   routeros_net:
     driver: bridge
-
-# postgres:
-#   image: postgres:18-alpine
-#   ports:
-#     - '5432:5432'
-#   environment:
-#     POSTGRES_USER: saastemplate
-#     POSTGRES_PASSWORD: saastemplate
-#     POSTGRES_DB: saastemplate
-#   healthcheck:
-#     test: ['CMD-SHELL', 'pg_isready -d saastemplate -U saastemplate']
-#     interval: 10s
-#     timeout: 5s
-#     retries: 5
-#     start_interval: 5s
-#     start_period: 30s
-
-# mailpit:
-#   image: axllent/mailpit:latest
-#   ports:
-#     - '8025:8025' # Web UI
-#     - '1025:1025' # SMTP server
-#   environment:
-#     MP_SMTP_AUTH: 'admin:admin'
-#     MP_SMTP_AUTH_ALLOW_INSECURE: true
