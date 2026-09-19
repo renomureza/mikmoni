@@ -219,12 +219,12 @@ const LOWER = "abcdefghijklmnopqrstuvwxyz";
 const UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const NUM = "0123456789";
 const REQUIRED_CATEGORIES: Record<UsernameCharacterValue, string[]> = {
-  alpha_lower: [LOWER],
-  alpha_upper: [UPPER],
-  alpha_lower_upper: [LOWER, UPPER],
-  alpha_num_lower: [LOWER, NUM],
-  alpha_num_upper: [UPPER, NUM],
-  alpha_num_lower_upper: [LOWER, UPPER, NUM],
+  lower: [LOWER],
+  upper: [UPPER],
+  upplow: [LOWER, UPPER],
+  mix: [LOWER, NUM],
+  mix1: [UPPER, NUM],
+  mix2: [LOWER, UPPER, NUM],
 };
 
 function randomChar(charset: string): string {

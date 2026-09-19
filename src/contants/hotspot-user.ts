@@ -15,13 +15,17 @@ export const userModeValues = userModeOptions.map((opt) => opt.value) as [
   ...UserModeValue[],
 ];
 
+export function getUserModeLabel(mode: UserModeValue) {
+  return userModeOptions.find((opt) => opt.value === mode)?.label;
+}
+
 export const usernameCharacterOptions = [
-  { label: "abcd", value: "alpha_lower" },
-  { label: "ABCD", value: "alpha_upper" },
-  { label: "aBcD", value: "alpha_lower_upper" },
-  { label: "a1c2", value: "alpha_num_lower" },
-  { label: "A1B2", value: "alpha_num_upper" },
-  { label: "a1B2", value: "alpha_num_lower_upper" },
+  { label: "abcd", value: "lower" },
+  { label: "ABCD", value: "upper" },
+  { label: "aBcD", value: "upplow" },
+  { label: "a1c2", value: "mix" },
+  { label: "A1B2", value: "mix1" },
+  { label: "a1B2", value: "mix2" },
 ] as const;
 export type UsernameCharacterValue =
   (typeof usernameCharacterOptions)[number]["value"];

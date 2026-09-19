@@ -8,7 +8,6 @@ import {
   dataLimitUnitOptions,
   DataLimitUnitValue,
 } from "~/contants/hotspot-user";
-import { useUpdateHotspotUserMutation } from "~/serverfns/hotspot-users";
 import { fromBytes } from "~/utils/routeros";
 import type * as z from "zod/v4-mini";
 

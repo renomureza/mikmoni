@@ -11,14 +11,10 @@ import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { authAndRouterosMiddleware } from "~/middlewares/auth";
 import * as z from "zod/v4";
 import { toast } from "sonner";
-import {
-  dataLimitUnitValues,
-  userModeValues,
-  usernameCharacterValues,
-} from "~/contants/hotspot-user";
 import { randomInt } from "node:crypto";
 import { generateHotspotUserCredential, toBytes } from "~/utils/routeros";
 import { tryCatch } from "~/utils/utilities";
+import { hotspotUserGeneratorSchema } from "~/schema/hotspot-user";
 
 type HotspotUser = {
   ".id": string;
@@ -160,26 +156,8 @@ export function useGetHotspotUserCommentsSuspenseQuery() {
 
 //
 
-const generateHotspotUserInputSchema = z.object({
+const generateHotspotUserInputSchema = hotspotUserGeneratorSchema.extend({
   quantity: z.coerce.number().int().min(1),
-  server: z.string().min(1),
-  profile: z.string().min(1),
-  userMode: z.enum(userModeValues),
-  nameLength: z.coerce.number().int().min(3),
-  prefix: z.string(),
-  character: z.enum(usernameCharacterValues),
-  timeLimit: z.union([
-    z.literal(""),
-    z
-      .string()
-      .regex(
-        /^(?=.)(\d+w)?(\d+d)?(\d+h)?(\d+m)?(\d+s)?$/,
-        "Invalid duration format. Use a combination of w/d/h/m/s in order, e.g. 3w6d15h29m11s, 1d, or 30m.",
-      ),
-  ]),
-  dataLimit: z.union([z.literal(""), z.coerce.number().int().min(1)]),
-  dataLimitUnit: z.enum(dataLimitUnitValues),
-  comment: z.string(),
 });
 
 type GenerateHotspotUserInputSchema = z.input<
@@ -239,8 +217,7 @@ const $generateHotspotUsers = createServerFn({ method: "POST" })
             : {}),
           ...(dataLimit
             ? {
-                "limit-bytes-total":
-                  dataLimit * (dataLimitUnit === "mb" ? 1048576 : 1073741824),
+                "limit-bytes-total": toBytes(dataLimit, dataLimitUnit),
               }
             : {}),
         });
