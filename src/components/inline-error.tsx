@@ -1,4 +1,12 @@
-export default function InlineError({ message }: { message?: string }) {
+import { cn } from "cn";
+
+export default function InlineError({
+  message,
+  className,
+}: {
+  message?: string;
+  className?: string;
+}) {
   if (!message) return null;
-  return <p className="text-xs text-red-600">{message}</p>;
+  return <p className={cn("text-xs text-red-600", className)}>{message}</p>;
 }

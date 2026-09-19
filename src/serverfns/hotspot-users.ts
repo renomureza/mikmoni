@@ -16,15 +16,19 @@ import {
   userModeValues,
   usernameCharacterValues,
 } from "~/contants/hotspot-user";
-import { generateHotspotUserCredential } from "~/utils/routeros.server";
 import { randomInt } from "node:crypto";
+import { generateHotspotUserCredential, toBytes } from "~/utils/routeros";
+import { tryCatch } from "~/utils/utilities";
 
 type HotspotUser = {
   ".id": string;
   server?: string;
   name: string;
+  password?: string;
   profile?: string;
   uptime: string;
+  "limit-uptime"?: string;
+  "limit-bytes-total"?: string;
   "mac-address"?: string;
   "bytes-in": string;
   "bytes-out": string;
@@ -49,7 +53,7 @@ const $getHotspotUsers = createServerFn()
       "/ip/hotspot/user/print",
       {
         ".proplist":
-          ".id,server,name,profile,uptime,mac-address,bytes-in,bytes-out,disabled,comment",
+          ".id,server,name,password,profile,uptime,limit-uptime,limit-bytes-total,mac-address,bytes-in,bytes-out,disabled,comment",
       },
       [
         ...(data?.profile ? [`?profile=${data.profile}`] : []),
@@ -256,6 +260,213 @@ export function useGenerateHotspotUsersMutation() {
       if (data.success) {
         await queryClient.invalidateQueries({ queryKey: ["routeros"] });
         toast.success("Users successfully created.");
+      }
+    },
+  });
+}
+
+//
+
+const createHotspotUserInputSchema = generateHotspotUserInputSchema
+  .pick({
+    comment: true,
+    dataLimit: true,
+    dataLimitUnit: true,
+    server: true,
+    profile: true,
+    timeLimit: true,
+  })
+  .extend({
+    name: z.string().min(1),
+    password: z.string().min(1),
+  });
+
+type CreateHotspotUserInputSchema = z.input<
+  typeof createHotspotUserInputSchema
+>;
+
+const $createHotspotUsers = createServerFn({ method: "POST" })
+  .middleware([authAndRouterosMiddleware])
+  .validator((d: CreateHotspotUserInputSchema) => d)
+  .handler(async ({ data, context }) => {
+    const validation = createHotspotUserInputSchema.safeParse(data);
+
+    if (!validation.success) {
+      return {
+        success: false,
+        errors: z.flattenError(validation.error).fieldErrors,
+      };
+    }
+
+    const {
+      name,
+      password,
+      profile,
+      server,
+      comment,
+      dataLimit,
+      dataLimitUnit,
+      timeLimit,
+    } = validation.data;
+
+    const res = await tryCatch(
+      context.routerosClient.write("/ip/hotspot/user/add", {
+        name: name,
+        password: password,
+        profile: profile,
+        server: server,
+        comment: comment,
+        ...(timeLimit
+          ? {
+              "limit-uptime": timeLimit,
+            }
+          : {}),
+        ...(dataLimit
+          ? {
+              "limit-bytes-total":
+                dataLimit * (dataLimitUnit === "mb" ? 1048576 : 1073741824),
+            }
+          : {}),
+      }),
+    );
+
+    if (!res.ok) {
+      return { success: false, error: res.error };
+    }
+
+    return { success: true };
+  });
+
+export function useCreateHotspotUserMutation() {
+  const mutate = useServerFn($createHotspotUsers);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: mutate,
+    onSuccess: async (data) => {
+      if (data.success) {
+        await queryClient.invalidateQueries({ queryKey: ["routeros"] });
+      } else if (data.error) {
+        toast.error(data.error);
+      }
+    },
+  });
+}
+
+//
+
+const updateHotspotUserInputSchema = createHotspotUserInputSchema.extend({
+  id: z.string().min(1),
+});
+
+type UpdateHotspotUserInputSchema = z.input<
+  typeof updateHotspotUserInputSchema
+>;
+
+const $updateHotspotUsers = createServerFn({ method: "POST" })
+  .middleware([authAndRouterosMiddleware])
+  .validator((d: UpdateHotspotUserInputSchema) => d)
+  .handler(async ({ data, context }) => {
+    const validation = updateHotspotUserInputSchema.safeParse(data);
+
+    if (!validation.success) {
+      return {
+        success: false,
+        errors: z.flattenError(validation.error).fieldErrors,
+      };
+    }
+
+    const {
+      name,
+      password,
+      profile,
+      server,
+      comment,
+      dataLimit,
+      dataLimitUnit,
+      timeLimit,
+      id,
+    } = validation.data;
+
+    const res = await tryCatch(
+      context.routerosClient.write("/ip/hotspot/user/set", {
+        ".id": id,
+        name: name,
+        password: password,
+        profile: profile,
+        server: server,
+        comment: comment,
+        "limit-uptime": timeLimit || 0,
+        "limit-bytes-total": toBytes(dataLimit || 0, dataLimitUnit),
+      }),
+    );
+
+    if (!res.ok) {
+      return { success: false, error: res.error };
+    }
+
+    return { success: true };
+  });
+
+export function useUpdateHotspotUserMutation() {
+  const mutate = useServerFn($updateHotspotUsers);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: mutate,
+    onSuccess: async (data) => {
+      if (data.success) {
+        await queryClient.invalidateQueries({ queryKey: ["routeros"] });
+      } else if (data.error) {
+        toast.error(data.error);
+      }
+    },
+  });
+}
+
+//
+
+const disableHotspotUserInputSchema = z.object({
+  id: z.string().min(1),
+  disabled: z.enum(["true", "false"]),
+});
+
+type DisableHotspotUserInputSchema = z.input<
+  typeof disableHotspotUserInputSchema
+>;
+
+const $disableHotspotUsers = createServerFn({ method: "POST" })
+  .middleware([authAndRouterosMiddleware])
+  .validator((d: DisableHotspotUserInputSchema) => d)
+  .handler(async ({ data, context }) => {
+    const validation = disableHotspotUserInputSchema.safeParse(data);
+
+    if (!validation.success) {
+      return {
+        success: false,
+        error: z.prettifyError(validation.error),
+      };
+    }
+
+    await context.routerosClient.write("/ip/hotspot/user/set", {
+      ".id": validation.data.id,
+      disabled: validation.data.disabled,
+    });
+
+    return { success: true };
+  });
+
+export function useDisableHotspotUserMutation() {
+  const mutate = useServerFn($disableHotspotUsers);
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: mutate,
+    onSuccess: async (data) => {
+      if (data.success) {
+        await queryClient.invalidateQueries({ queryKey: ["routeros"] });
+      } else if (data.error) {
+        toast.error(data.error);
       }
     },
   });

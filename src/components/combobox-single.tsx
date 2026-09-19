@@ -10,7 +10,7 @@ type Option = {
 };
 
 function searchOptions<TOption extends Option>(
-  options: TOption[],
+  options: TOption[] | readonly TOption[],
   query: string,
   filter: (item: string, query: string) => boolean,
 ): TOption[] {
@@ -28,7 +28,7 @@ export default function ComboboxSingle<TOption extends Option>({
   error,
   className,
 }: {
-  options: TOption[];
+  options: TOption[] | readonly TOption[];
   label?: string;
   placeholder?: string;
   value?: TOption["value"] | null;
@@ -37,7 +37,7 @@ export default function ComboboxSingle<TOption extends Option>({
   className?: string;
 }) {
   const id = useId();
-  const [searchResults, setSearchResults] = useState<TOption[]>(options);
+  const [searchResults, setSearchResults] = useState(options);
   const [searchValue, setSearchValue] = useState("");
 
   const activeValue = useMemo(() => {
@@ -112,7 +112,10 @@ export default function ComboboxSingle<TOption extends Option>({
             {label}
           </label>
         )}
-        <ComboboxPrimitive.InputGroup className="relative h-8.5 ring-3 ring-transparent focus-within:ring-neutral-200 w-full border bg-white focus-within:outline-none border-neutral-300 rounded-lg overflow-hidden transition-all focus-within:border-neutral-400 focus-within:-outline-offset-1 focus-within:outline-neutral-950 [&>input]:pr-10 has-[.combobox-clear]:[&>input]:pr-[calc(0.5rem+2rem*2)]">
+        <ComboboxPrimitive.InputGroup
+          aria-invalid={!!error || undefined}
+          className="relative h-8.5 ring-3 ring-transparent focus-within:ring-neutral-200 w-full border focus-within:aria-invalid:ring-red-200 aria-invalid:border-red-600 bg-white focus-within:outline-none border-neutral-300 rounded-lg overflow-hidden transition-all focus-within:border-neutral-400 focus-within:-outline-offset-1 focus-within:outline-neutral-950 [&>input]:pr-10 has-[.combobox-clear]:[&>input]:pr-[calc(0.5rem+2rem*2)]"
+        >
           <ComboboxPrimitive.Input
             id={id}
             placeholder={placeholder}

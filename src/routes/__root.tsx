@@ -4,6 +4,7 @@ import {
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  redirect,
 } from "@tanstack/react-router";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
@@ -15,13 +16,33 @@ import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo";
 import { Toaster } from "sonner";
 import { $getSession } from "~/serverfns/auth";
+import { $getIsInstalled } from "~/serverfns/installation";
+import { $getLocalization } from "~/serverfns/localization";
+import { IntlProvider } from "react-intl";
+import { getLocale } from "~/lib/locale";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
-  beforeLoad: async () => {
-    const user = await $getSession();
-    return { user };
+  beforeLoad: async ({ location }) => {
+    const [user, installed, localization] = await Promise.all([
+      $getSession(),
+      $getIsInstalled(),
+      $getLocalization(),
+    ]);
+
+    if (!installed && !location.pathname.startsWith("/install")) {
+      throw redirect({ to: "/install" });
+    }
+
+    const localeMessages = await getLocale(localization.language);
+
+    return {
+      user,
+      installed,
+      localization,
+      localeMessages,
+    };
   },
   head: () => ({
     meta: [
@@ -91,17 +112,21 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const { localization, localeMessages } = Route.useRouteContext();
+
   return (
-    <html>
+    <html lang={localization.language}>
       <head>
         <HeadContent />
       </head>
       <body>
-        <div className="isolate">{children}</div>
-        <TanStackRouterDevtools position="bottom-right" />
-        <ReactQueryDevtools buttonPosition="bottom-right" />
-        <Scripts />
-        <Toaster richColors position="bottom-center" />
+        <IntlProvider locale={localization.language} messages={localeMessages}>
+          <div className="isolate">{children}</div>
+          <TanStackRouterDevtools position="bottom-right" />
+          <ReactQueryDevtools buttonPosition="bottom-right" />
+          <Scripts />
+          <Toaster richColors position="bottom-center" />
+        </IntlProvider>
       </body>
     </html>
   );

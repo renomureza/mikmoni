@@ -1,4 +1,6 @@
 import * as z from "zod/v4-mini";
+import { randomInt } from "./number";
+import { UserModeValue, UsernameCharacterValue } from "~/contants/hotspot-user";
 
 export const ROUTEROS_RATE_LIMIT_REGEX = /^(\d+[kKmMgG]?)\/(\d+[kKmMgG]?)$/;
 
@@ -72,7 +74,13 @@ export function formatUptime(duration: string) {
   return `${pad(totalHours)}:${pad(minutes)}:${pad(seconds)}`;
 }
 
-export function formatBytes(bytes: string | number, decimals = 2) {
+export function formatBytes(
+  bytes: string | number,
+  opts?: { decimals?: number; locale?: string },
+) {
+  const decimals = opts?.decimals ?? 2;
+  const locale = opts?.locale || "en";
+
   const value = typeof bytes === "string" ? parseInt(bytes, 10) : bytes;
 
   if (!Number.isFinite(value) || value < 0) {
@@ -87,7 +95,17 @@ export function formatBytes(bytes: string | number, decimals = 2) {
   const i = Math.floor(Math.log(value) / Math.log(unit));
   const size = value / Math.pow(unit, i);
 
-  return `${size.toFixed(decimals)} ${sizes[i]}`;
+  return `${new Intl.NumberFormat(locale, { maximumFractionDigits: decimals }).format(size)} ${sizes[i]}`;
+}
+
+export function fromBytes(bytes: number, unit: "mb" | "gb") {
+  const exponents = { mb: 2, gb: 3 };
+  return bytes / Math.pow(1024, exponents[unit]);
+}
+
+export function toBytes(value: number, unit: "mb" | "gb") {
+  const units = { mb: 1024 ** 2, gb: 1024 ** 3 };
+  return value * units[unit];
 }
 
 /**
@@ -193,4 +211,74 @@ export function extractOnLoginScriptPutFields(onLoginScript: string) {
     match[1].split(",");
 
   return { expireMode, price, validity, sellingPrice, lockUser };
+}
+
+//
+
+const LOWER = "abcdefghijklmnopqrstuvwxyz";
+const UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const NUM = "0123456789";
+const REQUIRED_CATEGORIES: Record<UsernameCharacterValue, string[]> = {
+  alpha_lower: [LOWER],
+  alpha_upper: [UPPER],
+  alpha_lower_upper: [LOWER, UPPER],
+  alpha_num_lower: [LOWER, NUM],
+  alpha_num_upper: [UPPER, NUM],
+  alpha_num_lower_upper: [LOWER, UPPER, NUM],
+};
+
+function randomChar(charset: string): string {
+  const index = randomInt(0, charset.length - 1);
+  return charset[index];
+}
+
+function shuffleFisherYates<TValue>(chars: TValue[]): TValue[] {
+  const arr = [...chars];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = randomInt(0, i);
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function randomStringWithGuarantee(
+  length: number,
+  categories: string[],
+): string {
+  const fullCharset = categories.join("");
+  const result: string[] = [];
+
+  for (const category of categories) {
+    result.push(randomChar(category));
+  }
+
+  for (let i = result.length; i < length; i++) {
+    result.push(randomChar(fullCharset));
+  }
+
+  return shuffleFisherYates(result).join("");
+}
+
+export function generateHotspotUserCredential({
+  prefix = "",
+  length,
+  mode,
+  character,
+}: {
+  prefix?: string;
+  length: number;
+  mode: UserModeValue;
+  character: UsernameCharacterValue;
+}): { username: string; password: string } {
+  const categories = REQUIRED_CATEGORIES[character];
+
+  const randomPart = randomStringWithGuarantee(length, categories);
+  const username = `${prefix}${randomPart}`;
+
+  const password =
+    mode === "vc"
+      ? username
+      : `${prefix}${randomStringWithGuarantee(length, categories)}`;
+
+  return { username, password };
 }

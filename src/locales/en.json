@@ -1,0 +1,7 @@
+{
+  "login.title": "Welcome Back",
+  "login.description": "Log in to manage your RouterOS.",
+
+  "username": "Username",
+  "password": "Password"
+}

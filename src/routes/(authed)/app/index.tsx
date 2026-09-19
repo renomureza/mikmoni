@@ -10,18 +10,13 @@ import {
   AreaChart,
   CartesianGrid,
   createHorizontalChart,
-  Legend,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import { useEffect, useState } from "react";
 import { cn } from "cn";
-import {
-  $getInterfaceTraffic,
-  useGetInterfacesQuery,
-  useGetInterfaceTrafficQuery,
-} from "~/serverfns/interface";
+import { $getInterfaceTraffic } from "~/serverfns/interface";
 
 export const Route = createFileRoute("/(authed)/app/")({
   component: RouteComponent,
@@ -141,7 +136,7 @@ function TrafficChart() {
             fontSize={11}
             stroke="var(--color-neutral-400)"
             strokeWidth={0.5}
-            tickFormatter={(d: number) => formatBytes(d, 0)}
+            tickFormatter={(d: number) => formatBytes(d, { decimals: 0 })}
             tickLine={false}
             axisLine={false}
           />

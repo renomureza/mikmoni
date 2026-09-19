@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 
 export const $getSession = createServerFn().handler(async () => {
   const session = await getSession();
-  if (!session.data) return null;
+  if (!session.data.userId) return null;
   const user = await db.query.users.findFirst({
     where: { id: session.data.userId },
     columns: {
@@ -20,7 +20,7 @@ export const $getSession = createServerFn().handler(async () => {
 });
 
 const loginInputSchema = z.object({
-  email: z.email(),
+  username: z.string(),
   password: z.string().check(z.minLength(1)),
 });
 
@@ -39,11 +39,11 @@ const $login = createServerFn({ method: "POST" })
     }
 
     const user = await db.query.users.findFirst({
-      where: { email: validation.data.email },
+      where: { username: validation.data.username },
       columns: { id: true, password: true },
     });
 
-    const genericErrorMessage = "Email/password is incorrect";
+    const genericErrorMessage = "Username/password is incorrect";
 
     if (!user) {
       return { success: false, error: genericErrorMessage };
@@ -74,4 +74,17 @@ export function useLoginMutation() {
   return useMutation({
     mutationFn: mutate,
   });
+}
+
+//
+
+const $logout = createServerFn({ method: "POST" }).handler(async () => {
+  const session = await getSession();
+  await session.clear();
+  throw redirect({ to: "/login", reloadDocument: true, replace: true });
+});
+
+export function useLogoutMutation() {
+  const mutate = useServerFn($logout);
+  return useMutation({ mutationFn: mutate });
 }

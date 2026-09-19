@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Button from "~/components/button";
-import ComboboxSingle from "~/components/combobox-single";
+import HotspotProfileCombobox from "~/components/hotspot-profile-combobox";
+import HotspotServerCombobox from "~/components/hotspot-server-combobox";
 import Input from "~/components/input";
 import Select from "~/components/select";
 import {
@@ -11,11 +12,9 @@ import {
   usernameCharacterOptions,
   UsernameCharacterValue,
 } from "~/contants/hotspot-user";
-import { useGetHotspotServersQuery } from "~/serverfns/hotspot-server";
-import { useGetHotspotUserProfilesQuery } from "~/serverfns/hotspot-user-profiles";
 import { useGenerateHotspotUsersMutation } from "~/serverfns/hotspot-users";
 
-type GenerateUserFormState = {
+type GenerateHotspotUserFormState = {
   quantity: string;
   userMode: UserModeValue;
   nameLength: number;
@@ -34,12 +33,12 @@ const nameLengthOptions = Array.from({ length: 6 }, (_, i) => ({
   value: i + 3,
 }));
 
-export default function GenerateUserForm({
+export default function GenerateHotspotUserForm({
   onCancel,
 }: {
   onCancel: () => void;
 }) {
-  const [state, setState] = useState<GenerateUserFormState>({
+  const [state, setState] = useState<GenerateHotspotUserFormState>({
     quantity: "1",
     server: "all",
     userMode: "up",
@@ -52,16 +51,7 @@ export default function GenerateUserForm({
     dataLimitUnit: "mb",
     comment: "",
   });
-  const hotspotServersQuery = useGetHotspotServersQuery();
-  const hotspotUserProfilesQuery = useGetHotspotUserProfilesQuery();
-
   const generateUsersMutation = useGenerateHotspotUsersMutation();
-
-  const selectedProfile = useMemo(() => {
-    return hotspotUserProfilesQuery.data?.find(
-      (profile) => profile.name === state.profile,
-    );
-  }, [state.profile, hotspotUserProfilesQuery.data]);
 
   return (
     <form
@@ -103,55 +93,23 @@ export default function GenerateUserForm({
         }}
         error={generateUsersMutation.data?.errors?.quantity?.[0]}
       />
-
-      <ComboboxSingle
+      <HotspotServerCombobox
         label="Server"
-        options={[
-          { label: "all", value: "all" },
-          ...(hotspotServersQuery.data?.length
-            ? hotspotServersQuery.data.map((server) => ({
-                label: server.name,
-                value: server.name,
-              }))
-            : []),
-        ]}
         value={state.server}
-        onChange={(value) => {
-          setState((prev) => ({ ...prev, server: value }));
+        onChange={(server) => {
+          setState((prev) => ({ ...prev, server }));
         }}
-        error={generateUsersMutation.data?.errors?.server?.[0]}
       />
-      <div className="space-y-0.5">
-        <Select
-          label="Profile"
-          options={
-            hotspotUserProfilesQuery.data?.map((opt) => ({
-              label: opt.name,
-              value: opt.name,
-            })) ?? []
-          }
-          value={state.profile}
-          onChange={(value) => {
-            setState((prev) => ({ ...prev, profile: value }));
-          }}
-          error={generateUsersMutation.data?.errors?.profile?.[0]}
-        />
-        {(selectedProfile?.validity ||
-          selectedProfile?.price ||
-          selectedProfile?.sellingPrice ||
-          selectedProfile?.lockUsers) && (
-          <ul className="text-xs inline-flex text-neutral-600 [&_li:not(:last-child):after]:content-['•'] [&_li:not(:last-child):after]:ml-1.5 gap-1.5">
-            <li>Validity: {selectedProfile.validity}</li>
-            {selectedProfile.price && <li>Price: {selectedProfile.price}</li>}
-            {selectedProfile.sellingPrice && (
-              <li>Selling Price: {selectedProfile.sellingPrice}</li>
-            )}
-            <li>
-              Lock User: {selectedProfile.lockUsers ? "Enable" : "Disable"}
-            </li>
-          </ul>
-        )}
-      </div>
+
+      <HotspotProfileCombobox
+        showDetails
+        label="Profile"
+        value={state.profile}
+        error={generateUsersMutation.data?.errors?.profile?.[0]}
+        onChange={(profile) => {
+          setState((prev) => ({ ...prev, profile }));
+        }}
+      />
 
       <div className="flex gap-3">
         <Select

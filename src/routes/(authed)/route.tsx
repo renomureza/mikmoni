@@ -24,6 +24,7 @@ import {
   WifiIcon,
 } from "lucide-react";
 import { useState } from "react";
+import { useLogoutMutation } from "~/serverfns/auth";
 
 export const Route = createFileRoute("/(authed)")({
   component: RouteComponent,
@@ -70,11 +71,6 @@ const menus = [
     to: "/app/quick-print",
   },
   {
-    icon: TicketIcon,
-    title: "Voucher Templates",
-    to: "/app/voucher-templates",
-  },
-  {
     icon: NetworkIcon,
     title: "DHCP Leases",
     to: "/app/dhcp-leases",
@@ -91,6 +87,11 @@ const generalMenus = [
     icon: RouterIcon,
     title: "RouterOS",
     to: "/",
+  },
+  {
+    icon: TicketIcon,
+    title: "Voucher Templates",
+    to: "/voucher-templates",
   },
   {
     icon: UsersIcon,
@@ -196,6 +197,8 @@ function RouteComponent() {
   const currentPath = router.state.location.pathname;
   const showRouterosMenu = currentPath.startsWith("/app");
 
+  const logoutMutation = useLogoutMutation();
+
   return (
     <div className="flex size-full">
       <div className="bg-white flex flex-col w-60 shrink-0 border-r h-screen sticky top-0">
@@ -221,7 +224,7 @@ function RouteComponent() {
                 <div className="grow">
                   <div className="leading-tight">{user.name}</div>
                   <div className="text-xs text-neutral-600 leading-tight">
-                    {user.email}
+                    {user.username}
                   </div>
                 </div>
                 <EllipsisVerticalIcon className="size-4 shrink-0 text-neutral-600" />
@@ -238,7 +241,7 @@ function RouteComponent() {
                     <div className="grow">
                       <div className="leading-tight">{user.name}</div>
                       <div className="text-xs text-neutral-600 leading-tight">
-                        {user.email}
+                        {user.username}
                       </div>
                     </div>
                   </div>
@@ -250,13 +253,17 @@ function RouteComponent() {
                       <div className="grow">Settings</div>
                       <SettingsIcon className="size-4 shrink-0" />
                     </Link>
-                    <Link
-                      to="/"
-                      className="px-2 hover:bg-neutral-100 gap-2 w-full rounded-lg text-neutral-700 hover:text-foreground transition-all h-8 flex items-center"
+                    <button
+                      disabled={logoutMutation.isPending}
+                      className="px-2 hover:bg-neutral-100 text-left gap-2 w-full rounded-lg text-neutral-700 hover:text-foreground transition-all h-8 flex items-center"
+                      type="button"
+                      onClick={() => {
+                        logoutMutation.mutate();
+                      }}
                     >
                       <div className="grow">Logout</div>
                       <LogOutIcon className="size-4 shrink-0" />
-                    </Link>
+                    </button>
                   </div>
                 </Popover.Popup>
               </Popover.Positioner>

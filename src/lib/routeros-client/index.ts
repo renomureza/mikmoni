@@ -10,16 +10,24 @@ export const clientManager = new RouterosClientManager({
       : // 1 minutes
         1 * 60 * 1000,
   connectTimeoutMillis: 6_000,
-  getRouterosConfig: (id) => {
-    return db.query.routeros.findFirst({
+  getRouterosConfig: async (id) => {
+    const routeros = await db.query.routeros.findFirst({
       columns: {
         host: true,
         port: true,
-        user: true,
+        username: true,
         password: true,
         tls: true,
       },
       where: { id: id },
     });
+    if (!routeros) return;
+    return {
+      host: routeros.host,
+      user: routeros.username,
+      password: routeros.password,
+      port: routeros.port,
+      tls: routeros.tls,
+    };
   },
 });

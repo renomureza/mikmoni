@@ -1,8 +1,8 @@
 import { createMiddleware } from "@tanstack/react-start";
 import { redirect } from "@tanstack/react-router";
 import { $getSession } from "~/serverfns/auth";
-import { $getActiveRouteros } from "~/serverfns/routeros";
 import { clientManager } from "~/lib/routeros-client";
+import { $getActiveRouteros } from "~/serverfns/active-routeros";
 
 export const authMiddleware = createMiddleware().server(async ({ next }) => {
   const session = await $getSession();

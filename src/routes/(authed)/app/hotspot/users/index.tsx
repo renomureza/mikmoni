@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
+  ChevronDownIcon,
   EditIcon,
-  EllipsisVerticalIcon,
   LockIcon,
   LockOpenIcon,
   PrinterIcon,
@@ -16,18 +16,21 @@ import Dialog from "~/components/dialog";
 import {
   ensureGetHotspotUserCommentsQuery,
   ensureGetHotspotUsersQuery,
+  useDisableHotspotUserMutation,
   useGetHotspotUserCommentsSuspenseQuery,
   useGetHotspotUsersSuspenseQuery,
 } from "~/serverfns/hotspot-users";
 import { formatBytes, formatUptime } from "~/utils/routeros";
-import GenerateUserForm from "./-components/generate-user-form";
+import GenerateHotspotUserForm from "./-components/generate-hotspot-user-form";
 import { useDeleteHotspotUser } from "~/serverfns/hotspot-server";
 import Input from "~/components/input";
 import { useGetHotspotUserProfilesQuery } from "~/serverfns/hotspot-user-profiles";
-import Checkbox from "~/components/checkbox";
 import { cn } from "cn";
 import Tooltip from "~/components/tooltip";
 import ComboboxSingle from "~/components/combobox-single";
+import PrintButton from "./-components/print-button";
+import CreateHotspotUserForm from "./-components/create-hotspot-user-form";
+import UpdateHotspotUserForm from "./-components/update-hotspot-user-form";
 
 export const Route = createFileRoute("/(authed)/app/hotspot/users/")({
   validateSearch: (search: { profile?: string; comment?: string }) => search,
@@ -53,20 +56,46 @@ function UserMenu({
     ".id": string;
     name: string;
     disabled: "true" | "false";
+    profile?: string;
+    server?: string;
+    "mac-address"?: string;
+    comment?: string;
   };
 }) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const deleteHotspotUserMutation = useDeleteHotspotUser();
+  const disableHotspotUserMutation = useDisableHotspotUserMutation();
 
   return (
     <div className="flex items-center gap-0.5 justify-end">
+      <PrintButton
+        onClickTemplate={(templateId) => {
+          window.open(
+            `/app/print/${templateId}?id=${user[".id"]}`,
+            "_blank",
+            "width=420,height=420",
+          );
+        }}
+        className="text-neutral-600 rounded-lg transition-all data-popup-open:text-neutral-700 data-popup-open:bg-neutral-50 hover:text-neutral-700 hover:bg-neutral-50 size-7 flex justify-center items-center"
+      >
+        <PrinterIcon className="size-4" />
+      </PrintButton>
       <Tooltip
         trigger={{
+          disabled: disableHotspotUserMutation.isPending,
+          onClick: () => {
+            disableHotspotUserMutation.mutate({
+              data: {
+                id: user[".id"],
+                disabled: user.disabled === "true" ? "false" : "true",
+              },
+            });
+          },
           className: cn(
             "rounded-lg disabled:pointer-events-none disabled:opacity-50 transition-all size-7 flex justify-center items-center",
             user.disabled === "false"
               ? "text-neutral-600 hover:text-neutral-700 hover:bg-neutral-50"
-              : "text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50",
+              : "text-orange-600 hover:text-orange-700 hover:bg-orange-50",
           ),
           children: (
             <>
@@ -79,7 +108,7 @@ function UserMenu({
           ),
         }}
       >
-        Disable user
+        {user.disabled === "false" ? "Disable user" : "Enable user"}
       </Tooltip>
       <Dialog
         rootProps={{
@@ -93,12 +122,12 @@ function UserMenu({
           children: <EditIcon className="size-4" />,
         }}
       >
-        {/* <UpdateHotspotUserProfileForm
-          onClose={() => setShowUpdateModal(false)}
-          profile={profile}
-        /> */}
-        <div>edit user</div>
+        <UpdateHotspotUserForm
+          user={user}
+          onCancel={() => setShowUpdateModal(false)}
+        />
       </Dialog>
+
       <button
         disabled={deleteHotspotUserMutation.isPending}
         type="button"
@@ -110,19 +139,6 @@ function UserMenu({
         }}
       >
         <Trash2Icon className="size-4" />
-      </button>
-
-      <button
-        // disabled={deleteProfileMutation.isPending}
-        type="button"
-        className="text-neutral-600 rounded-lg disabled:pointer-events-none disabled:opacity-50 transition-all hover:text-neutral-700 hover:bg-neutral-50 size-7 flex justify-center items-center"
-        // onClick={() => {
-        //   if (window.confirm("Are you sure you want to delete it?")) {
-        //     deleteProfileMutation.mutate({ data: { ".id": profile[".id"] } });
-        //   }
-        // }}
-      >
-        <EllipsisVerticalIcon className="size-4" />
       </button>
     </div>
   );
@@ -137,7 +153,6 @@ function RouteComponent() {
   const hotpostUserProfilesQuery = useGetHotspotUserProfilesQuery();
   const hotpostUserCommentsQuery = useGetHotspotUserCommentsSuspenseQuery();
   const navigate = Route.useNavigate();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredUsers = useMemo(() => {
@@ -171,10 +186,7 @@ function RouteComponent() {
               ),
             }}
           >
-            {/* <CreateHotspotUserProfileForm
-             onClose={() => setShowCreateModal(false)}
-           /> */}
-            <div>dsa</div>
+            <CreateHotspotUserForm onCancel={() => setShowAddModal(false)} />
           </Dialog>
 
           <Dialog
@@ -184,14 +196,16 @@ function RouteComponent() {
             }}
             title="Generate Users"
             triggerProps={{
-              render: (props) => (
-                <Button type="button" {...props}>
+              render: (
+                <Button type="button">
                   <UserGroupIcon className="size-4" /> Generate
                 </Button>
               ),
             }}
           >
-            <GenerateUserForm onCancel={() => setShowGenerateModal(false)} />
+            <GenerateHotspotUserForm
+              onCancel={() => setShowGenerateModal(false)}
+            />
           </Dialog>
         </div>
       </div>
@@ -205,7 +219,6 @@ function RouteComponent() {
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
-                setSelectedIds([]);
               }}
             />
             <ComboboxSingle
@@ -225,7 +238,6 @@ function RouteComponent() {
                     profile: profile || undefined,
                   }),
                 });
-                setSelectedIds([]);
               }}
             />
             <ComboboxSingle
@@ -245,45 +257,31 @@ function RouteComponent() {
                     comment: comment || undefined,
                   }),
                 });
-                setSelectedIds([]);
               }}
             />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              disabled={!selectedIds.length}
+            <PrintButton
               className="h-8.5 px-3 rounded-lg border bg-blue-100 border-blue-50 text-blue-600 font-medium disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2"
+              disabled={!loaderDeps.comment}
+              onClickTemplate={(templateId) => {
+                navigate({
+                  reloadDocument: true,
+                  to: "/app/print/$templateId",
+                  params: { templateId: String(templateId) },
+                  search: { comment: loaderDeps.comment! },
+                });
+              }}
             >
-              <PrinterIcon className="size-4" /> Print
-            </button>
-            <button type="button" className="h-8.5 px-2">
-              <EllipsisVerticalIcon className="size-4" />
-            </button>
+              <div className="inline-flex items-center gap-2">
+                <PrinterIcon className="size-4" /> Print
+              </div>
+              <ChevronDownIcon className="size-3.5" />
+            </PrintButton>
           </div>
         </div>
         <div className="bg-white border rounded-lg overflow-hidden">
           <table className="w-full text-left [&_thead]:bg-neutral-100 [&_th]:text-neutral-500 [&_tbody_tr:not(:last-child)]:border-b [&_thead]:border-b [&_th]:font-medium [&_th,&_td]:px-3 [&_th]:py-2 [&_td]:py-1.5">
             <thead>
               <tr>
-                <th>
-                  <Checkbox
-                    checked={
-                      !!(
-                        selectedIds.length === filteredUsers.length &&
-                        filteredUsers.length
-                      )
-                    }
-                    onCheckedChange={(checked) => {
-                      const selectedIds = checked
-                        ? filteredUsers.map((user) => user[".id"])
-                        : [];
-
-                      setSelectedIds(selectedIds);
-                    }}
-                  />
-                </th>
                 <th>Server</th>
                 <th>Name</th>
                 <th>Profile</th>
@@ -299,19 +297,6 @@ function RouteComponent() {
               {filteredUsers.length ? (
                 filteredUsers.map((user) => (
                   <tr key={user[".id"]}>
-                    <td>
-                      <Checkbox
-                        checked={selectedIds.some((sid) => sid === user[".id"])}
-                        onCheckedChange={(checked) => {
-                          setSelectedIds((prev) => {
-                            if (checked) {
-                              return prev.concat(user[".id"]);
-                            }
-                            return prev.filter((p) => p !== user[".id"]);
-                          });
-                        }}
-                      />
-                    </td>
                     <td>{user.server}</td>
                     <td>{user.name}</td>
                     <td>{user.profile}</td>

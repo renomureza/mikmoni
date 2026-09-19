@@ -20,17 +20,17 @@ import {
 } from "~/utils/find-many-cursor";
 import { RouterOSClient } from "~/lib/routeros-client";
 
-const useRouterosInputSchema = z.object({
+const setRouterosInputSchema = z.object({
   id: z.coerce.number().int(),
 });
 
-type UseRouterosInputSchema = z.input<typeof useRouterosInputSchema>;
+type SetRouterosInputSchema = z.input<typeof setRouterosInputSchema>;
 
-const $useRouteros = createServerFn()
+const $setRouteros = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((d: UseRouterosInputSchema) => d)
+  .validator((d: SetRouterosInputSchema) => d)
   .handler(async ({ data }) => {
-    const validation = useRouterosInputSchema.safeParse(data);
+    const validation = setRouterosInputSchema.safeParse(data);
 
     if (!validation.success) {
       return { success: false, error: z.prettifyError(validation.error) };
@@ -47,7 +47,7 @@ const $useRouteros = createServerFn()
     const routerosClient = new RouterOSClient({
       host: routeros.host,
       port: routeros.port,
-      user: routeros.user,
+      user: routeros.username,
       password: routeros.password,
       timeout: 6_000,
       tls: routeros.tls,
@@ -69,8 +69,8 @@ const $useRouteros = createServerFn()
     throw redirect({ to: "/app" });
   });
 
-export function useUseRouterosMutation() {
-  const mutate = useServerFn($useRouteros);
+export function useSetRouterosMutation() {
+  const mutate = useServerFn($setRouteros);
   return useMutation({
     mutationFn: mutate,
     onSuccess: async (data) => {
@@ -87,12 +87,17 @@ const createRouterosInputSchema = z.object({
   name: z.string().min(1).trim(),
   host: z.string().min(1).trim(),
   port: z.coerce.number().int().min(0).max(65_535),
-  user: z.string().min(1),
+  username: z.string().min(1),
   password: z.string().min(1),
   tls: z.boolean(),
+  hotspotName: z.string().min(1),
+  dnsName: z.string().min(1),
 });
+
 type CreateRouterosInput = z.input<typeof createRouterosInputSchema>;
+
 const $createRouteros = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator((d: CreateRouterosInput) => d)
   .handler(async ({ data }) => {
     const validation = createRouterosInputSchema.safeParse(data);
@@ -108,9 +113,11 @@ const $createRouteros = createServerFn({ method: "POST" })
       name: validation.data.name,
       host: validation.data.host,
       port: validation.data.port,
-      user: validation.data.user,
+      username: validation.data.username,
       password: validation.data.password,
       tls: validation.data.tls,
+      hotspotName: validation.data.hotspotName,
+      dnsName: validation.data.dnsName,
     });
 
     return { success: true, data: routeros };
@@ -139,6 +146,7 @@ const updateRouterosInputSchema = createRouterosInputSchema.extend({
 type UpdateRouterosInputSchema = z.input<typeof updateRouterosInputSchema>;
 
 const $updateRouteros = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator((d: UpdateRouterosInputSchema) => d)
   .handler(async ({ data }) => {
     const validation = updateRouterosInputSchema.safeParse(data);
@@ -169,9 +177,11 @@ const $updateRouteros = createServerFn({ method: "POST" })
         name: validation.data.name,
         host: validation.data.host,
         port: validation.data.port,
-        user: validation.data.user,
+        username: validation.data.username,
         password: validation.data.password,
         tls: validation.data.tls,
+        hotspotName: validation.data.hotspotName,
+        dnsName: validation.data.dnsName,
       })
       .where(eq(schema.routeros.id, routeros.id));
 
@@ -203,6 +213,7 @@ const deleteRouterosInputSchema = z.object({
 type DeleteRouterosInputSchema = z.input<typeof deleteRouterosInputSchema>;
 
 const $deleteRouteros = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
   .validator((d: DeleteRouterosInputSchema) => d)
   .handler(async ({ data }) => {
     const validation = deleteRouterosInputSchema.safeParse(data);
@@ -257,6 +268,7 @@ const getAllRouterosInputSchema = z.object({
 type GetAllRouterosInputSchema = z.input<typeof getAllRouterosInputSchema>;
 
 const $getAllRouteros = createServerFn()
+  .middleware([authMiddleware])
   .validator(getAllRouterosInputSchema)
   .handler(async ({ data }) => {
     return await findManyCursor<schema.Routeros, ["id"]>({
@@ -327,6 +339,7 @@ const getRouterosInputSchema = z.object({
 type GetRouterosInputSchema = z.input<typeof getRouterosInputSchema>;
 
 export const $getRouteros = createServerFn()
+  .middleware([authMiddleware])
   .validator((d: GetRouterosInputSchema) => d)
   .handler(async ({ data }) => {
     const validation = getRouterosInputSchema.safeParse(data);
@@ -336,14 +349,3 @@ export const $getRouteros = createServerFn()
     });
     return routeros || null;
   });
-
-//
-
-export const $getActiveRouteros = createServerFn().handler(async () => {
-  const session = await getSession();
-  if (!session || !session.data.routerosId) return null;
-  const routeros = await db.query.routeros.findFirst({
-    where: { id: session.data.routerosId },
-  });
-  return routeros || null;
-});

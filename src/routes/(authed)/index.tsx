@@ -7,7 +7,9 @@ import Dialog from "~/components/dialog";
 import {
   EditIcon,
   EllipsisVerticalIcon,
+  ExternalLinkIcon,
   PlusIcon,
+  RouterIcon,
   Trash2Icon,
 } from "lucide-react";
 import Button from "~/components/button";
@@ -18,7 +20,7 @@ import {
   useDeleteRouterosMutation,
   useGetAllRouterosSuspenseInfiniteQuery,
   useUpdateRouterosMutation,
-  useUseRouterosMutation,
+  useSetRouterosMutation,
 } from "~/serverfns/routeros";
 import { cn } from "cn";
 
@@ -37,8 +39,10 @@ type RouterosFormState = {
   host: string;
   port: string | number;
   tls: boolean;
-  user: string;
+  username: string;
   password: string;
+  hotspotName: string;
+  dnsName: string;
 };
 
 function RouterosForm({
@@ -54,13 +58,15 @@ function RouterosForm({
   onCancel?: () => void;
   isLoading: boolean;
 }) {
-  const [state, setState] = useState({
+  const [state, setState] = useState<RouterosFormState>({
     name: initialState?.name ?? "",
     host: initialState?.host ?? "",
     port: initialState?.port ?? "",
     tls: initialState?.tls ?? false,
-    user: initialState?.user ?? "",
+    username: initialState?.username ?? "",
     password: initialState?.password ?? "",
+    hotspotName: initialState?.hotspotName ?? "",
+    dnsName: initialState?.dnsName ?? "",
   });
 
   const onChange = <
@@ -124,14 +130,14 @@ function RouterosForm({
       />
       <div className="w-full flex gap-4">
         <Input
-          label="User"
+          label="Username"
           required
-          value={state.user}
+          value={state.username}
           placeholder="admin"
           onChange={(e) => {
-            onChange("user", e.target.value);
+            onChange("username", e.target.value);
           }}
-          error={errors?.user?.[0]}
+          error={errors?.username?.[0]}
         />
         <Input
           label="Password"
@@ -142,6 +148,29 @@ function RouterosForm({
             onChange("password", e.target.value);
           }}
           error={errors?.password?.[0]}
+        />
+      </div>
+
+      <div className="w-full flex gap-4">
+        <Input
+          label="Hotspot Name"
+          required
+          value={state.hotspotName}
+          placeholder="My Hotspot"
+          onChange={(e) => {
+            onChange("hotspotName", e.target.value);
+          }}
+          error={errors?.hotspotName?.[0]}
+        />
+        <Input
+          label="DNS Name"
+          required
+          placeholder="myhotspot.net"
+          value={state.dnsName}
+          onChange={(e) => {
+            onChange("dnsName", e.target.value);
+          }}
+          error={errors?.dnsName?.[0]}
         />
       </div>
 
@@ -186,15 +215,7 @@ function UpdateRouterosForm({
   routeros,
 }: {
   onClose: () => void;
-  routeros: {
-    id: number;
-    name: string;
-    user: string;
-    password: string;
-    host: string;
-    port: number;
-    tls: boolean;
-  };
+  routeros: RouterosFormState & { id: number };
 }) {
   const updateRouterosMutation = useUpdateRouterosMutation();
 
@@ -226,35 +247,42 @@ function RouterosCard({
   routeros: {
     id: number;
     name: string;
-    user: string;
+    username: string;
     password: string;
     host: string;
     port: number;
     tls: boolean;
+    hotspotName: string;
+    dnsName: string;
   };
 }) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const deleteRouterosMutation = useDeleteRouterosMutation();
-
-  const useRouterosMutation = useUseRouterosMutation();
+  const setRouterosMutation = useSetRouterosMutation();
 
   return (
     <div
       className={cn(
-        "bg-white relative px-4 py-4 flex overflow-hidden justify-between items-center border rounded-lg",
-        useRouterosMutation.isPending && "pointer-events-none opacity-50",
+        "bg-white relative px-4 py-4 flex overflow-hidden justify-between items-center border rounded-xl",
+        setRouterosMutation.isPending && "pointer-events-none opacity-50",
       )}
     >
       <button
         type="button"
-        className="w-full text-left"
+        className="w-full text-left flex items-center gap-3 group"
         onClick={() => {
-          useRouterosMutation.mutate({ data: { id: routeros.id } });
+          setRouterosMutation.mutate({ data: { id: routeros.id } });
         }}
       >
-        <h2 className="font-semibold leading-tight">{routeros.name}</h2>
-        <div className="text-neutral-600 leading-tight">
-          {routeros.host}:{routeros.port}
+        <div className="size-7 relative flex justify-center items-center">
+          <ExternalLinkIcon className="size-full absolute text-neutral-500 invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-all" />
+          <RouterIcon className="size-full absolute text-neutral-500 visible opacity-100 group-hover:opacity-0 group-hover:invisible transition-all" />
+        </div>
+        <div>
+          <h2 className="font-semibold leading-tight">{routeros.name}</h2>
+          <div className="text-neutral-600 leading-tight">
+            {routeros.host}:{routeros.port}
+          </div>
         </div>
       </button>
       <Popover.Root>
@@ -312,7 +340,7 @@ function RouteComponent() {
   const [openAddRouterosModal, setOpenAddRouterosModal] = useState(false);
 
   return (
-    <main className="max-w-5xl w-full px-4 space-y-6 mx-auto my-10">
+    <main className="max-w-5xl w-full space-y-4 mx-auto py-6">
       <div className="flex justify-between gap-2">
         <h1 className="text-2xl font-semibold">RouterOS</h1>
         <Dialog
@@ -333,9 +361,17 @@ function RouteComponent() {
         </Dialog>
       </div>
       <div className="w-full grid grid-cols-3 gap-3">
-        {routerosQuery.data?.map((routeros) => (
-          <RouterosCard key={routeros.id} routeros={routeros} />
-        ))}
+        {!routerosQuery.data.length ? (
+          <div className="bg-white rounded-xl w-full flex justify-center items-center min-h-60 border col-span-full">
+            <div className="font-medium">No Results Found</div>
+          </div>
+        ) : (
+          <>
+            {routerosQuery.data?.map((routeros) => (
+              <RouterosCard key={routeros.id} routeros={routeros} />
+            ))}
+          </>
+        )}
       </div>
     </main>
   );
