@@ -112,7 +112,7 @@ const $getHotspotUserComments = createServerFn()
     const comments = (await context.routerosClient.write(
       "/ip/hotspot/user/print",
       { ".proplist": "comment" },
-      [">comment=", ".id=*0", "#!"],
+      [">comment=up-", ">comment=vc-", "#|", ".id=*0", "#!", "#&"],
     )) as { comment: string }[];
 
     return Array.from(new Set(comments.map(({ comment }) => comment)));

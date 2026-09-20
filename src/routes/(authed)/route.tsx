@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { cn } from "cn";
 import {
+  BanknoteIcon,
   ChevronDownIcon,
   EllipsisVerticalIcon,
   GaugeCircleIcon,
@@ -96,6 +97,11 @@ const menus = [
     icon: NetworkIcon,
     title: "DHCP Leases",
     to: "/app/dhcp-leases",
+  },
+  {
+    icon: BanknoteIcon,
+    title: "Report",
+    to: "/app/report",
   },
 ] satisfies MenuItem[];
 

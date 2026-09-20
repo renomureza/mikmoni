@@ -8,6 +8,15 @@ const routeros = new RouterOSClient({
 });
 
 await routeros.connect();
-console.log(await routeros.write("/ip/dhcp-server/lease/print", {}, []));
+console.log(
+  await routeros.write("/ip/hotspot/user/print", { ".proplist": "comment" }, [
+    ">comment=up-",
+    ">comment=vc-",
+    "#|",
+    ".id=*0",
+    "#!",
+    "#&",
+  ]),
+);
 
 await routeros.close();

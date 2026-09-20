@@ -305,7 +305,7 @@ function RouteComponent() {
                     <td>{formatBytes(user["bytes-in"])}</td>
                     <td>{formatBytes(user["bytes-out"])}</td>
                     <td>
-                      {user.comment && (
+                      {user.comment && /^(vc-|up-)/.test(user.comment) ? (
                         <button
                           type="button"
                           className="inline-flex gap-2 items-center"
@@ -320,6 +320,8 @@ function RouteComponent() {
                         >
                           <SearchIcon className="size-4" /> {user.comment}
                         </button>
+                      ) : (
+                        user.comment
                       )}
                     </td>
                     <td>

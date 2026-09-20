@@ -27,6 +27,7 @@ import { Route as authedAppHotspotIpBindingsRouteImport } from './routes/(authed
 import { Route as authedAppLogHotspotRouteImport } from './routes/(authed)/app/log/hotspot'
 import { Route as authedAppLogUserRouteImport } from './routes/(authed)/app/log/user'
 import { Route as authedAppQuickPrintIndexRouteImport } from './routes/(authed)/app/quick-print/index'
+import { Route as authedAppReportIndexRouteImport } from './routes/(authed)/app/report/index'
 import { Route as authedVoucherTemplatesIdEditRouteImport } from './routes/(authed)/voucher-templates/$id.edit'
 import { Route as authedAppHotspotProfilesIndexRouteImport } from './routes/(authed)/app/hotspot/profiles/index'
 import { Route as authedAppHotspotUsersIndexRouteImport } from './routes/(authed)/app/hotspot/users/index'
@@ -126,6 +127,11 @@ const authedAppQuickPrintIndexRoute =
     path: '/quick-print/',
     getParentRoute: () => authedAppRouteRoute,
   } as any)
+const authedAppReportIndexRoute = authedAppReportIndexRouteImport.update({
+  id: '/report/',
+  path: '/report/',
+  getParentRoute: () => authedAppRouteRoute,
+} as any)
 const authedVoucherTemplatesIdEditRoute =
   authedVoucherTemplatesIdEditRouteImport.update({
     id: '/voucher-templates/$id/edit',
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/voucher-templates/$id/edit': typeof authedVoucherTemplatesIdEditRoute
   '/app/dhcp-leases/': typeof authedAppDhcpLeasesIndexRoute
   '/app/quick-print/': typeof authedAppQuickPrintIndexRoute
+  '/app/report/': typeof authedAppReportIndexRoute
   '/app/hotspot/profiles/': typeof authedAppHotspotProfilesIndexRoute
   '/app/hotspot/users/': typeof authedAppHotspotUsersIndexRoute
   '/app/print/$templateId/': typeof authedAppPrintTemplateIdIndexRoute
@@ -192,6 +199,7 @@ export interface FileRoutesByTo {
   '/voucher-templates/$id/edit': typeof authedVoucherTemplatesIdEditRoute
   '/app/dhcp-leases': typeof authedAppDhcpLeasesIndexRoute
   '/app/quick-print': typeof authedAppQuickPrintIndexRoute
+  '/app/report': typeof authedAppReportIndexRoute
   '/app/hotspot/profiles': typeof authedAppHotspotProfilesIndexRoute
   '/app/hotspot/users': typeof authedAppHotspotUsersIndexRoute
   '/app/print/$templateId': typeof authedAppPrintTemplateIdIndexRoute
@@ -217,6 +225,7 @@ export interface FileRoutesById {
   '/(authed)/voucher-templates/$id/edit': typeof authedVoucherTemplatesIdEditRoute
   '/(authed)/app/dhcp-leases/': typeof authedAppDhcpLeasesIndexRoute
   '/(authed)/app/quick-print/': typeof authedAppQuickPrintIndexRoute
+  '/(authed)/app/report/': typeof authedAppReportIndexRoute
   '/(authed)/app/hotspot/profiles/': typeof authedAppHotspotProfilesIndexRoute
   '/(authed)/app/hotspot/users/': typeof authedAppHotspotUsersIndexRoute
   '/(authed)/app/print/$templateId/': typeof authedAppPrintTemplateIdIndexRoute
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/voucher-templates/$id/edit'
     | '/app/dhcp-leases/'
     | '/app/quick-print/'
+    | '/app/report/'
     | '/app/hotspot/profiles/'
     | '/app/hotspot/users/'
     | '/app/print/$templateId/'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/voucher-templates/$id/edit'
     | '/app/dhcp-leases'
     | '/app/quick-print'
+    | '/app/report'
     | '/app/hotspot/profiles'
     | '/app/hotspot/users'
     | '/app/print/$templateId'
@@ -288,6 +299,7 @@ export interface FileRouteTypes {
     | '/(authed)/voucher-templates/$id/edit'
     | '/(authed)/app/dhcp-leases/'
     | '/(authed)/app/quick-print/'
+    | '/(authed)/app/report/'
     | '/(authed)/app/hotspot/profiles/'
     | '/(authed)/app/hotspot/users/'
     | '/(authed)/app/print/$templateId/'
@@ -427,6 +439,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedAppQuickPrintIndexRouteImport
       parentRoute: typeof authedAppRouteRoute
     }
+    '/(authed)/app/report/': {
+      id: '/(authed)/app/report/'
+      path: '/report'
+      fullPath: '/app/report/'
+      preLoaderRoute: typeof authedAppReportIndexRouteImport
+      parentRoute: typeof authedAppRouteRoute
+    }
     '/(authed)/voucher-templates/$id/edit': {
       id: '/(authed)/voucher-templates/$id/edit'
       path: '/voucher-templates/$id/edit'
@@ -468,6 +487,7 @@ interface authedAppRouteRouteChildren {
   authedAppLogUserRoute: typeof authedAppLogUserRoute
   authedAppDhcpLeasesIndexRoute: typeof authedAppDhcpLeasesIndexRoute
   authedAppQuickPrintIndexRoute: typeof authedAppQuickPrintIndexRoute
+  authedAppReportIndexRoute: typeof authedAppReportIndexRoute
   authedAppHotspotProfilesIndexRoute: typeof authedAppHotspotProfilesIndexRoute
   authedAppHotspotUsersIndexRoute: typeof authedAppHotspotUsersIndexRoute
   authedAppPrintTemplateIdIndexRoute: typeof authedAppPrintTemplateIdIndexRoute
@@ -483,6 +503,7 @@ const authedAppRouteRouteChildren: authedAppRouteRouteChildren = {
   authedAppLogUserRoute: authedAppLogUserRoute,
   authedAppDhcpLeasesIndexRoute: authedAppDhcpLeasesIndexRoute,
   authedAppQuickPrintIndexRoute: authedAppQuickPrintIndexRoute,
+  authedAppReportIndexRoute: authedAppReportIndexRoute,
   authedAppHotspotProfilesIndexRoute: authedAppHotspotProfilesIndexRoute,
   authedAppHotspotUsersIndexRoute: authedAppHotspotUsersIndexRoute,
   authedAppPrintTemplateIdIndexRoute: authedAppPrintTemplateIdIndexRoute,
