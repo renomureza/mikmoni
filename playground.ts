@@ -8,6 +8,6 @@ const routeros = new RouterOSClient({
 });
 
 await routeros.connect();
-console.log(await routeros.write("/system/script/print", {}, []));
+console.log(await routeros.write("/ip/dhcp-server/lease/print", {}, []));
 
 await routeros.close();
