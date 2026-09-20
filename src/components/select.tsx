@@ -83,7 +83,7 @@ export default function Select<
                   </SelectPrimitive.Item>
                 ))}
               </SelectPrimitive.List>
-              <SelectPrimitive.ScrollDownArrow className="bottom-0 z-1 flex h-4 w-full cursor-default items-center justify-center bg-white text-center text-xs before:absolute before:left-0 before:h-full before:w-full before:content-[''] data-[side=none]:before:bottom-[-100%] dark:bg-neutral-950">
+              <SelectPrimitive.ScrollDownArrow className="bottom-0 z-1 flex h-4 w-full cursor-default items-center justify-center bg-white text-center text-xs before:absolute before:left-0 before:h-full before:w-full before:content-[''] data-[side=none]:before:-bottom-full dark:bg-neutral-950">
                 <ChevronDownIcon className="size-4 text-neutral-500" />
               </SelectPrimitive.ScrollDownArrow>
             </SelectPrimitive.Popup>
