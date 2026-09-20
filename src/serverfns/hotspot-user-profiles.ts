@@ -19,6 +19,7 @@ import { authAndRouterosMiddleware } from "~/middlewares/auth";
 import {
   extractOnLoginScriptPutFields,
   getRouterOSDatePositions,
+  getRouterosMonthList,
   isISORouterOSDate,
   rateLimitSchema,
 } from "~/utils/routeros";
@@ -113,23 +114,7 @@ function createBackgroundScript({
       ? "remove"
       : "set limit-uptime=1s";
 
-  const months = isISORouterOSDate(sampleDateFormat)
-    ? ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
-    : [
-        "jan",
-        "feb",
-        "mar",
-        "apr",
-        "may",
-        "jun",
-        "jul",
-        "aug",
-        "sep",
-        "oct",
-        "nov",
-        "dec",
-      ];
-
+  const months = getRouterosMonthList(sampleDateFormat);
   const datePositions = getRouterOSDatePositions(sampleDateFormat);
 
   return `:local dateint do={

@@ -70,8 +70,11 @@ export function formatUptime(duration: string) {
 
   const pad = (n: number) => String(n).padStart(2, "0");
 
-  const totalHours = weeks * 7 * 24 + days * 24 + hours;
-  return `${pad(totalHours)}:${pad(minutes)}:${pad(seconds)}`;
+  const clockPart = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  const parts = [];
+  if (weeks) parts.push(`${weeks}w`);
+  if (days) parts.push(`${days}d`);
+  return `${parts.join("")} ${clockPart}`;
 }
 
 export function formatBytes(
@@ -281,4 +284,40 @@ export function generateHotspotUserCredential({
       : `${prefix}${randomStringWithGuarantee(length, categories)}`;
 
   return { username, password };
+}
+
+//
+
+export function getRouterosMonthList(sampleDateFormat: string) {
+  const isoMonths = [
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "09",
+    "10",
+    "11",
+    "12",
+  ] as const;
+
+  const legacyMonths = [
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "oct",
+    "nov",
+    "dec",
+  ] as const;
+
+  return isISORouterOSDate(sampleDateFormat) ? isoMonths : legacyMonths;
 }

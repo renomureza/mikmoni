@@ -63,6 +63,14 @@ const menus = [
         title: "Hosts",
         to: "/app/hotspot/hosts",
       },
+      {
+        title: "IP Bindings",
+        to: "/app/hotspot/ip-bindings",
+      },
+      {
+        title: "Cookies",
+        to: "/app/hotspot/cookies",
+      },
     ],
   },
   {
@@ -71,14 +79,23 @@ const menus = [
     to: "/app/quick-print",
   },
   {
+    icon: SquareTextIcon,
+    title: "Logs",
+    children: [
+      {
+        title: "Hotspot",
+        to: "/app/log/hotspot",
+      },
+      {
+        title: "User",
+        to: "/app/log/user",
+      },
+    ],
+  },
+  {
     icon: NetworkIcon,
     title: "DHCP Leases",
     to: "/app/dhcp-leases",
-  },
-  {
-    icon: SquareTextIcon,
-    title: "Logs",
-    to: "/app/log",
   },
 ] satisfies MenuItem[];
 
