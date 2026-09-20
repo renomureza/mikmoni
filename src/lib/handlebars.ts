@@ -67,7 +67,7 @@ export function getSampleVoucherTemplateContext({
     users: Array.from({ length: usersLength }, () => {
       return {
         ...generateHotspotUserCredential({
-          character: "alpha_num_lower_upper",
+          character: "mix2",
           length: 5,
           mode,
         }),

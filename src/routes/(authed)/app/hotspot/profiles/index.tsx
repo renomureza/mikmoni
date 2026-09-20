@@ -35,8 +35,8 @@ function UserProfileMenu({
 }: {
   profile: {
     expiredMode: ExpiredModeValue;
-    price?: string;
-    sellingPrice?: string;
+    price: string;
+    sellingPrice: string;
     validity: string;
     lockUsers: boolean;
     ".id": string;

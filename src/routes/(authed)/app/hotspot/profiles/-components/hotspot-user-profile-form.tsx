@@ -20,9 +20,9 @@ export type HotspotUserProfileFormState = {
   "rate-limit"?: string;
   expiredMode: ExpiredModeValue;
   validity: string;
-  price?: string;
+  price: string;
   lockUsers: boolean;
-  sellingPrice?: string;
+  sellingPrice: string;
 };
 
 export default function HotspotUserProfileForm({

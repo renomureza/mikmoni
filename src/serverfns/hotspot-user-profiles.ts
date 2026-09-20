@@ -54,9 +54,8 @@ const $getHotspotUserProfiles = createServerFn()
         ...profile,
         expiredMode: expireMode as ExpiredModeValue,
         validity,
-        price: !price || price === "0" ? undefined : price,
-        sellingPrice:
-          !sellingPrice || sellingPrice === "0" ? undefined : sellingPrice,
+        price: !price || price === "0" ? "" : price,
+        sellingPrice: !sellingPrice || sellingPrice === "0" ? "" : sellingPrice,
         lockUsers: lockUser === "Enable",
       };
     });
