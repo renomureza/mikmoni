@@ -23,6 +23,12 @@ type InstallInputSchema = z.input<typeof installInputSchema>;
 const $install = createServerFn({ method: "POST" })
   .validator((d: InstallInputSchema) => d)
   .handler(async ({ data }) => {
+    const isInstalled = await installedOption.get();
+
+    if (isInstalled) {
+      throw redirect({ to: "/" });
+    }
+
     const validation = installInputSchema.safeParse(data);
 
     if (!validation.success) {
@@ -53,6 +59,6 @@ export function useInstallMutation() {
 
 //
 
-export const $getIsInstalled = createServerFn().handler(
-  async () => installedOption.get() ?? false,
+export const $getIsInstalled = createServerFn().handler(() =>
+  installedOption.get(),
 );

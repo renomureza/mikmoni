@@ -45,7 +45,7 @@ const $getHotspotUsers = createServerFn()
   .middleware([authAndRouterosMiddleware])
   .validator((d: GetHotspotUsersInputSchema) => d)
   .handler(async ({ context, data }) => {
-    const users = (await context.routeros.client.write(
+    const users = (await context.routerosClient.write(
       "/ip/hotspot/user/print",
       {
         ".proplist":

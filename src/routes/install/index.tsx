@@ -10,8 +10,6 @@ import InlineError from "~/components/inline-error";
 export const Route = createFileRoute("/install/")({
   component: RouteComponent,
   beforeLoad: ({ context }) => {
-    console.log(context);
-
     if (context.installed) {
       throw redirect({ to: "/" });
     }

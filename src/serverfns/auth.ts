@@ -16,7 +16,16 @@ export const $getSession = createServerFn().handler(async () => {
     },
   });
   if (!user) return null;
-  return user;
+
+  let routeros;
+
+  if (session.data.routerosId) {
+    routeros = await db.query.routeros.findFirst({
+      where: { id: session.data.routerosId },
+    });
+  }
+
+  return { user, routeros: routeros || null };
 });
 
 const loginInputSchema = z.object({

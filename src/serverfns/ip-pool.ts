@@ -20,7 +20,7 @@ type IpPool = {
 const $getIpPools = createServerFn()
   .middleware([authAndRouterosMiddleware])
   .handler(async ({ context }) => {
-    const ipPools = (await context.routeros.client.write(
+    const ipPools = (await context.routerosClient.write(
       "/ip/pool/print",
     )) as IpPool[];
 

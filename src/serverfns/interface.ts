@@ -23,7 +23,7 @@ type Interface = {
 const $getInterfaces = createServerFn()
   .middleware([authAndRouterosMiddleware])
   .handler(async ({ context }) => {
-    const users = (await context.routeros.client.write(
+    const users = (await context.routerosClient.write(
       "/interface/print",
     )) as Interface[];
 
@@ -69,7 +69,7 @@ export function useGetInterfacesSuspenseQuery() {
 export const $getInterfaceTraffic = createServerFn()
   .middleware([authAndRouterosMiddleware])
   .handler(async ({ context }) => {
-    const traffic = await context.routeros.client
+    const traffic = await context.routerosClient
       .write("/interface/monitor-traffic", {
         ".proplist": "rx-bits-per-second,tx-bits-per-second",
         interface: "ether1",

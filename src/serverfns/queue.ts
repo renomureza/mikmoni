@@ -16,7 +16,7 @@ type IpPool = {
 const $getSimpleQueues = createServerFn()
   .middleware([authAndRouterosMiddleware])
   .handler(async ({ context }) => {
-    const simpleQueues = (await context.routeros.client.write(
+    const simpleQueues = (await context.routerosClient.write(
       "/queue/simple/print",
       { ".proplist": ".id,name" },
     )) as IpPool[];

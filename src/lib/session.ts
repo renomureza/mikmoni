@@ -1,4 +1,5 @@
 import { useSession as createSession } from "@tanstack/react-start/server";
+import { getOrCreateAppSecret } from "~/utils/path";
 
 type SessionUser = {
   userId: number;
@@ -6,7 +7,8 @@ type SessionUser = {
 };
 
 export function getSession() {
+  const password = getOrCreateAppSecret();
   return createSession<SessionUser>({
-    password: process.env.APP_SECRET!,
+    password: password,
   });
 }

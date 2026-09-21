@@ -21,3 +21,4 @@ yarn.lock
 /dist
 /sqlite.db
 /docker-data
+/data

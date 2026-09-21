@@ -25,7 +25,7 @@ export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
 }>()({
   beforeLoad: async ({ location }) => {
-    const [user, installed, localization] = await Promise.all([
+    const [session, installed, localization] = await Promise.all([
       $getSession(),
       $getIsInstalled(),
       $getLocalization(),
@@ -38,7 +38,8 @@ export const Route = createRootRouteWithContext<{
     const localeMessages = await getLocale(localization.language);
 
     return {
-      user,
+      user: session?.user || null,
+      routeros: session?.routeros || null,
       installed,
       localization,
       localeMessages,

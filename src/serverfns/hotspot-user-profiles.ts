@@ -38,7 +38,7 @@ type HotspotUserProfile = {
 const $getHotspotUserProfiles = createServerFn()
   .middleware([authAndRouterosMiddleware])
   .handler(async ({ context }) => {
-    const profiles = (await context.routeros.client.write(
+    const profiles = (await context.routerosClient.write(
       "/ip/hotspot/user/profile/print",
       {
         ".proplist":
@@ -262,7 +262,7 @@ const $createHotspotUserProfile = createServerFn({ method: "POST" })
       };
     }
 
-    const routerosClient = context.routeros.client;
+    const routerosClient = context.routerosClient;
 
     const {
       expiredMode,
@@ -360,7 +360,7 @@ const $updateHotspotUserProfile = createServerFn({ method: "POST" })
         errors: z.flattenError(validation.error).fieldErrors,
       };
     }
-    const routerosClient = context.routeros.client;
+    const routerosClient = context.routerosClient;
 
     const {
       expiredMode,
@@ -501,7 +501,7 @@ const $deleteHotspotUserProfile = createServerFn({ method: "POST" })
         errors: z.flattenError(validation.error).fieldErrors,
       };
     }
-    const routerosClient = context.routeros.client;
+    const routerosClient = context.routerosClient;
 
     const profile = await routerosClient
       .write(

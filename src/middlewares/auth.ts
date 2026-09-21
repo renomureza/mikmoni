@@ -2,7 +2,7 @@ import { createMiddleware } from "@tanstack/react-start";
 import { redirect } from "@tanstack/react-router";
 import { $getSession } from "~/serverfns/auth";
 import { clientManager } from "~/lib/routeros-client";
-import { $getActiveRouteros } from "~/serverfns/active-routeros";
+// import { $getActiveRouteros } from "~/serverfns/active-routeros";
 
 export const authMiddleware = createMiddleware().server(async ({ next }) => {
   const session = await $getSession();
@@ -12,32 +12,27 @@ export const authMiddleware = createMiddleware().server(async ({ next }) => {
   }
 
   return next({
-    context: {
-      user: session,
-    },
+    context: session,
   });
 });
 
-export const routerosMiddleware = createMiddleware().server(
-  async ({ next }) => {
-    const routeros = await $getActiveRouteros();
+export const routerosMiddleware = createMiddleware()
+  .middleware([authMiddleware])
+  .server(async ({ next, context }) => {
+    const routerosId = context.routeros?.id;
 
-    if (!routeros) {
+    if (!routerosId) {
       throw redirect({ to: "/" });
     }
 
-    const routerosClient = clientManager.getClient(routeros.id);
+    const routerosClient = clientManager.getClient(routerosId);
+
     return next({
       context: {
         routerosClient,
-        routeros: {
-          ...routeros,
-          client: routerosClient,
-        },
       },
     });
-  },
-);
+  });
 
 export const authAndRouterosMiddleware = createMiddleware().middleware([
   authMiddleware,
