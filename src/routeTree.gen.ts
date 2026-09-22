@@ -27,8 +27,6 @@ import { Route as authedAppHotspotIpBindingsRouteImport } from './routes/(authed
 import { Route as authedAppLogHotspotRouteImport } from './routes/(authed)/app/log/hotspot'
 import { Route as authedAppLogUserRouteImport } from './routes/(authed)/app/log/user'
 import { Route as authedAppPppActivesRouteImport } from './routes/(authed)/app/ppp/actives'
-import { Route as authedAppPppProfilesRouteImport } from './routes/(authed)/app/ppp/profiles'
-import { Route as authedAppPppSecretsRouteImport } from './routes/(authed)/app/ppp/secrets'
 import { Route as authedAppQuickPrintIndexRouteImport } from './routes/(authed)/app/quick-print/index'
 import { Route as authedAppReportIndexRouteImport } from './routes/(authed)/app/report/index'
 import { Route as authedVoucherTemplatesIdEditRouteImport } from './routes/(authed)/voucher-templates/$id.edit'
@@ -129,16 +127,6 @@ const authedAppPppActivesRoute = authedAppPppActivesRouteImport.update({
   path: '/ppp/actives',
   getParentRoute: () => authedAppRouteRoute,
 } as any)
-const authedAppPppProfilesRoute = authedAppPppProfilesRouteImport.update({
-  id: '/ppp/profiles',
-  path: '/ppp/profiles',
-  getParentRoute: () => authedAppRouteRoute,
-} as any)
-const authedAppPppSecretsRoute = authedAppPppSecretsRouteImport.update({
-  id: '/ppp/secrets',
-  path: '/ppp/secrets',
-  getParentRoute: () => authedAppRouteRoute,
-} as any)
 const authedAppQuickPrintIndexRoute =
   authedAppQuickPrintIndexRouteImport.update({
     id: '/quick-print/',
@@ -192,8 +180,6 @@ export interface FileRoutesByFullPath {
   '/app/log/hotspot': typeof authedAppLogHotspotRoute
   '/app/log/user': typeof authedAppLogUserRoute
   '/app/ppp/actives': typeof authedAppPppActivesRoute
-  '/app/ppp/profiles': typeof authedAppPppProfilesRoute
-  '/app/ppp/secrets': typeof authedAppPppSecretsRoute
   '/voucher-templates/$id/edit': typeof authedVoucherTemplatesIdEditRoute
   '/app/dhcp-leases/': typeof authedAppDhcpLeasesIndexRoute
   '/app/quick-print/': typeof authedAppQuickPrintIndexRoute
@@ -218,8 +204,6 @@ export interface FileRoutesByTo {
   '/app/log/hotspot': typeof authedAppLogHotspotRoute
   '/app/log/user': typeof authedAppLogUserRoute
   '/app/ppp/actives': typeof authedAppPppActivesRoute
-  '/app/ppp/profiles': typeof authedAppPppProfilesRoute
-  '/app/ppp/secrets': typeof authedAppPppSecretsRoute
   '/voucher-templates/$id/edit': typeof authedVoucherTemplatesIdEditRoute
   '/app/dhcp-leases': typeof authedAppDhcpLeasesIndexRoute
   '/app/quick-print': typeof authedAppQuickPrintIndexRoute
@@ -247,8 +231,6 @@ export interface FileRoutesById {
   '/(authed)/app/log/hotspot': typeof authedAppLogHotspotRoute
   '/(authed)/app/log/user': typeof authedAppLogUserRoute
   '/(authed)/app/ppp/actives': typeof authedAppPppActivesRoute
-  '/(authed)/app/ppp/profiles': typeof authedAppPppProfilesRoute
-  '/(authed)/app/ppp/secrets': typeof authedAppPppSecretsRoute
   '/(authed)/voucher-templates/$id/edit': typeof authedVoucherTemplatesIdEditRoute
   '/(authed)/app/dhcp-leases/': typeof authedAppDhcpLeasesIndexRoute
   '/(authed)/app/quick-print/': typeof authedAppQuickPrintIndexRoute
@@ -276,8 +258,6 @@ export interface FileRouteTypes {
     | '/app/log/hotspot'
     | '/app/log/user'
     | '/app/ppp/actives'
-    | '/app/ppp/profiles'
-    | '/app/ppp/secrets'
     | '/voucher-templates/$id/edit'
     | '/app/dhcp-leases/'
     | '/app/quick-print/'
@@ -302,8 +282,6 @@ export interface FileRouteTypes {
     | '/app/log/hotspot'
     | '/app/log/user'
     | '/app/ppp/actives'
-    | '/app/ppp/profiles'
-    | '/app/ppp/secrets'
     | '/voucher-templates/$id/edit'
     | '/app/dhcp-leases'
     | '/app/quick-print'
@@ -330,8 +308,6 @@ export interface FileRouteTypes {
     | '/(authed)/app/log/hotspot'
     | '/(authed)/app/log/user'
     | '/(authed)/app/ppp/actives'
-    | '/(authed)/app/ppp/profiles'
-    | '/(authed)/app/ppp/secrets'
     | '/(authed)/voucher-templates/$id/edit'
     | '/(authed)/app/dhcp-leases/'
     | '/(authed)/app/quick-print/'
@@ -475,20 +451,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authedAppPppActivesRouteImport
       parentRoute: typeof authedAppRouteRoute
     }
-    '/(authed)/app/ppp/profiles': {
-      id: '/(authed)/app/ppp/profiles'
-      path: '/ppp/profiles'
-      fullPath: '/app/ppp/profiles'
-      preLoaderRoute: typeof authedAppPppProfilesRouteImport
-      parentRoute: typeof authedAppRouteRoute
-    }
-    '/(authed)/app/ppp/secrets': {
-      id: '/(authed)/app/ppp/secrets'
-      path: '/ppp/secrets'
-      fullPath: '/app/ppp/secrets'
-      preLoaderRoute: typeof authedAppPppSecretsRouteImport
-      parentRoute: typeof authedAppRouteRoute
-    }
     '/(authed)/app/quick-print/': {
       id: '/(authed)/app/quick-print/'
       path: '/quick-print'
@@ -543,8 +505,6 @@ interface authedAppRouteRouteChildren {
   authedAppLogHotspotRoute: typeof authedAppLogHotspotRoute
   authedAppLogUserRoute: typeof authedAppLogUserRoute
   authedAppPppActivesRoute: typeof authedAppPppActivesRoute
-  authedAppPppProfilesRoute: typeof authedAppPppProfilesRoute
-  authedAppPppSecretsRoute: typeof authedAppPppSecretsRoute
   authedAppDhcpLeasesIndexRoute: typeof authedAppDhcpLeasesIndexRoute
   authedAppQuickPrintIndexRoute: typeof authedAppQuickPrintIndexRoute
   authedAppReportIndexRoute: typeof authedAppReportIndexRoute
@@ -562,8 +522,6 @@ const authedAppRouteRouteChildren: authedAppRouteRouteChildren = {
   authedAppLogHotspotRoute: authedAppLogHotspotRoute,
   authedAppLogUserRoute: authedAppLogUserRoute,
   authedAppPppActivesRoute: authedAppPppActivesRoute,
-  authedAppPppProfilesRoute: authedAppPppProfilesRoute,
-  authedAppPppSecretsRoute: authedAppPppSecretsRoute,
   authedAppDhcpLeasesIndexRoute: authedAppDhcpLeasesIndexRoute,
   authedAppQuickPrintIndexRoute: authedAppQuickPrintIndexRoute,
   authedAppReportIndexRoute: authedAppReportIndexRoute,

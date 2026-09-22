@@ -36,16 +36,16 @@ function RouteComponent() {
   const installMutation = useInstallMutation();
 
   return (
-    <div className="flex justify-center items-center min-h-dvh">
-      <div className="space-y-6 w-full flex flex-col justify-center max-w-md">
+    <div className="flex min-h-dvh items-center justify-center">
+      <div className="flex w-full max-w-md flex-col justify-center space-y-6">
         <div className="space-y-2 text-center">
-          <h1 className="text-2xl font-semibold text-center">Install</h1>
+          <h1 className="text-center text-2xl font-semibold">Install</h1>
           {!!Object.values(installMutation.data?.errors ?? {}).length && (
             <InlineError message="One or more fields are invalid." />
           )}
         </div>
 
-        <div className="w-full flex justify-center items-center">
+        <div className="flex w-full items-center justify-center">
           {step === 0 ? (
             <SectionForm
               title="Localization"

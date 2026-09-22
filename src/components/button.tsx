@@ -19,7 +19,7 @@ export default function Button({
       {...props}
       disabled={disabled || isLoading}
       className={cn(
-        "disabled:opacity-50 disabled:pointer-events-none justify-center transition-all flex items-center gap-2 w-max px-3.5 h-8.5 rounded-lg font-medium",
+        "flex h-8.5 w-max items-center justify-center gap-2 rounded-lg px-3.5 font-medium transition-all disabled:pointer-events-none disabled:opacity-50",
         {
           "h-8.5": !size,
           "h-9": size === "lg",
@@ -27,11 +27,11 @@ export default function Button({
           "h-7": size === "xs",
         },
         {
-          "bg-neutral-900 text-white ": !variant,
-          "border-neutral-300 bg-white border hover:bg-neutral-100":
+          "bg-neutral-900 text-white": !variant,
+          "border border-neutral-300 bg-white hover:bg-neutral-100":
             variant === "outline",
           "bg-neutral-100 hover:bg-neutral-200": variant === "secondary",
-          "bg-red-50 hover:bg-red-100 text-red-600": variant === "destructive",
+          "bg-red-50 text-red-600 hover:bg-red-100": variant === "destructive",
           "hover:bg-neutral-200": variant === "ghost",
         },
         className,

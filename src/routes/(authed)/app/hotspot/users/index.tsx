@@ -67,7 +67,7 @@ function UserMenu({
   const disableHotspotUserMutation = useDisableHotspotUserMutation();
 
   return (
-    <div className="flex items-center gap-0.5 justify-end">
+    <div className="flex items-center justify-end gap-0.5">
       <PrintButton
         onClickTemplate={(templateId) => {
           window.open(
@@ -76,7 +76,7 @@ function UserMenu({
             "width=420,height=420",
           );
         }}
-        className="text-neutral-600 rounded-lg transition-all data-popup-open:text-neutral-700 data-popup-open:bg-neutral-50 hover:text-neutral-700 hover:bg-neutral-50 size-7 flex justify-center items-center"
+        className="flex size-7 items-center justify-center rounded-lg text-neutral-600 transition-all hover:bg-neutral-50 hover:text-neutral-700 data-popup-open:bg-neutral-50 data-popup-open:text-neutral-700"
       >
         <PrinterIcon className="size-4" />
       </PrintButton>
@@ -92,10 +92,10 @@ function UserMenu({
             });
           },
           className: cn(
-            "rounded-lg disabled:pointer-events-none disabled:opacity-50 transition-all size-7 flex justify-center items-center",
+            "flex size-7 items-center justify-center rounded-lg transition-all disabled:pointer-events-none disabled:opacity-50",
             user.disabled === "false"
-              ? "text-neutral-600 hover:text-neutral-700 hover:bg-neutral-50"
-              : "text-orange-600 hover:text-orange-700 hover:bg-orange-50",
+              ? "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-700"
+              : "text-orange-600 hover:bg-orange-50 hover:text-orange-700",
           ),
           children: (
             <>
@@ -131,7 +131,7 @@ function UserMenu({
       <button
         disabled={deleteHotspotUserMutation.isPending}
         type="button"
-        className="text-red-600 rounded-lg disabled:pointer-events-none disabled:opacity-50 transition-all hover:text-red-700 hover:bg-red-50 size-7 flex justify-center items-center"
+        className="flex size-7 items-center justify-center rounded-lg text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none disabled:opacity-50"
         onClick={() => {
           if (window.confirm("Are you sure you want to delete it?")) {
             deleteHotspotUserMutation.mutate({ data: { ".id": user[".id"] } });
@@ -210,7 +210,7 @@ function RouteComponent() {
         </div>
       </div>
       <div className="space-y-2">
-        <div className="w-full flex gap-2 justify-between">
+        <div className="flex w-full justify-between gap-2">
           <div className="flex gap-2">
             <Input
               className="w-sm"
@@ -232,7 +232,7 @@ function RouteComponent() {
               ]}
               value={loaderDeps.profile ?? null}
               onChange={(profile) => {
-                navigate({
+                void navigate({
                   search: (prev) => ({
                     ...prev,
                     profile: profile || undefined,
@@ -251,7 +251,7 @@ function RouteComponent() {
               }
               value={loaderDeps.comment ?? null}
               onChange={(comment) => {
-                navigate({
+                void navigate({
                   search: (prev) => ({
                     ...prev,
                     comment: comment || undefined,
@@ -260,10 +260,10 @@ function RouteComponent() {
               }}
             />
             <PrintButton
-              className="h-8.5 px-3 rounded-lg border bg-blue-100 border-blue-50 text-blue-600 font-medium disabled:opacity-50 disabled:pointer-events-none flex items-center gap-2"
+              className="flex h-8.5 items-center gap-2 rounded-lg border border-blue-50 bg-blue-100 px-3 font-medium text-blue-600 disabled:pointer-events-none disabled:opacity-50"
               disabled={!loaderDeps.comment}
               onClickTemplate={(templateId) => {
-                navigate({
+                void navigate({
                   reloadDocument: true,
                   to: "/app/print/$templateId",
                   params: { templateId: String(templateId) },
@@ -278,8 +278,8 @@ function RouteComponent() {
             </PrintButton>
           </div>
         </div>
-        <div className="bg-white border rounded-lg overflow-hidden">
-          <table className="w-full text-left [&_thead]:bg-neutral-100 [&_th]:text-neutral-500 [&_tbody_tr:not(:last-child)]:border-b [&_thead]:border-b [&_th]:font-medium [&_th,&_td]:px-3 [&_th]:py-2 [&_td]:py-1.5">
+        <div className="overflow-hidden rounded-lg border bg-white">
+          <table className="w-full text-left [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-1.5 [&_th]:py-2 [&_th]:font-medium [&_th]:text-neutral-500 [&_th,&_td]:px-3 [&_thead]:border-b [&_thead]:bg-neutral-100">
             <thead>
               <tr>
                 <th>Server</th>
@@ -308,9 +308,9 @@ function RouteComponent() {
                       {user.comment && /^(vc-|up-)/.test(user.comment) ? (
                         <button
                           type="button"
-                          className="inline-flex gap-2 items-center"
+                          className="inline-flex items-center gap-2"
                           onClick={() => {
-                            navigate({
+                            void navigate({
                               search: (prev) => ({
                                 ...prev,
                                 comment: user.comment,
@@ -332,7 +332,7 @@ function RouteComponent() {
               ) : (
                 <tr>
                   <td colSpan={10}>
-                    <div className="flex justify-center items-center min-h-60">
+                    <div className="flex min-h-60 items-center justify-center">
                       <div>No Results Found</div>
                     </div>
                   </td>

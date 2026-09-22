@@ -130,7 +130,7 @@ export default function HotspotUserForm({
           error={errors?.timeLimit?.[0]}
           tooltip="Must be shorter than the validity period in the profile."
         />
-        <div className="flex items-end gap-2 w-full">
+        <div className="flex w-full items-end gap-2">
           <Input
             label="Data Limit"
             placeholder="100"

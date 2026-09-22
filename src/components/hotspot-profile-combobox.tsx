@@ -45,7 +45,7 @@ export default function HotspotProfileCombobox({
         error={error}
       />
       {showProfileDetail && (
-        <ul className="text-xs inline-flex text-neutral-600 [&_li:not(:last-child):after]:content-['•'] [&_li:not(:last-child):after]:ml-1.5 gap-1.5">
+        <ul className="inline-flex gap-1.5 text-xs text-neutral-600 [&_li:not(:last-child):after]:ml-1.5 [&_li:not(:last-child):after]:content-['•']">
           <li>Validity: {selectedProfile.validity}</li>
           {selectedProfile.price && <li>Price: {selectedProfile.price}</li>}
           {selectedProfile.sellingPrice && (

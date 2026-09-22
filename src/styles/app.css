@@ -24,6 +24,6 @@
   }
 
   body {
-    @apply text-foreground relative bg-neutral-100 antialiased text-sm;
+    @apply relative bg-neutral-100 text-sm text-foreground antialiased;
   }
 }

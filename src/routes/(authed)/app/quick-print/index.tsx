@@ -112,7 +112,7 @@ function QuickPrintItemMenu({ quickPrint }: { quickPrint: QuickPrint }) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   return (
-    <div className="flex items-center gap-0.5 justify-end">
+    <div className="flex items-center justify-end gap-0.5">
       <PrintButton
         onClickTemplate={(templateId) => {
           generateMutation.mutate(
@@ -148,7 +148,7 @@ function QuickPrintItemMenu({ quickPrint }: { quickPrint: QuickPrint }) {
             },
           );
         }}
-        className="text-neutral-600 rounded-lg transition-all data-popup-open:text-neutral-700 data-popup-open:bg-neutral-50 hover:text-neutral-700 hover:bg-neutral-50 size-7 flex justify-center items-center"
+        className="flex size-7 items-center justify-center rounded-lg text-neutral-600 transition-all hover:bg-neutral-50 hover:text-neutral-700 data-popup-open:bg-neutral-50 data-popup-open:text-neutral-700"
       >
         <PrinterIcon className="size-4" />
       </PrintButton>
@@ -173,7 +173,7 @@ function QuickPrintItemMenu({ quickPrint }: { quickPrint: QuickPrint }) {
       <button
         disabled={deleteMutation.isPending}
         type="button"
-        className="text-red-600 rounded-lg disabled:pointer-events-none disabled:opacity-50 transition-all hover:text-red-700 hover:bg-red-50 size-7 flex justify-center items-center"
+        className="flex size-7 items-center justify-center rounded-lg text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none disabled:opacity-50"
         onClick={() => {
           if (window.confirm("Are you sure you want to delete it?")) {
             deleteMutation.mutate({ data: { id: quickPrint[".id"] } });
@@ -212,8 +212,8 @@ function RouteComponent() {
         </Dialog>
       </div>
 
-      <div className="bg-white border rounded-lg overflow-hidden">
-        <table className="w-full text-left [&_thead]:bg-neutral-100 [&_th]:text-neutral-500 [&_tbody_tr:not(:last-child)]:border-b [&_thead]:border-b [&_th]:font-medium [&_th,&_td]:px-3 [&_th]:py-2 [&_td]:py-1.5">
+      <div className="overflow-hidden rounded-lg border bg-white">
+        <table className="w-full text-left [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-1.5 [&_th]:py-2 [&_th]:font-medium [&_th]:text-neutral-500 [&_th,&_td]:px-3 [&_thead]:border-b [&_thead]:bg-neutral-100">
           <thead>
             <tr>
               <th>Name</th>
@@ -249,7 +249,7 @@ function RouteComponent() {
             ) : (
               <tr>
                 <td colSpan={10}>
-                  <div className="flex justify-center items-center min-h-60">
+                  <div className="flex min-h-60 items-center justify-center">
                     <div>No Results Found</div>
                   </div>
                 </td>

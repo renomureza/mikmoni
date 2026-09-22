@@ -23,7 +23,7 @@ export default function Popover({
         <PopoverPrimitive.Positioner sideOffset={8}>
           <PopoverPrimitive.Popup
             className={cn(
-              "relative flex h-(--popup-height,auto) w-(--popup-width,auto) min-w-40 max-w-125 flex-col gap-px origin-(--transform-origin) bg-white p-1 outline-none border shadow-lg rounded-lg transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0",
+              "relative flex h-(--popup-height,auto) w-(--popup-width,auto) max-w-125 min-w-40 origin-(--transform-origin) flex-col gap-px rounded-lg border bg-white p-1 shadow-lg transition-[scale,opacity] duration-100 ease-out outline-none data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0",
               popupClassName,
             )}
           >

@@ -18,7 +18,7 @@ function PrintTemplateLists({
   });
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="flex w-full flex-col">
       <div className="border-b p-1 pb-2">
         <Input
           placeholder="Search Template..."
@@ -31,18 +31,18 @@ function PrintTemplateLists({
       </div>
       <div className="flex flex-col gap-0.5 pt-1">
         {templatesQuery.isPending ? (
-          <div className="py-10 flex justify-center items-center">
+          <div className="flex items-center justify-center py-10">
             <LoaderIcon className="size-4 animate-spin" />
           </div>
         ) : !templatesQuery.data?.length ? (
-          <div className="font-medium text-center py-10">No Results Found</div>
+          <div className="py-10 text-center font-medium">No Results Found</div>
         ) : (
           <>
             {templatesQuery.data.map((template) => (
               <button
                 key={template.id}
                 type="button"
-                className="h-8 hover:bg-neutral-100 rounded-lg px-3 font-medium text-left"
+                className="h-8 rounded-lg px-3 text-left font-medium hover:bg-neutral-100"
                 onClick={() => {
                   onClickTemplate(template.id);
                 }}

@@ -13,7 +13,7 @@ export default function Switch({
         <SwitchPrimitive.Root
           {...props}
           className={cn(
-            "flex h-5 w-9 cursor-pointer rounded-full shrink-0 border bg-neutral-300 border-neutral-300 p-0.5 transition-colors duration-150 ease-[ease] data-checked:border-neutral-900 data-checked:bg-neutral-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900 ",
+            "flex h-5 w-9 shrink-0 cursor-pointer rounded-full border border-neutral-300 bg-neutral-300 p-0.5 transition-colors duration-150 ease-[ease] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900 data-checked:border-neutral-900 data-checked:bg-neutral-900",
             props.className,
           )}
         >

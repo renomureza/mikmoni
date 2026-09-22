@@ -3,7 +3,7 @@ import { useRouter } from "@tanstack/react-router";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import * as z from "zod/v4";
-import { currencies, currencyValues, languageValues } from "~/contants/locale";
+import { currencyValues, languageValues } from "~/contants/locale";
 import { authMiddleware } from "~/middlewares/auth";
 import { currencySetting, languageSetting } from "~/services/settings";
 

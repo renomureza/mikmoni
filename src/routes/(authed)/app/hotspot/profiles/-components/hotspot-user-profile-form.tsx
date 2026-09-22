@@ -191,7 +191,7 @@ export default function HotspotUserProfileForm({
         error={errors?.["parent-queue"]?.[0]}
       />
 
-      <div className="flex justify-end gap-2 mt-1">
+      <div className="mt-1 flex justify-end gap-2">
         <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
         </Button>

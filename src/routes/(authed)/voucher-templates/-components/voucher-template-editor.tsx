@@ -76,12 +76,12 @@ export default function VoucherTemplateEditor({
         </div>
       </div>
 
-      <div className="flex gap-2 h-190 relative">
-        <div className="border flex flex-col bg-white size-full">
-          <div className="w-full border-b py-2 px-3">
+      <div className="relative flex h-190 gap-2">
+        <div className="flex size-full flex-col border bg-white">
+          <div className="w-full border-b px-3 py-2">
             <h2 className="font-medium">Handlebars</h2>
           </div>
-          <div className="grow flex flex-col">
+          <div className="flex grow flex-col">
             <Editor
               height="100%"
               language="handlebars"
@@ -99,13 +99,13 @@ export default function VoucherTemplateEditor({
             />
           </div>
         </div>
-        <div className="size-full bg-white border flex flex-col">
-          <div className="w-full border-b py-2 px-3 flex justify-between">
+        <div className="flex size-full flex-col border bg-white">
+          <div className="flex w-full justify-between border-b px-3 py-2">
             <h2 className="font-medium">Preview</h2>
-            <div className="inline-flex text-xs gap-1 items-center">
+            <div className="inline-flex items-center gap-1 text-xs">
               <div className="text-neutral-500">User Mode:</div>
               <select
-                className="outline-none font-medium"
+                className="font-medium outline-none"
                 value={userMode}
                 onChange={(e) => {
                   setUserMode(e.target.value as UserModeValue);
@@ -119,11 +119,11 @@ export default function VoucherTemplateEditor({
               </select>
             </div>
           </div>
-          <div className="overflow-y-auto bg-white min-h-0 h-full">
+          <div className="h-full min-h-0 overflow-y-auto bg-white">
             {compiledHandlebars.ok ? (
               <iframe srcDoc={compiledHandlebars.html} className="size-full" />
             ) : (
-              <div className="text-red-600 p-4">{compiledHandlebars.error}</div>
+              <div className="p-4 text-red-600">{compiledHandlebars.error}</div>
             )}
           </div>
         </div>

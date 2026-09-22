@@ -97,7 +97,7 @@ function RouterosForm({
         }}
         error={errors?.name?.[0]}
       />
-      <div className="w-full flex gap-4">
+      <div className="flex w-full gap-4">
         <Input
           label="Host"
           placeholder="192.7.0.1"
@@ -128,7 +128,7 @@ function RouterosForm({
         }}
         error={errors?.tls?.[0]}
       />
-      <div className="w-full flex gap-4">
+      <div className="flex w-full gap-4">
         <Input
           label="Username"
           required
@@ -151,7 +151,7 @@ function RouterosForm({
         />
       </div>
 
-      <div className="w-full flex gap-4">
+      <div className="flex w-full gap-4">
         <Input
           label="Hotspot Name"
           required
@@ -174,7 +174,7 @@ function RouterosForm({
         />
       </div>
 
-      <div className="flex justify-end gap-3 mt-1">
+      <div className="mt-1 flex justify-end gap-3">
         <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
@@ -263,35 +263,35 @@ function RouterosCard({
   return (
     <div
       className={cn(
-        "bg-white relative px-4 py-4 flex overflow-hidden justify-between items-center border rounded-xl",
+        "relative flex items-center justify-between overflow-hidden rounded-xl border bg-white px-4 py-4",
         setRouterosMutation.isPending && "pointer-events-none opacity-50",
       )}
     >
       <button
         type="button"
-        className="w-full text-left flex items-center gap-3 group"
+        className="group flex w-full items-center gap-3 text-left"
         onClick={() => {
           setRouterosMutation.mutate({ data: { id: routeros.id } });
         }}
       >
-        <div className="size-7 relative flex justify-center items-center">
-          <ExternalLinkIcon className="size-full absolute text-neutral-500 invisible opacity-0 group-hover:opacity-100 group-hover:visible transition-all" />
-          <RouterIcon className="size-full absolute text-neutral-500 visible opacity-100 group-hover:opacity-0 group-hover:invisible transition-all" />
+        <div className="relative flex size-7 items-center justify-center">
+          <ExternalLinkIcon className="invisible absolute size-full text-neutral-500 opacity-0 transition-all group-hover:visible group-hover:opacity-100" />
+          <RouterIcon className="visible absolute size-full text-neutral-500 opacity-100 transition-all group-hover:invisible group-hover:opacity-0" />
         </div>
         <div>
-          <h2 className="font-semibold leading-tight">{routeros.name}</h2>
-          <div className="text-neutral-600 leading-tight">
+          <h2 className="leading-tight font-semibold">{routeros.name}</h2>
+          <div className="leading-tight text-neutral-600">
             {routeros.host}:{routeros.port}
           </div>
         </div>
       </button>
       <Popover.Root>
-        <Popover.Trigger className="flex items-center py-2 text-neutral-600 data-popup-open:bg-neutral-100 data-popup-open:text-foreground hover:bg-neutral-100 hover:text-foreground transition-all justify-center bg-white px-1 rounded-lg select-none">
+        <Popover.Trigger className="flex items-center justify-center rounded-lg bg-white px-1 py-2 text-neutral-600 transition-all select-none hover:bg-neutral-100 hover:text-foreground data-popup-open:bg-neutral-100 data-popup-open:text-foreground">
           <EllipsisVerticalIcon className="size-4" />
         </Popover.Trigger>
         <Popover.Portal>
           <Popover.Positioner sideOffset={8}>
-            <Popover.Popup className="relative flex h-(--popup-height,auto) w-(--popup-width,auto) min-w-40 max-w-125 flex-col gap-px origin-(--transform-origin) bg-white p-1 outline-none border shadow-lg rounded-lg transition-[scale,opacity] duration-100 ease-out data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
+            <Popover.Popup className="relative flex h-(--popup-height,auto) w-(--popup-width,auto) max-w-125 min-w-40 origin-(--transform-origin) flex-col gap-px rounded-lg border bg-white p-1 shadow-lg transition-[scale,opacity] duration-100 ease-out outline-none data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
               <Dialog
                 rootProps={{
                   open: showUpdateModal,
@@ -316,7 +316,7 @@ function RouterosCard({
               <button
                 disabled={deleteRouterosMutation.isPending}
                 type="button"
-                className="flex w-full disabled:pointer-events-none disabled:opacity-50 gap-2 items-center text-red-600 h-8 px-2 transition-all hover:bg-red-50 hover:text-red-700 rounded-lg"
+                className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none disabled:opacity-50"
                 onClick={() => {
                   if (window.confirm("Are you sure you want to remove it?")) {
                     deleteRouterosMutation.mutate({
@@ -340,7 +340,7 @@ function RouteComponent() {
   const [openAddRouterosModal, setOpenAddRouterosModal] = useState(false);
 
   return (
-    <main className="max-w-5xl w-full space-y-4 mx-auto py-6">
+    <main className="mx-auto w-full max-w-5xl space-y-4 py-6">
       <div className="flex justify-between gap-2">
         <h1 className="text-2xl font-semibold">RouterOS</h1>
         <Dialog
@@ -360,9 +360,9 @@ function RouteComponent() {
           <CreateRouterosForm onClose={() => setOpenAddRouterosModal(false)} />
         </Dialog>
       </div>
-      <div className="w-full grid grid-cols-3 gap-3">
+      <div className="grid w-full grid-cols-3 gap-3">
         {!routerosQuery.data.length ? (
-          <div className="bg-white rounded-xl w-full flex justify-center items-center min-h-60 border col-span-full">
+          <div className="col-span-full flex min-h-60 w-full items-center justify-center rounded-xl border bg-white">
             <div className="font-medium">No Results Found</div>
           </div>
         ) : (

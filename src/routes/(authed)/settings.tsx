@@ -25,11 +25,11 @@ function RouteComponent() {
   const updateCurrencyMutation = useUpdateCurrencyMutation();
 
   return (
-    <div className="max-w-5xl space-y-4 w-full mx-auto py-6">
+    <div className="mx-auto w-full max-w-5xl space-y-4 py-6">
       <h1 className="text-2xl font-semibold">Settings</h1>
       <div className="space-y-3">
-        <div className="bg-white border rounded-xl overflow-hidden">
-          <div className="p-5 space-y-4">
+        <div className="overflow-hidden rounded-xl border bg-white">
+          <div className="space-y-4 p-5">
             <div>
               <h2 className="text-base font-medium">Language</h2>
               <p className="text-neutral-500">
@@ -47,7 +47,7 @@ function RouteComponent() {
               }}
             />
           </div>
-          <div className="border-t py-2 bg-neutral-50 px-5 flex justify-end">
+          <div className="flex justify-end border-t bg-neutral-50 px-5 py-2">
             <Button
               isLoading={updateLanguageMutation.isPending}
               type="button"
@@ -61,8 +61,8 @@ function RouteComponent() {
             </Button>
           </div>
         </div>
-        <div className="bg-white border rounded-xl overflow-hidden">
-          <div className="p-5 space-y-4">
+        <div className="overflow-hidden rounded-xl border bg-white">
+          <div className="space-y-4 p-5">
             <div>
               <h2 className="text-base font-medium">Currency</h2>
               <p className="text-neutral-500">
@@ -80,7 +80,7 @@ function RouteComponent() {
               error={updateCurrencyMutation.data?.error}
             />
           </div>
-          <div className="border-t py-2 bg-neutral-50 px-5 flex justify-end">
+          <div className="flex justify-end border-t bg-neutral-50 px-5 py-2">
             <Button
               type="button"
               isLoading={updateCurrencyMutation.isPending}

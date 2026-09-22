@@ -22,7 +22,7 @@ export default function SectionForm({
   const formId = useId();
 
   return (
-    <div className="bg-white rounded-2xl border p-8 space-y-6 w-full">
+    <div className="w-full space-y-6 rounded-2xl border bg-white p-8">
       <div className="space-y-1">
         <h2 className="text-xl font-medium">{title}</h2>
         <p className="text-neutral-500">{description}</p>

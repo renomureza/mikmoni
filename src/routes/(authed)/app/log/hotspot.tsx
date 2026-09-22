@@ -20,8 +20,8 @@ function RouteComponent() {
         <h1 className="text-xl font-semibold">Hotspot Log</h1>
       </div>
 
-      <div className="bg-white border rounded-lg overflow-hidden">
-        <table className="w-full text-left [&_thead]:bg-neutral-100 [&_th]:text-neutral-500 [&_tbody_tr:not(:last-child)]:border-b [&_thead]:border-b [&_th]:font-medium [&_th,&_td]:px-3 [&_th]:py-2 [&_td]:py-1.5">
+      <div className="overflow-hidden rounded-lg border bg-white">
+        <table className="w-full text-left [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-1.5 [&_th]:py-2 [&_th]:font-medium [&_th]:text-neutral-500 [&_th,&_td]:px-3 [&_thead]:border-b [&_thead]:bg-neutral-100">
           <thead>
             <tr>
               <th>Time</th>
@@ -41,7 +41,7 @@ function RouteComponent() {
             ) : (
               <tr>
                 <td colSpan={3}>
-                  <div className="flex justify-center items-center min-h-60">
+                  <div className="flex min-h-60 items-center justify-center">
                     <div>No Results Found</div>
                   </div>
                 </td>

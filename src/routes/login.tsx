@@ -19,8 +19,8 @@ function RouteComponent() {
   const intl = useIntl();
 
   return (
-    <main className="flex justify-center items-center min-h-dvh">
-      <div className="max-w-md space-y-4 p-10 w-full bg-white rounded-2xl border">
+    <main className="flex min-h-dvh items-center justify-center">
+      <div className="w-full max-w-md space-y-4 rounded-2xl border bg-white p-10">
         <div>
           <h1 className="text-2xl font-semibold">
             {intl.formatMessage({ id: "login.title" })}
@@ -56,7 +56,7 @@ function RouteComponent() {
           <Button
             isLoading={loginMutation.isPending}
             type="submit"
-            className="w-full mt-2"
+            className="mt-2 w-full"
           >
             Login
           </Button>

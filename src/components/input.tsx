@@ -1,5 +1,5 @@
 import { cn } from "cn";
-import { BoldIcon, EyeIcon, EyeOffIcon, HelpCircleIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, HelpCircleIcon } from "lucide-react";
 import React, { useId, useState } from "react";
 import InlineError from "./inline-error";
 import { Tooltip } from "@base-ui/react";
@@ -25,7 +25,7 @@ export default function Input({
   return (
     <div
       role="group"
-      className={cn("grid grid-cols-1 gap-1 w-full h-max", className)}
+      className={cn("grid h-max w-full grid-cols-1 gap-1", className)}
     >
       {label && (
         <label htmlFor={id} className="font-medium">
@@ -34,15 +34,15 @@ export default function Input({
             <Tooltip.Root>
               <Tooltip.Trigger
                 delay={400}
-                className="border-0 ml-1 cursor-help text-neutral-600 hover:text-foreground select-none focus-visible:relative focus-visible:z-1 focus-visible:bg-transparent focus-visible:outline-2 focus-visible:outline-neutral-950"
+                className="ml-1 cursor-help border-0 text-neutral-600 select-none hover:text-foreground focus-visible:relative focus-visible:z-1 focus-visible:bg-transparent focus-visible:outline-2 focus-visible:outline-neutral-950"
               >
                 <HelpCircleIcon className="size-3" />
               </Tooltip.Trigger>
               <Tooltip.Portal>
                 <Tooltip.Positioner sideOffset={7}>
-                  <Tooltip.Popup className="relative max-w-50  flex text-xs flex-col border rounded-lg bg-white px-2.5 py-1.5 origin-(--transform-origin) shadow-lg transition-[transform,opacity] duration-100 ease-out data-ending-style:opacity-0 data-ending-style:transform-[scale(0.98)] data-instant:transition-none data-starting-style:opacity-0 data-starting-style:transform-[scale(0.98)]">
-                    <Tooltip.Arrow className="relative block w-3 h-1.5 overflow-clip data-[side=bottom]:-top-1.5 data-[side=left]:-right-2.25 data-[side=left]:rotate-90 data-[side=right]:-left-2.25 data-[side=right]:-rotate-90 data-[side=top]:-bottom-1.5 data-[side=top]:rotate-180 before:content-[''] before:absolute before:bottom-0 before:left-1/2 before:w-[calc(6px*sqrt(2))] before:h-[calc(6px*sqrt(2))] before:bg-white before:border before:transform-[translate(-50%,50%)_rotate(45deg)]" />
-                    <div className="[&_code]:text-[0.625rem] [&_code]:bg-neutral-200/50 [&_code]:px-1 [&_code]:rounded-sm">
+                  <Tooltip.Popup className="relative flex max-w-50 origin-(--transform-origin) flex-col rounded-lg border bg-white px-2.5 py-1.5 text-xs shadow-lg transition-[transform,opacity] duration-100 ease-out data-ending-style:transform-[scale(0.98)] data-ending-style:opacity-0 data-instant:transition-none data-starting-style:transform-[scale(0.98)] data-starting-style:opacity-0">
+                    <Tooltip.Arrow className="relative block h-1.5 w-3 overflow-clip before:absolute before:bottom-0 before:left-1/2 before:h-[calc(6px*sqrt(2))] before:w-[calc(6px*sqrt(2))] before:transform-[translate(-50%,50%)_rotate(45deg)] before:border before:bg-white before:content-[''] data-[side=bottom]:-top-1.5 data-[side=left]:-right-2.25 data-[side=left]:rotate-90 data-[side=right]:-left-2.25 data-[side=right]:-rotate-90 data-[side=top]:-bottom-1.5 data-[side=top]:rotate-180" />
+                    <div className="[&_code]:rounded-sm [&_code]:bg-neutral-200/50 [&_code]:px-1 [&_code]:text-[0.625rem]">
                       {tooltip}
                     </div>
                   </Tooltip.Popup>
@@ -52,9 +52,9 @@ export default function Input({
           )}
         </label>
       )}
-      <div className="border bg-white overflow-hidden flex w-full border-neutral-300 focus-within:ring-neutral-200 focus-within:border-neutral-400 transition-all rounded-lg h-8.5 ring-3 ring-transparent has-aria-[invalid]:border-red-600 focus-within:has-aria-[invalid]:ring-red-200 ">
+      <div className="flex h-8.5 w-full overflow-hidden rounded-lg border border-neutral-300 bg-white ring-3 ring-transparent transition-all focus-within:border-neutral-400 focus-within:ring-neutral-200 has-aria-[invalid]:border-red-600 focus-within:has-aria-[invalid]:ring-red-200">
         {prefix && (
-          <div className="text-neutral-600 px-2 h-full flex items-center">
+          <div className="flex h-full items-center px-2 text-neutral-600">
             {prefix}
           </div>
         )}
@@ -64,7 +64,7 @@ export default function Input({
           id={id}
           aria-invalid={!!error || undefined}
           className={cn(
-            "size-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none outline-none px-2.5",
+            "size-full [appearance:textfield] px-2.5 outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
             (suffix || props.type === "password") && "pr-0",
             prefix && "pl-0",
           )}
@@ -72,7 +72,7 @@ export default function Input({
         {props.type === "password" ? (
           <button
             type="button"
-            className="px-2 [&_svg]:size-5 text-neutral-600 hover:text-neutral-900 transition-colors"
+            className="px-2 text-neutral-600 transition-colors hover:text-neutral-900 [&_svg]:size-5"
             onClick={() => {
               setShowPassword((prev) => !prev);
             }}
@@ -81,7 +81,7 @@ export default function Input({
           </button>
         ) : (
           suffix && (
-            <div className="text-neutral-600 px-2 h-full flex items-center">
+            <div className="flex h-full items-center px-2 text-neutral-600">
               {suffix}
             </div>
           )

@@ -76,7 +76,7 @@ function DateFilter({
           year: filter.year || undefined,
         });
       }}
-      className="flex gap-2 items-center"
+      className="flex items-center gap-2"
     >
       <Select
         className="w-32"
@@ -140,19 +140,19 @@ function RouteComponent() {
 
       <div className="space-y-2">
         <div className="flex gap-2">
-          <Input placeholder="Search..." className="max-w-70 w-full" />
-          <div className="h-8 mx-1 w-px bg-neutral-200"></div>
+          <Input placeholder="Search..." className="w-full max-w-70" />
+          <div className="mx-1 h-8 w-px bg-neutral-200"></div>
           <DateFilter
             value={deps}
             onSubmit={(search) => {
-              navigate({
+              void navigate({
                 search: search,
               });
             }}
           />
         </div>
-        <div className="bg-white border rounded-lg overflow-hidden">
-          <table className="w-full text-left [&_thead]:bg-neutral-100 [&_th]:text-neutral-500 [&_tbody_tr:not(:last-child)]:border-b [&_thead]:border-b [&_th]:font-medium [&_th,&_td]:px-3 [&_th]:py-2 [&_td]:py-1.5">
+        <div className="overflow-hidden rounded-lg border bg-white">
+          <table className="w-full text-left [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-1.5 [&_th]:py-2 [&_th]:font-medium [&_th]:text-neutral-500 [&_th,&_td]:px-3 [&_thead]:border-b [&_thead]:bg-neutral-100">
             <thead>
               <tr>
                 <th>Date</th>
@@ -178,7 +178,7 @@ function RouteComponent() {
               ) : (
                 <tr>
                   <td colSpan={6}>
-                    <div className="flex justify-center items-center min-h-60">
+                    <div className="flex min-h-60 items-center justify-center">
                       <div>No Results Found</div>
                     </div>
                   </td>

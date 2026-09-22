@@ -41,7 +41,7 @@ function TrafficChart() {
 
   useEffect(() => {
     const controller = new AbortController();
-    $getInterfaceTraffic({ signal: controller.signal }).then((data) => {
+    void $getInterfaceTraffic({ signal: controller.signal }).then((data) => {
       setData((prev) => [
         ...(prev.length > 10 ? prev.slice(1) : prev).concat({
           rx: Number(data["rx-bits-per-second"]),
@@ -52,7 +52,7 @@ function TrafficChart() {
     });
 
     const interval = setInterval(() => {
-      $getInterfaceTraffic({ signal: controller.signal }).then((data) => {
+      void $getInterfaceTraffic({ signal: controller.signal }).then((data) => {
         setData((prev) => [
           ...(prev.length > 10 ? prev.slice(1) : prev).concat({
             rx: Number(data["rx-bits-per-second"]),
@@ -70,8 +70,8 @@ function TrafficChart() {
   }, []);
 
   return (
-    <div className="grow bg-white rounded-xl border">
-      <div className="border-b py-3 px-6 text-base font-semibold">Traffic</div>
+    <div className="grow rounded-xl border bg-white">
+      <div className="border-b px-6 py-3 text-base font-semibold">Traffic</div>
       <div className="px-6 py-4">
         <Typed.AreaChart
           className="**:outline-none"
@@ -154,10 +154,10 @@ function TrafficChart() {
               return (
                 <div
                   className={cn(
-                    "bg-white shadow-lg transition-all rounded-lg border px-3 py-2 text-xs",
+                    "rounded-lg border bg-white px-3 py-2 text-xs shadow-lg transition-all",
                   )}
                 >
-                  <div className="flex gap-2 flex-col">
+                  <div className="flex flex-col gap-2">
                     <div className="text-neutral-600">
                       {new Intl.DateTimeFormat("en", {
                         timeStyle: "medium",
@@ -203,8 +203,8 @@ function RouteComponent() {
 
   return (
     <div className="mx-auto w-full space-y-4">
-      <div className="grid grid-cols-3 gap-4 overflow-hidden ">
-        <div className="bg-white border space-y-0.5 rounded-xl px-6 py-5 ">
+      <div className="grid grid-cols-3 gap-4 overflow-hidden">
+        <div className="space-y-0.5 rounded-xl border bg-white px-6 py-5">
           <div className="flex gap-1">
             <div className="text-neutral-500">Date & Time:</div>
             <div>
@@ -221,7 +221,7 @@ function RouteComponent() {
             <div>{routerosInfoQuery.data.clock["time-zone-name"]}</div>
           </div>
         </div>
-        <div className="bg-white border space-y-0.5 rounded-xl px-6 py-5 ">
+        <div className="space-y-0.5 rounded-xl border bg-white px-6 py-5">
           <div className="flex gap-1">
             <div className="text-neutral-500">Board:</div>
             <div>{routerosInfoQuery.data.resource["board-name"]}</div>
@@ -235,7 +235,7 @@ function RouteComponent() {
             <div>{routerosInfoQuery.data.resource.version}</div>
           </div>
         </div>
-        <div className="bg-white border space-y-0.5 rounded-xl px-6 py-5 ">
+        <div className="space-y-0.5 rounded-xl border bg-white px-6 py-5">
           <div className="flex gap-1">
             <div className="text-neutral-500">CPU Load:</div>
             <div>{routerosInfoQuery.data.resource["cpu-load"]}%</div>
@@ -259,12 +259,12 @@ function RouteComponent() {
         </div>
       </div>
 
-      <div className="w-full grid grid-cols-4 gap-4">
+      <div className="grid w-full grid-cols-4 gap-4">
         <Link
           to="/app/hotspot/users"
-          className="bg-white border rounded-xl px-6 py-5"
+          className="rounded-xl border bg-white px-6 py-5"
         >
-          <div className="inline-flex gap-2 items-center">
+          <div className="inline-flex items-center gap-2">
             <span className="text-2xl font-semibold">0</span>
             <span>items</span>
           </div>
@@ -272,9 +272,9 @@ function RouteComponent() {
         </Link>
         <Link
           to="/app/hotspot/users"
-          className="bg-white border rounded-xl px-6 py-5"
+          className="rounded-xl border bg-white px-6 py-5"
         >
-          <div className="inline-flex gap-2 items-center">
+          <div className="inline-flex items-center gap-2">
             <span className="text-2xl font-semibold">0</span>
             <span>items</span>
           </div>
@@ -282,9 +282,9 @@ function RouteComponent() {
         </Link>
         <Link
           to="/app/hotspot/users"
-          className="bg-white border rounded-xl px-6 py-5"
+          className="rounded-xl border bg-white px-6 py-5"
         >
-          <div className="inline-flex gap-2 items-center">
+          <div className="inline-flex items-center gap-2">
             <UserPlus2Icon />
             <span>Add</span>
           </div>
@@ -292,9 +292,9 @@ function RouteComponent() {
         </Link>
         <Link
           to="/app/hotspot/users"
-          className="bg-white border rounded-xl px-6 py-5"
+          className="rounded-xl border bg-white px-6 py-5"
         >
-          <div className="inline-flex gap-2 items-center">
+          <div className="inline-flex items-center gap-2">
             <UserGroupIcon />
             <span>Generate</span>
           </div>
@@ -302,9 +302,9 @@ function RouteComponent() {
         </Link>
       </div>
 
-      <div className="w-full flex gap-4">
+      <div className="flex w-full gap-4">
         <TrafficChart />
-        <div className="w-96 shrink-0 bg-white border rounded-xl">log</div>
+        <div className="w-96 shrink-0 rounded-xl border bg-white">log</div>
       </div>
     </div>
   );
