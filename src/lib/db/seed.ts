@@ -1,7 +1,7 @@
 import { db, schema } from ".";
 import { hashPassword } from "~/utils/encryption";
 
-(async () => {
+await (async () => {
   await db.insert(schema.users).values({
     name: "Admin",
     username: "admin",

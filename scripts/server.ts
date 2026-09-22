@@ -207,15 +207,15 @@ function createResponseHandler(
 /**
  * Create composite glob pattern from include patterns
  */
-function createCompositeGlobPattern(): Bun.Glob {
-  const raw = (process.env.ASSET_PRELOAD_INCLUDE_PATTERNS ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-  if (raw.length === 0) return new Bun.Glob("**/*");
-  if (raw.length === 1) return new Bun.Glob(raw[0]);
-  return new Bun.Glob(`{${raw.join(",")}}`);
-}
+// function createCompositeGlobPattern(): Bun.Glob {
+//   const raw = (process.env.ASSET_PRELOAD_INCLUDE_PATTERNS ?? "")
+//     .split(",")
+//     .map((s) => s.trim())
+//     .filter(Boolean);
+//   if (raw.length === 0) return new Bun.Glob("**/*");
+//   if (raw.length === 1) return new Bun.Glob(raw[0]);
+//   return new Bun.Glob(`{${raw.join(",")}}`);
+// }
 
 /**
  * Initialize static routes with intelligent preloading strategy
@@ -469,10 +469,7 @@ async function initializeStaticRoutes(): Promise<PreloadResult> {
         continue;
       }
 
-      const route = `/${filepath
-        .slice("client/".length)
-        .split(path.sep)
-        .join(path.posix.sep)}`;
+      const route = `/${filepath.slice("client/".length).split(path.sep).join(path.posix.sep)}`;
 
       try {
         const file = embeddedFile;

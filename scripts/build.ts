@@ -1,6 +1,6 @@
 import path from "node:path";
 
-(async () => {
+await (async () => {
   const targets = [
     "bun-windows-x64",
 

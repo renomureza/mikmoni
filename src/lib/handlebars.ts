@@ -13,6 +13,7 @@ handlerbars.registerHelper("eq", function (a, b) {
 
 handlerbars.registerHelper("concat", function (...args) {
   args.pop();
+  // oxlint-disable-next-line typescript/no-base-to-string
   return args.join("");
 });
 
