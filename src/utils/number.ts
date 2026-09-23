@@ -23,3 +23,7 @@ export function formatCurrency(
     maximumFractionDigits: 0,
   }).format(value);
 }
+
+export function formatNumber(value: number, opts: { locale: string }) {
+  return new Intl.NumberFormat(opts.locale).format(value);
+}

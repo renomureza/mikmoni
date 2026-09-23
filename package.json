@@ -14,10 +14,13 @@
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
-    "lint:fix": "oxlint --fix"
+    "lint:fix": "oxlint --fix",
+    "lingui:extract": "lingui extract",
+    "lingui:compile": "lingui compile"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
+    "@lingui/react": "^6.7.0",
     "@monaco-editor/react": "^4.8.0-rc.3",
     "@tanstack/react-query": "^5.103.2",
     "@tanstack/react-query-devtools": "^5.103.2",
@@ -43,6 +46,8 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@lingui/vite-plugin": "^6.7.0",
+    "@rolldown/plugin-babel": "^0.2.4",
     "@tailwindcss/vite": "^4.3.3",
     "@types/bun": "^1.4.2",
     "@types/jsdom": "^30.0.0",

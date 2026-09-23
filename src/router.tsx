@@ -5,6 +5,9 @@ import { routeTree } from "./routeTree.gen";
 import { DefaultCatchBoundary } from "./components/DefaultCatchBoundary";
 import { NotFound } from "./components/NotFound";
 import { toast } from "sonner";
+import { setupI18n } from "@lingui/core";
+import { I18nProvider } from "@lingui/react";
+import { setupRouterSsrLinguiIntegration } from "./lib/localization/setup";
 
 export function getRouter() {
   const queryClient = new QueryClient({
@@ -17,12 +20,22 @@ export function getRouter() {
     },
   });
 
+  const i18n = setupI18n();
+
   const router = createRouter({
     routeTree,
-    context: { queryClient },
+    context: { queryClient, i18n },
     defaultPreload: "intent",
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
+    Wrap: ({ children }) => {
+      return <I18nProvider i18n={i18n}>{children}</I18nProvider>;
+    },
+  });
+
+  setupRouterSsrLinguiIntegration({
+    router,
+    i18n,
   });
 
   setupRouterSsrQueryIntegration({

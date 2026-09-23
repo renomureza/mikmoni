@@ -5,7 +5,7 @@ import {
   useDeleteHotspotActiveMutation,
   useGetHotspotActivesQuery,
 } from "~/serverfns/hotspot-active";
-import { formatBytes, formatUptime } from "~/utils/routeros";
+import { formatBytes, prettifyDuration } from "~/utils/routeros";
 
 export const Route = createFileRoute("/(authed)/app/hotspot/actives")({
   component: RouteComponent,
@@ -73,7 +73,7 @@ function RouteComponent() {
                   <td>{active.user}</td>
                   <td>{active.address}</td>
                   <td>{active["mac-address"]}</td>
-                  <td>{formatUptime(active.uptime)}</td>
+                  <td>{prettifyDuration(active.uptime)}</td>
                   <td>{formatBytes(active["bytes-in"])}</td>
                   <td>{formatBytes(active["bytes-out"])}</td>
                   <td>{active["session-time-left"]}</td>

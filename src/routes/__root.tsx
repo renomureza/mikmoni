@@ -18,13 +18,15 @@ import { Toaster } from "sonner";
 import { $getSession } from "~/serverfns/auth";
 import { $getIsInstalled } from "~/serverfns/installation";
 import { $getLocalization } from "~/serverfns/localization";
-import { IntlProvider } from "react-intl";
-import { getLocale } from "~/lib/locale";
+import { type I18n } from "@lingui/core";
+import { APP_NAME } from "~/contants/app";
+import { loadAndActivateLocale } from "~/lib/localization";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
+  i18n: I18n;
 }>()({
-  beforeLoad: async ({ location }) => {
+  beforeLoad: async ({ location, context }) => {
     const [session, installed, localization] = await Promise.all([
       $getSession(),
       $getIsInstalled(),
@@ -35,14 +37,14 @@ export const Route = createRootRouteWithContext<{
       throw redirect({ to: "/install" });
     }
 
-    const localeMessages = await getLocale(localization.language);
+    await loadAndActivateLocale(localization.language, context.i18n);
 
     return {
       user: session?.user || null,
       routeros: session?.routeros || null,
       installed,
       localization,
-      localeMessages,
+      // localeMessages,
     };
   },
   head: () => ({
@@ -55,8 +57,7 @@ export const Route = createRootRouteWithContext<{
         content: "width=device-width, initial-scale=1",
       },
       ...seo({
-        title:
-          "TanStack Start | Type-Safe, Client-First, Full-Stack React Framework",
+        title: APP_NAME,
         description: `TanStack Start is a type-safe, client-first, full-stack React framework. `,
       }),
     ],
@@ -113,7 +114,10 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const { localization, localeMessages } = Route.useRouteContext();
+  const {
+    localization,
+    // localeMessages
+  } = Route.useRouteContext();
 
   return (
     <html lang={localization.language}>
@@ -121,13 +125,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <IntlProvider locale={localization.language} messages={localeMessages}>
-          <div className="isolate">{children}</div>
-          <TanStackRouterDevtools position="bottom-right" />
-          <ReactQueryDevtools buttonPosition="bottom-right" />
-          <Scripts />
-          <Toaster richColors position="bottom-center" />
-        </IntlProvider>
+        {/* <IntlProvider locale={localization.language} messages={localeMessages}> */}
+        <div className="isolate">{children}</div>
+        <TanStackRouterDevtools position="bottom-right" />
+        <ReactQueryDevtools buttonPosition="bottom-right" />
+        <Scripts />
+        <Toaster richColors position="bottom-center" />
+        {/* </IntlProvider> */}
       </body>
     </html>
   );

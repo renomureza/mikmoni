@@ -13,10 +13,40 @@ export const rateLimitSchema = z
     ),
   );
 
+const ROUTEROS_ISO_DATE_SEPARATOR = "-";
+const ROUTEROS_LEGACY_DATE_SEPARATOR = "/";
+
+export function formatDuration(totalSeconds: number) {
+  totalSeconds = Math.floor(totalSeconds);
+
+  if (totalSeconds <= 0) return "0s";
+
+  const units = [
+    { label: "w", secs: 7 * 24 * 60 * 60 },
+    { label: "d", secs: 24 * 60 * 60 },
+    { label: "h", secs: 60 * 60 },
+    { label: "m", secs: 60 },
+    { label: "s", secs: 1 },
+  ];
+
+  let remaining = totalSeconds;
+  const parts = [];
+
+  for (const { label, secs } of units) {
+    const value = Math.floor(remaining / secs);
+    if (value > 0) {
+      parts.push(`${value}${label}`);
+      remaining -= value * secs;
+    }
+  }
+
+  return parts.join("");
+}
+
 /**
  * @param {string} duration - 3w6d15h29m11s
  */
-function parseRouterOSDuration(duration: string) {
+export function parseDuration(duration: string) {
   const regex =
     /^(?=.)(?:(\d+)w)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/;
   const match = duration.trim().match(regex);
@@ -42,31 +72,21 @@ function parseRouterOSDuration(duration: string) {
   );
 }
 
-function breakdownSeconds(totalSeconds: number) {
-  let remaining = totalSeconds;
-
-  const weeks = Math.floor(remaining / (7 * 24 * 3600));
-  remaining %= 7 * 24 * 3600;
-
-  const days = Math.floor(remaining / (24 * 3600));
-  remaining %= 24 * 3600;
-
-  const hours = Math.floor(remaining / 3600);
-  remaining %= 3600;
-
-  const minutes = Math.floor(remaining / 60);
-  const seconds = remaining % 60;
-
-  return { weeks, days, hours, minutes, seconds };
-}
-
 /**
  * @param {string} duration - 3w6d15h29m11s
  */
-export function formatUptime(duration: string) {
-  const totalSeconds = parseRouterOSDuration(duration);
-  const { weeks, days, hours, minutes, seconds } =
-    breakdownSeconds(totalSeconds);
+export function prettifyDuration(duration: string) {
+  const totalSeconds = parseDuration(duration);
+
+  let remaining = totalSeconds;
+  const weeks = Math.floor(remaining / (7 * 24 * 3600));
+  remaining %= 7 * 24 * 3600;
+  const days = Math.floor(remaining / (24 * 3600));
+  remaining %= 24 * 3600;
+  const hours = Math.floor(remaining / 3600);
+  remaining %= 3600;
+  const minutes = Math.floor(remaining / 60);
+  const seconds = remaining % 60;
 
   const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -75,6 +95,11 @@ export function formatUptime(duration: string) {
   if (weeks) parts.push(`${weeks}w`);
   if (days) parts.push(`${days}d`);
   return `${parts.join("")} ${clockPart}`;
+}
+
+export function parseScriptName(name: string) {
+  const [date, time, user, price, , , , profile, comment] = name.split("-|-");
+  return { date, time, user, price: Number(price) || 0, profile, comment };
 }
 
 export function formatBytes(
@@ -128,6 +153,20 @@ function isLegacyRouterOSDate(dateStr: string): boolean {
   return legacyRegex.test(dateStr.trim());
 }
 
+export function constructRouterosDate(sampleDate: string, date: Date) {
+  const months = getRouterosMonthList(sampleDate);
+
+  const month = months[date.getMonth()];
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = date.getFullYear();
+
+  if (isISORouterOSDate(sampleDate)) {
+    return `${year}${ROUTEROS_ISO_DATE_SEPARATOR}${month}${ROUTEROS_ISO_DATE_SEPARATOR}${day}`;
+  }
+
+  return `${month}${ROUTEROS_LEGACY_DATE_SEPARATOR}${day}${ROUTEROS_LEGACY_DATE_SEPARATOR}${year}`;
+}
+
 export function getRouterOSDatePositions(dateStr: string) {
   const value = dateStr.trim();
 
@@ -155,18 +194,17 @@ export function getRouterOSDatePositions(dateStr: string) {
   };
 
   if (isISORouterOSDate(value)) {
-    const separator = "-";
     const [
       [yearStart, yearEnd],
       [monthStart, monthEnd],
       [dayStart, dayEnd],
       [startTime, startEnd],
-    ] = parts(value, separator);
+    ] = parts(value, ROUTEROS_ISO_DATE_SEPARATOR);
 
     return {
-      separator: separator,
-      firstSeparatorPosition: value.indexOf(separator),
-      secondSeparatorPosition: value.lastIndexOf(separator),
+      separator: ROUTEROS_ISO_DATE_SEPARATOR,
+      firstSeparatorPosition: value.indexOf(ROUTEROS_ISO_DATE_SEPARATOR),
+      secondSeparatorPosition: value.lastIndexOf(ROUTEROS_ISO_DATE_SEPARATOR),
       year: { start: yearStart, end: yearEnd },
       month: { start: monthStart, end: monthEnd },
       day: { start: dayStart, end: dayEnd },
@@ -175,18 +213,19 @@ export function getRouterOSDatePositions(dateStr: string) {
   }
 
   if (isLegacyRouterOSDate(value)) {
-    const separator = "/";
     const [
       [monthStart, monthEnd],
       [dayStart, dayEnd],
       [yearStart, yearEnd],
       [startTime, startEnd],
-    ] = parts(value, separator);
+    ] = parts(value, ROUTEROS_LEGACY_DATE_SEPARATOR);
 
     return {
-      separator: separator,
-      firstSeparatorPosition: value.indexOf(separator),
-      secondSeparatorPosition: value.lastIndexOf(separator),
+      separator: ROUTEROS_LEGACY_DATE_SEPARATOR,
+      firstSeparatorPosition: value.indexOf(ROUTEROS_LEGACY_DATE_SEPARATOR),
+      secondSeparatorPosition: value.lastIndexOf(
+        ROUTEROS_LEGACY_DATE_SEPARATOR,
+      ),
       month: { start: monthStart, end: monthEnd },
       day: { start: dayStart, end: dayEnd },
       year: { start: yearStart, end: yearEnd },

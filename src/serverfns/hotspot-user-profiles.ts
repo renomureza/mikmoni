@@ -128,12 +128,12 @@ function createBackgroundScript({
   } else={
     :return [:tonum ("$year$month$days")];
   }
-};
+}
 :local timeint do={ 
   :local hours [ :pick $t 0 2 ]; 
   :local minutes [ :pick $t 3 5 ]; 
-  :return ($hours * 60 + $minutes) ; 
-}; 
+  :return ($hours * 60 + $minutes); 
+}
 :local date [ /system clock get date ]; 
 :local time [ /system clock get time ]; 
 :local today [$dateint d=$date]; 
@@ -198,20 +198,20 @@ function createOnLoginScript({
       :local s ("/"); 
       :local exp ("$d$s$year $t"); 
       /ip hotspot user set comment="$exp" [find where name="$user"];
-    }; 
+    }
     :if ($getxp = 8) do={ 
       /ip hotspot user set comment="$date $exp" [find where name="$user"];
-    }; 
+    }
     :if ($getxp > 15) do={ 
       /ip hotspot user set comment="$exp" [find where name="$user"];
-    };
+    }
     :delay 5s; 
     /sys sch remove [find where name="$user"];
     ${
       expiredMode === "ntfc" || expiredMode === "remc"
         ? `:local mac $"mac-address"; 
-  :local time [/system clock get time ]; 
-  /system script add name="$date-|-$time-|-$user-|-${price}-|-$address-|-$mac-|-${validity}-|-${profileName}-|-$comment" owner="$month$year" source="$date" comment="mikhmon";`
+    :local time [/system clock get time ]; 
+    /system script add name="$date-|-$time-|-$user-|-${price}-|-$address-|-$mac-|-${validity}-|-${profileName}-|-$comment" owner="$month$year" source="$date" comment="mikhmon";`
         : ""
     }
     ${lockScript}
@@ -219,30 +219,40 @@ function createOnLoginScript({
 }`;
 }
 
-const createHotspotUserProfileInputSchema = z.object({
-  name: z
-    .string()
-    .min(1)
-    .trim()
-    .refine((val) => !/\s+/.test(val), "Cannot contain spaces."),
-  "address-pool": z.string().nullish(),
-  "shared-users": z.union([z.literal(""), z.coerce.number()]),
-  "rate-limit": z.union([z.literal(""), rateLimitSchema]).nullish(),
-  expiredMode: z.enum(expiredModeValues).nullish(),
-  validity: z.union([
-    z.literal(""),
-    z
+const createHotspotUserProfileInputSchema = z
+  .object({
+    name: z
       .string()
-      .regex(
-        /^(?=.)(\d+d)?(\d+h)?(\d+m)?$/,
-        "Use a combination of d/h/m in order, e.g. 1d5h30m, 1d, or 30m.",
-      ),
-  ]),
-  price: z.coerce.number().int().min(0),
-  sellingPrice: z.coerce.number().int().min(0),
-  lockUsers: z.boolean(),
-  "parent-queue": z.string().nullish(),
-});
+      .min(1)
+      .trim()
+      .refine((val) => !/\s+/.test(val), "Cannot contain spaces."),
+    "address-pool": z.string().nullish(),
+    "shared-users": z.union([z.literal(""), z.coerce.number()]),
+    "rate-limit": z.union([z.literal(""), rateLimitSchema]).nullish(),
+    expiredMode: z.enum(expiredModeValues).nullish(),
+    validity: z.union([
+      z.literal(""),
+      z
+        .string()
+        .regex(
+          /^(?=.)(\d+d)?(\d+h)?(\d+m)?$/,
+          "Use a combination of d/h/m in order, e.g. 1d5h30m, 1d, or 30m.",
+        ),
+    ]),
+    price: z.coerce.number().int().min(0),
+    sellingPrice: z.coerce.number().int().min(0),
+    lockUsers: z.boolean(),
+    "parent-queue": z.string().nullish(),
+  })
+  .superRefine((value, ctx) => {
+    if (value.expiredMode && !value.validity) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["validity"],
+        message: "Validity is required",
+      });
+    }
+  });
 
 type CreateHotspotUserProfileInputSchema = z.input<
   typeof createHotspotUserProfileInputSchema

@@ -54,7 +54,7 @@ export default function Select<
             {label}
           </SelectPrimitive.Label>
         )}
-        <SelectPrimitive.Trigger className="flex h-8.5 items-center justify-between gap-3 rounded-lg border border-neutral-300 bg-white pr-1 pl-3 text-sm leading-none whitespace-nowrap ring-3 ring-transparent transition-all outline-none select-none [data-pressed,:focus]:border-neutral-400 [data-pressed,:focus]:ring-neutral-200">
+        <SelectPrimitive.Trigger className="flex h-9 items-center justify-between gap-3 rounded-lg border border-neutral-300 bg-white pr-1 pl-3 text-sm leading-none whitespace-nowrap ring-3 ring-transparent transition-all outline-none select-none [data-pressed,:focus]:border-neutral-400 [data-pressed,:focus]:ring-neutral-200">
           <SelectPrimitive.Value
             className="data-placeholder:text-neutral-400"
             placeholder={placeholder}

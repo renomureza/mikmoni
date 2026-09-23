@@ -52,7 +52,7 @@ export default function Input({
           )}
         </label>
       )}
-      <div className="flex h-8.5 w-full overflow-hidden rounded-lg border border-neutral-300 bg-white ring-3 ring-transparent transition-all focus-within:border-neutral-400 focus-within:ring-neutral-200 has-aria-[invalid]:border-red-600 focus-within:has-aria-[invalid]:ring-red-200">
+      <div className="flex h-9 w-full overflow-hidden rounded-lg border border-neutral-300 bg-white ring-3 ring-transparent transition-all focus-within:border-neutral-400 focus-within:ring-neutral-200 has-aria-[invalid]:border-red-600 focus-within:has-aria-[invalid]:ring-red-200">
         {prefix && (
           <div className="flex h-full items-center px-2 text-neutral-600">
             {prefix}
@@ -64,7 +64,7 @@ export default function Input({
           id={id}
           aria-invalid={!!error || undefined}
           className={cn(
-            "size-full [appearance:textfield] px-2.5 outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+            "size-full [appearance:textfield] px-3 outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
             (suffix || props.type === "password") && "pr-0",
             prefix && "pl-0",
           )}

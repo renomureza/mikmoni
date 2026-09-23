@@ -16,12 +16,15 @@ import {
   LogOutIcon,
   LucideIcon,
   NetworkIcon,
+  PanelLeftCloseIcon,
   PrinterIcon,
   RouterIcon,
+  SearchIcon,
   SettingsIcon,
   SquareTextIcon,
   TicketIcon,
   UsersIcon,
+  WaypointsIcon,
   WifiIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -151,13 +154,13 @@ function MenuWithChildren({
     <div className="flex flex-col gap-0.5 [&_a:has(active)]:bg-red-50">
       <button
         type="button"
-        className="flex h-8 w-full items-center justify-between gap-2 rounded-lg px-2.5 transition-all hover:bg-neutral-100"
+        className="flex h-9 w-full items-center justify-between gap-2 rounded-lg px-3 transition-all hover:bg-neutral-100"
         onClick={() => {
           setCollapsed((prev) => !prev);
         }}
       >
         <div className="flex items-center gap-2">
-          <menu.icon className="size-4" /> {menu.title}
+          <menu.icon className="size-4.5" /> {menu.title}
         </div>
         <ChevronDownIcon
           className={cn("size-3.5 transition-all", collapsed && "rotate-180")}
@@ -173,7 +176,7 @@ function MenuWithChildren({
           <Link
             key={i}
             to={childMenu.to}
-            className="flex h-8 w-full items-center gap-2 rounded-lg px-2.5 transition-all hover:bg-neutral-100 [&.active]:bg-neutral-100"
+            className="flex h-9 w-full items-center gap-2 rounded-lg px-3 transition-all hover:bg-neutral-100 [&.active]:bg-brand/10 [&.active]:text-brand"
           >
             {childMenu.title}
           </Link>
@@ -188,7 +191,7 @@ function Menu({ visible, items }: { visible: boolean; items: MenuItem[] }) {
     <div
       inert={!visible}
       className={cn(
-        "ransition-[opacity,transform] top-0 left-0 flex flex-col gap-0.5 duration-300",
+        "ransition-[opacity,transform] top-0 left-0 flex flex-col gap-1 font-medium text-neutral-700 duration-300",
         visible
           ? "relative w-full opacity-100"
           : "pointer-events-none absolute inset-0 -translate-x-full overflow-hidden opacity-0",
@@ -201,9 +204,9 @@ function Menu({ visible, items }: { visible: boolean; items: MenuItem[] }) {
               key={i}
               to={menu.to}
               activeOptions={{ exact: true }}
-              className="flex h-8 w-full shrink-0 items-center gap-2 rounded-lg px-2.5 transition-all hover:bg-neutral-100 [&.active]:bg-neutral-100"
+              className="flex h-9 w-full shrink-0 items-center gap-2 rounded-lg px-3 transition-all hover:bg-neutral-100 [&.active]:bg-brand/10 [&.active]:text-brand"
             >
-              <menu.icon className="size-4" /> {menu.title}
+              <menu.icon className="size-4.5" /> {menu.title}
             </Link>
           );
         }
@@ -224,10 +227,13 @@ function RouteComponent() {
 
   return (
     <div className="flex size-full">
-      <div className="sticky top-0 flex h-screen w-60 shrink-0 flex-col border-r bg-white">
-        <div className="border-b px-4 py-2">
-          <Link to="/" className="text-lg font-semibold">
-            Mikmoni
+      <div className="sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r bg-white">
+        <div className="flex h-14 items-center border-b px-4 py-2">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-lg font-bold"
+          >
+            <WaypointsIcon /> Mikmoni
           </Link>
         </div>
         <div className="grow overflow-y-auto p-2">
@@ -294,8 +300,27 @@ function RouteComponent() {
           </Popover.Root>
         </div>
       </div>
-      <div className="min-w-0 grow p-4">
-        <Outlet />
+      <div className="relative min-w-0 grow">
+        <div className="sticky top-0 flex h-14 justify-between border-b bg-white px-8">
+          <div className="flex items-center gap-6">
+            <button type="button" className="text-neutral-500">
+              <PanelLeftCloseIcon className="size-4.5" />
+            </button>
+
+            {/* <div className="relative flex h-9 items-center rounded-lg border border-neutral-300 bg-neutral-50 ring-3 ring-transparent transition-all focus-within:border-brand focus-within:ring-brand/20">
+              <SearchIcon className="pointer-events-none absolute left-3 size-4 text-neutral-600" />
+              <input
+                type="text"
+                placeholder="Search..."
+                className="size-full pr-3 pl-9 outline-none"
+              />
+            </div> */}
+          </div>
+          <button type="button">right</button>
+        </div>
+        <div className="px-8 py-6">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

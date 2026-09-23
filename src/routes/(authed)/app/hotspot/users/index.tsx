@@ -9,6 +9,7 @@ import {
   Trash2Icon,
   UserGroupIcon,
   UserIcon,
+  UserPlusIcon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import Button from "~/components/button";
@@ -20,7 +21,7 @@ import {
   useGetHotspotUserCommentsSuspenseQuery,
   useGetHotspotUsersSuspenseQuery,
 } from "~/serverfns/hotspot-users";
-import { formatBytes, formatUptime } from "~/utils/routeros";
+import { formatBytes, prettifyDuration } from "~/utils/routeros";
 import GenerateHotspotUserForm from "./-components/generate-hotspot-user-form";
 import { useDeleteHotspotUser } from "~/serverfns/hotspot-server";
 import Input from "~/components/input";
@@ -170,7 +171,7 @@ function RouteComponent() {
   return (
     <div className="w-full space-y-4">
       <div className="flex justify-between">
-        <h1 className="text-xl font-semibold">Users</h1>
+        <h1 className="text-2xl font-semibold">Users</h1>
         <div className="flex items-center gap-3">
           <Dialog
             rootProps={{
@@ -180,8 +181,8 @@ function RouteComponent() {
             title="Create User"
             triggerProps={{
               render: (props) => (
-                <Button type="button" {...props} variant="secondary">
-                  <UserIcon className="size-4" /> Add
+                <Button type="button" {...props} variant="outline">
+                  <UserPlusIcon className="size-4" /> Add
                 </Button>
               ),
             }}
@@ -209,8 +210,9 @@ function RouteComponent() {
           </Dialog>
         </div>
       </div>
-      <div className="space-y-2">
-        <div className="flex w-full justify-between gap-2">
+
+      <div className="overflow-hidden rounded-lg border bg-white">
+        <div className="flex w-full justify-between gap-2 p-4">
           <div className="flex gap-2">
             <Input
               className="w-sm"
@@ -260,7 +262,7 @@ function RouteComponent() {
               }}
             />
             <PrintButton
-              className="flex h-8.5 items-center gap-2 rounded-lg border border-blue-50 bg-blue-100 px-3 font-medium text-blue-600 disabled:pointer-events-none disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg border border-blue-50 bg-blue-100 px-3 font-medium text-blue-600 disabled:pointer-events-none disabled:opacity-50"
               disabled={!loaderDeps.comment}
               onClickTemplate={(templateId) => {
                 void navigate({
@@ -278,69 +280,68 @@ function RouteComponent() {
             </PrintButton>
           </div>
         </div>
-        <div className="overflow-hidden rounded-lg border bg-white">
-          <table className="w-full text-left [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-1.5 [&_th]:py-2 [&_th]:font-medium [&_th]:text-neutral-500 [&_th,&_td]:px-3 [&_thead]:border-b [&_thead]:bg-neutral-100">
-            <thead>
-              <tr>
-                <th>Server</th>
-                <th>Name</th>
-                <th>Profile</th>
-                <th>Mac Address</th>
-                <th>Uptime</th>
-                <th>Bytes In</th>
-                <th>Bytes Out</th>
-                <th>Comment</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.length ? (
-                filteredUsers.map((user) => (
-                  <tr key={user[".id"]}>
-                    <td>{user.server}</td>
-                    <td>{user.name}</td>
-                    <td>{user.profile}</td>
-                    <td>{user["mac-address"]}</td>
-                    <td>{formatUptime(user.uptime)}</td>
-                    <td>{formatBytes(user["bytes-in"])}</td>
-                    <td>{formatBytes(user["bytes-out"])}</td>
-                    <td>
-                      {user.comment && /^(vc-|up-)/.test(user.comment) ? (
-                        <button
-                          type="button"
-                          className="inline-flex items-center gap-2"
-                          onClick={() => {
-                            void navigate({
-                              search: (prev) => ({
-                                ...prev,
-                                comment: user.comment,
-                              }),
-                            });
-                          }}
-                        >
-                          <SearchIcon className="size-4" /> {user.comment}
-                        </button>
-                      ) : (
-                        user.comment
-                      )}
-                    </td>
-                    <td>
-                      <UserMenu user={user} />
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan={10}>
-                    <div className="flex min-h-60 items-center justify-center">
-                      <div>No Results Found</div>
-                    </div>
+
+        <table className="w-full text-left [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-2 [&_th]:py-2 [&_th]:font-normal [&_th]:text-neutral-500 [&_th,&_td]:px-3 [&_thead]:border-b [&_thead]:bg-neutral-50">
+          <thead>
+            <tr>
+              <th>Server</th>
+              <th>Name</th>
+              <th>Profile</th>
+              <th>Mac Address</th>
+              <th>Uptime</th>
+              <th>Bytes In</th>
+              <th>Bytes Out</th>
+              <th>Comment</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredUsers.length ? (
+              filteredUsers.map((user) => (
+                <tr key={user[".id"]}>
+                  <td>{user.server}</td>
+                  <td>{user.name}</td>
+                  <td>{user.profile}</td>
+                  <td>{user["mac-address"]}</td>
+                  <td>{prettifyDuration(user.uptime)}</td>
+                  <td>{formatBytes(user["bytes-in"])}</td>
+                  <td>{formatBytes(user["bytes-out"])}</td>
+                  <td>
+                    {user.comment && /^(vc-|up-)/.test(user.comment) ? (
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-2"
+                        onClick={() => {
+                          void navigate({
+                            search: (prev) => ({
+                              ...prev,
+                              comment: user.comment,
+                            }),
+                          });
+                        }}
+                      >
+                        <SearchIcon className="size-4" /> {user.comment}
+                      </button>
+                    ) : (
+                      user.comment
+                    )}
+                  </td>
+                  <td>
+                    <UserMenu user={user} />
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={10}>
+                  <div className="flex min-h-60 items-center justify-center">
+                    <div>No Results Found</div>
+                  </div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

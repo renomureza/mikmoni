@@ -132,6 +132,7 @@ export default function HotspotUserProfileForm({
         />
         {profile.expiredMode && (
           <Input
+            required
             label="Validity"
             placeholder="1d"
             value={profile.validity}

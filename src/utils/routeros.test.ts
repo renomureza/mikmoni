@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getRouterOSDatePositions } from "./routeros";
+import { prettifyDuration, getRouterOSDatePositions } from "./routeros";
 
 describe("getRouterOSDatePositions", () => {
   test("ISO: 2023-05-10", () => {
@@ -36,5 +36,13 @@ describe("getRouterOSDatePositions", () => {
     const result = () => getRouterOSDatePositions("mau/13/20");
 
     expect(result).toThrowError();
+  });
+});
+
+describe("prettifyDuration", () => {
+  test("3w6d15h29m11s -> 3w6d 15:29:11", () => {
+    const result = prettifyDuration("3w6d15h29m11s");
+
+    expect(result).toBe("3w6d 15:29:11");
   });
 });

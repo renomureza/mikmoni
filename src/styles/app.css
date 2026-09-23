@@ -5,6 +5,7 @@
   --font-mono: "Geist Mono", monospace;
 
   --color-foreground: var(--color-neutral-900);
+  --color-brand: var(--color-blue-600);
 
   --container-8xl: 90rem;
 }

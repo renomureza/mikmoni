@@ -114,12 +114,12 @@ export default function ComboboxSingle<TOption extends Option>({
         )}
         <ComboboxPrimitive.InputGroup
           aria-invalid={!!error || undefined}
-          className="relative h-8.5 w-full overflow-hidden rounded-lg border border-neutral-300 bg-white ring-3 ring-transparent transition-all focus-within:border-neutral-400 focus-within:ring-neutral-200 focus-within:-outline-offset-1 focus-within:outline-neutral-950 focus-within:outline-none aria-invalid:border-red-600 focus-within:aria-invalid:ring-red-200 [&>input]:pr-10 has-[.combobox-clear]:[&>input]:pr-[calc(0.5rem+2rem*2)]"
+          className="relative h-9 w-full overflow-hidden rounded-lg border border-neutral-300 bg-white ring-3 ring-transparent transition-all focus-within:border-neutral-400 focus-within:ring-neutral-200 focus-within:-outline-offset-1 focus-within:outline-neutral-950 focus-within:outline-none aria-invalid:border-red-600 focus-within:aria-invalid:ring-red-200 [&>input]:pr-10 has-[.combobox-clear]:[&>input]:pr-[calc(0.5rem+2rem*2)]"
         >
           <ComboboxPrimitive.Input
             id={id}
             placeholder={placeholder}
-            className="h-full w-full border-0 bg-white pl-2.5 outline-none placeholder:text-neutral-400 any-pointer-coarse:text-base"
+            className="h-full w-full border-0 bg-white pl-3 outline-none placeholder:text-neutral-400 any-pointer-coarse:text-base"
           />
           <div className="absolute right-0 bottom-0 flex h-full items-center justify-center text-neutral-500">
             <ComboboxPrimitive.Clear

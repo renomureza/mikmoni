@@ -22,3 +22,4 @@ yarn.lock
 /sqlite.db
 /docker-data
 /data
+/src/locales/**/*.js

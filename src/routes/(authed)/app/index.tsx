@@ -1,10 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { UserGroupIcon, UserPlus2Icon } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+  BadgeDollarSignIcon,
+  HouseWifiIcon,
+  LucideIcon,
+  TicketIcon,
+  UserPlusIcon,
+  UserRoundArrowLeftIcon,
+} from "lucide-react";
 import {
   ensureGetRouterosInfoQueryData,
   useGetRouterosInfoSuspenseQuery,
 } from "~/serverfns/resource";
-import { formatBytes, formatUptime } from "~/utils/routeros";
+import { formatBytes, prettifyDuration } from "~/utils/routeros";
 import {
   Area,
   AreaChart,
@@ -14,17 +21,41 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { cn } from "cn";
 import { $getInterfaceTraffic } from "~/serverfns/interface";
+import Button from "~/components/button";
+import Gauge from "~/components/gauge";
+import { formatCurrency, formatNumber } from "~/utils/number";
+import { Trans, useLingui } from "@lingui/react/macro";
+import {
+  ensureGetHotspotLogsQuery,
+  useGetHotspotLogsSuspenseQuery,
+} from "~/serverfns/hotspot-log";
+import {
+  ensureGetHotspotActivesQuery,
+  useGetHotspotActivesSuspenseQuery,
+} from "~/serverfns/hotspot-active";
+import { msg } from "@lingui/core/macro";
 
 export const Route = createFileRoute("/(authed)/app/")({
   component: RouteComponent,
   loader: async ({ context }) => {
-    await ensureGetRouterosInfoQueryData({
-      queryClient: context.queryClient,
-    });
+    await Promise.all([
+      ensureGetRouterosInfoQueryData({
+        queryClient: context.queryClient,
+      }),
+      ensureGetHotspotLogsQuery({
+        queryClient: context.queryClient,
+      }),
+      ensureGetHotspotActivesQuery({
+        queryClient: context.queryClient,
+      }),
+    ]);
+
+    return { title: context.i18n.t(msg`Dashboard`) };
   },
+  head: ({ loaderData }) => ({ meta: [{ title: loaderData?.title }] }),
 });
 
 const Typed = createHorizontalChart<
@@ -33,7 +64,7 @@ const Typed = createHorizontalChart<
   number
 >()({ Area, AreaChart, XAxis, YAxis, Tooltip });
 
-function TrafficChart() {
+function TrafficChart({ className }: { className?: string }) {
   const [data, setData] = useState<{ time: number; rx: number; tx: number }[]>(
     [],
   );
@@ -70,241 +101,391 @@ function TrafficChart() {
   }, []);
 
   return (
-    <div className="grow rounded-xl border bg-white">
-      <div className="border-b px-6 py-3 text-base font-semibold">Traffic</div>
-      <div className="px-6 py-4">
-        <Typed.AreaChart
-          className="**:outline-none"
-          style={{
-            width: "100%",
-            maxHeight: "420px",
-            aspectRatio: 1.618,
-          }}
-          responsive
-          data={data}
-          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
-        >
-          <defs>
-            <linearGradient id="colorTx" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor="var(--color-green-600)"
-                stopOpacity={0.18}
-              />
-              <stop
-                offset="95%"
-                stopColor="var(--color-green-600)"
-                stopOpacity={0}
-              />
-            </linearGradient>
-            <linearGradient id="colorRx" x1="0" y1="0" x2="0" y2="1">
-              <stop
-                offset="5%"
-                stopColor="var(--color-purple-600)"
-                stopOpacity={0.18}
-              />
-              <stop
-                offset="95%"
-                stopColor="var(--color-purple-600)"
-                stopOpacity={0}
-              />
-            </linearGradient>
-          </defs>
-          <CartesianGrid
-            strokeDasharray="3 3"
-            strokeWidth={0.5}
-            stroke="var(--color-neutral-400)"
+    <Typed.AreaChart
+      className={cn("**:outline-none", className)}
+      style={{
+        width: "100%",
+        aspectRatio: 1.618,
+      }}
+      responsive
+      data={data}
+      margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+    >
+      <defs>
+        <linearGradient id="colorTx" x1="0" y1="0" x2="0" y2="1">
+          <stop
+            offset="5%"
+            stopColor="var(--color-green-600)"
+            stopOpacity={0.18}
           />
-          <Typed.XAxis
-            dataKey="time"
-            stroke="var(--color-neutral-400)"
-            strokeWidth={0.5}
-            minTickGap={5}
-            dy={6}
-            fontSize={11}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(d) => {
-              return new Intl.DateTimeFormat("en", {
-                timeStyle: "medium",
-              }).format(d);
-            }}
+          <stop
+            offset="95%"
+            stopColor="var(--color-green-600)"
+            stopOpacity={0}
           />
-          <Typed.YAxis
-            width="auto"
-            niceTicks="none"
-            fontSize={11}
-            stroke="var(--color-neutral-400)"
-            strokeWidth={0.5}
-            tickFormatter={(d: number) => formatBytes(d, { decimals: 0 })}
-            tickLine={false}
-            axisLine={false}
+        </linearGradient>
+        <linearGradient id="colorRx" x1="0" y1="0" x2="0" y2="1">
+          <stop
+            offset="5%"
+            stopColor="var(--color-purple-600)"
+            stopOpacity={0.18}
           />
-          <Typed.Tooltip
-            cursor={{
-              stroke: "var(--color-neutral-300)",
-              strokeDasharray: "3 3",
-              strokeWidth: 1,
-            }}
-            content={({ active, payload, label }) => {
-              const firstPayload = payload?.[0];
-              const isVisible = active && firstPayload;
-              if (!isVisible) return;
+          <stop
+            offset="95%"
+            stopColor="var(--color-purple-600)"
+            stopOpacity={0}
+          />
+        </linearGradient>
+      </defs>
+      <CartesianGrid
+        strokeDasharray="3 3"
+        strokeWidth={0.5}
+        stroke="var(--color-neutral-400)"
+      />
+      <Typed.XAxis
+        dataKey="time"
+        stroke="var(--color-neutral-400)"
+        strokeWidth={0.5}
+        minTickGap={5}
+        dy={6}
+        fontSize={11}
+        tickLine={false}
+        axisLine={false}
+        tickFormatter={(d) => {
+          return new Intl.DateTimeFormat("en", {
+            timeStyle: "medium",
+          }).format(d);
+        }}
+      />
+      <Typed.YAxis
+        width="auto"
+        niceTicks="none"
+        fontSize={11}
+        stroke="var(--color-neutral-400)"
+        strokeWidth={0.5}
+        tickFormatter={(d: number) => formatBytes(d, { decimals: 0 })}
+        tickLine={false}
+        axisLine={false}
+      />
+      <Typed.Tooltip
+        cursor={{
+          stroke: "var(--color-neutral-300)",
+          strokeDasharray: "3 3",
+          strokeWidth: 1,
+        }}
+        content={({ active, payload, label }) => {
+          const firstPayload = payload?.[0];
+          const isVisible = active && firstPayload;
+          if (!isVisible) return;
 
-              return (
-                <div
-                  className={cn(
-                    "rounded-lg border bg-white px-3 py-2 text-xs shadow-lg transition-all",
-                  )}
-                >
-                  <div className="flex flex-col gap-2">
-                    <div className="text-neutral-600">
-                      {new Intl.DateTimeFormat("en", {
-                        timeStyle: "medium",
-                      }).format(Number(label))}
-                    </div>
-                    <div className="space-y-0.5">
-                      <div>RX: {formatBytes(firstPayload.payload.rx)}</div>
-                      <div>TX: {formatBytes(firstPayload.payload.tx)}</div>
-                    </div>
-                  </div>
+          return (
+            <div
+              className={cn(
+                "rounded-lg border bg-white px-3 py-2 text-xs shadow-lg transition-all",
+              )}
+            >
+              <div className="flex flex-col gap-2">
+                <div className="text-neutral-600">
+                  {new Intl.DateTimeFormat("en", {
+                    timeStyle: "medium",
+                  }).format(Number(label))}
                 </div>
-              );
-            }}
+                <div className="space-y-0.5">
+                  <div>RX: {formatBytes(firstPayload.payload.rx)}</div>
+                  <div>TX: {formatBytes(firstPayload.payload.tx)}</div>
+                </div>
+              </div>
+            </div>
+          );
+        }}
+      />
+      <Typed.Area
+        dot={false}
+        // @ts-ignore
+        dataKey="tx"
+        stroke="var(--color-green-600)"
+        strokeWidth={1.75}
+        fill="url(#colorTx)"
+        fillOpacity={0.6}
+        isAnimationActive={isAnimationActive}
+      />
+      <Typed.Area
+        dot={false}
+        // @ts-ignore
+        dataKey="rx"
+        stroke="var(--color-purple-600)"
+        strokeWidth={1.75}
+        fill="url(#colorRx)"
+        fillOpacity={0.6}
+        isAnimationActive={isAnimationActive}
+      />
+    </Typed.AreaChart>
+  );
+}
+
+function StatsCard({
+  title,
+  icon: Icon,
+  value,
+  subTitle,
+  subValue,
+}: {
+  title: React.ReactNode;
+  icon: LucideIcon;
+  value: React.ReactNode;
+  subValue?: React.ReactNode;
+  subTitle: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-3 rounded-xl border border-neutral-200 bg-white px-6 py-5">
+      <div className="flex items-center justify-between">
+        <h2 className="text-base font-semibold">{title}</h2>
+        <Icon className="size-5 text-brand" />
+      </div>
+      <div>
+        <div className="inline-flex items-center gap-2">
+          <span className="text-2xl font-semibold">{value}</span>
+          <span className="text-neutral-500">{subValue}</span>
+        </div>
+        <div className="text-neutral-500">{subTitle}</div>
+      </div>
+    </div>
+  );
+}
+
+function ProgressBar({
+  label,
+  percentage,
+}: {
+  label: React.ReactNode;
+  percentage: number;
+}) {
+  const percent = new Intl.NumberFormat("en", { style: "percent" }).format(
+    percentage,
+  );
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-20 text-neutral-500">{label}</div>
+      <div className="flex grow items-center gap-2">
+        <div className="h-1 grow overflow-hidden rounded-full bg-neutral-200">
+          <div
+            style={{ "--width": percent } as CSSProperties}
+            className={cn(
+              "h-full w-(--width) transition-[width]",
+              percentage < 0.9 ? "bg-brand" : "bg-red-600",
+            )}
           />
-          <Typed.Area
-            dot={false}
-            // @ts-ignore
-            dataKey="tx"
-            stroke="var(--color-green-600)"
-            strokeWidth={1.75}
-            fill="url(#colorTx)"
-            fillOpacity={0.6}
-            isAnimationActive={isAnimationActive}
-          />
-          <Typed.Area
-            dot={false}
-            // @ts-ignore
-            dataKey="rx"
-            stroke="var(--color-purple-600)"
-            strokeWidth={1.75}
-            fill="url(#colorRx)"
-            fillOpacity={0.6}
-            isAnimationActive={isAnimationActive}
-          />
-        </Typed.AreaChart>
+        </div>
+        <div className="w-10 text-right font-semibold tabular-nums">
+          {percent}
+        </div>
       </div>
     </div>
   );
 }
 
 function RouteComponent() {
+  const { currency, language } = Route.useRouteContext({
+    select: (state) => state.localization,
+  });
+  const { title } = Route.useLoaderData();
+  const { t } = useLingui();
+
   const routerosInfoQuery = useGetRouterosInfoSuspenseQuery();
+  const hotspotLogsQuery = useGetHotspotLogsSuspenseQuery();
+  const hotspotActivesQuery = useGetHotspotActivesSuspenseQuery();
+
+  const formatNum = (value: number) =>
+    formatNumber(value, { locale: language });
 
   return (
-    <div className="mx-auto w-full space-y-4">
-      <div className="grid grid-cols-3 gap-4 overflow-hidden">
-        <div className="space-y-0.5 rounded-xl border bg-white px-6 py-5">
-          <div className="flex gap-1">
-            <div className="text-neutral-500">Date & Time:</div>
-            <div>
-              {routerosInfoQuery.data.clock.date}{" "}
-              {routerosInfoQuery.data.clock.time}
-            </div>
-          </div>
-          <div className="flex gap-1">
-            <div className="text-neutral-500">Uptime:</div>
-            <div>{formatUptime(routerosInfoQuery.data.resource.uptime)}</div>
-          </div>
-          <div className="flex gap-1">
-            <div className="text-neutral-500">Timezone:</div>
-            <div>{routerosInfoQuery.data.clock["time-zone-name"]}</div>
-          </div>
-        </div>
-        <div className="space-y-0.5 rounded-xl border bg-white px-6 py-5">
-          <div className="flex gap-1">
-            <div className="text-neutral-500">Board:</div>
-            <div>{routerosInfoQuery.data.resource["board-name"]}</div>
-          </div>
-          <div className="flex gap-1">
-            <div className="text-neutral-500">Model:</div>
-            <div>{routerosInfoQuery.data.resource.model}</div>
-          </div>
-          <div className="flex gap-1">
-            <div className="text-neutral-500">Routeros:</div>
-            <div>{routerosInfoQuery.data.resource.version}</div>
-          </div>
-        </div>
-        <div className="space-y-0.5 rounded-xl border bg-white px-6 py-5">
-          <div className="flex gap-1">
-            <div className="text-neutral-500">CPU Load:</div>
-            <div>{routerosInfoQuery.data.resource["cpu-load"]}%</div>
-          </div>
-          <div className="flex gap-1">
-            <div className="text-neutral-500">Memory:</div>
-            <div>
-              {formatBytes(routerosInfoQuery.data.resource["free-memory"])}
-              {" / "}
-              {formatBytes(routerosInfoQuery.data.resource["total-memory"])}
-            </div>
-          </div>
-          <div className="flex gap-1">
-            <div className="text-neutral-500">HDD:</div>
-            <div>
-              {formatBytes(routerosInfoQuery.data.resource["free-hdd-space"])}
-              {" / "}
-              {formatBytes(routerosInfoQuery.data.resource["total-hdd-space"])}
-            </div>
-          </div>
-        </div>
+    <div className="w-full space-y-4">
+      <div className="flex justify-between">
+        <h1 className="text-2xl font-semibold">{title}</h1>
+        <Button>
+          <UserPlusIcon className="size-4" />
+          <Trans>Generate Users</Trans>
+        </Button>
       </div>
 
-      <div className="grid w-full grid-cols-4 gap-4">
-        <Link
-          to="/app/hotspot/users"
-          className="rounded-xl border bg-white px-6 py-5"
-        >
-          <div className="inline-flex items-center gap-2">
-            <span className="text-2xl font-semibold">0</span>
-            <span>items</span>
-          </div>
-          <div className="text-neutral-500">Hotspot active</div>
-        </Link>
-        <Link
-          to="/app/hotspot/users"
-          className="rounded-xl border bg-white px-6 py-5"
-        >
-          <div className="inline-flex items-center gap-2">
-            <span className="text-2xl font-semibold">0</span>
-            <span>items</span>
-          </div>
-          <div className="text-neutral-500">Hotspot users</div>
-        </Link>
-        <Link
-          to="/app/hotspot/users"
-          className="rounded-xl border bg-white px-6 py-5"
-        >
-          <div className="inline-flex items-center gap-2">
-            <UserPlus2Icon />
-            <span>Add</span>
-          </div>
-          <div className="text-neutral-500">Hotspot users</div>
-        </Link>
-        <Link
-          to="/app/hotspot/users"
-          className="rounded-xl border bg-white px-6 py-5"
-        >
-          <div className="inline-flex items-center gap-2">
-            <UserGroupIcon />
-            <span>Generate</span>
-          </div>
-          <div className="text-neutral-500">Hotspot users</div>
-        </Link>
+      <div className="grid grid-cols-4 gap-4">
+        <StatsCard
+          title={<Trans>Hotspot User</Trans>}
+          icon={UserRoundArrowLeftIcon}
+          subTitle={
+            <Trans>{`${routerosInfoQuery.data.actives.avgUptimeSeconds} avg uptime`}</Trans>
+          }
+          value={formatNum(routerosInfoQuery.data.actives.count)}
+        />
+        <StatsCard
+          title={<Trans>Unused Voucher</Trans>}
+          icon={TicketIcon}
+          subTitle={
+            <Trans>{`${routerosInfoQuery.data.voucher.used} used`}</Trans>
+          }
+          value={formatNum(routerosInfoQuery.data.voucher.unused)}
+        />
+        <StatsCard
+          title={<Trans>Active PPP</Trans>}
+          icon={HouseWifiIcon}
+          subTitle={
+            <Trans>{`${routerosInfoQuery.data.ppp.pppAvgUptime} avg uptime`}</Trans>
+          }
+          value={formatNum(routerosInfoQuery.data.ppp.count)}
+        />
+        <StatsCard
+          title={<Trans>Today's Revenue</Trans>}
+          icon={BadgeDollarSignIcon}
+          subTitle={`${formatCurrency(routerosInfoQuery.data.revenue.thisMonth, { currency, locale: language })} this month (${routerosInfoQuery.data.revenue.thisMonthVoucher} vcr)`}
+          value={formatCurrency(routerosInfoQuery.data.revenue.today, {
+            currency,
+            locale: language,
+          })}
+          subValue={
+            <Trans>{`${routerosInfoQuery.data.revenue.todayVoucher} vcr`}</Trans>
+          }
+        />
       </div>
 
       <div className="flex w-full gap-4">
-        <TrafficChart />
-        <div className="w-96 shrink-0 rounded-xl border bg-white">log</div>
+        <div className="grow space-y-3 rounded-xl border border-neutral-200 bg-white px-6 py-5">
+          <h2 className="text-base font-semibold">
+            <Trans>Traffic</Trans>
+          </h2>
+          <div>
+            <TrafficChart className="h-50" />
+          </div>
+        </div>
+
+        <div className="w-sm space-y-3 rounded-xl border border-neutral-200 bg-white px-6 py-5">
+          <h2 className="text-base font-semibold">
+            <Trans>RouterOS Health</Trans>
+          </h2>
+          <div>
+            <div className="flex items-center justify-center">
+              <Gauge
+                label={t`CPU Usage`}
+                size={250}
+                value={Number(routerosInfoQuery.data.resource["cpu-load"])}
+              />
+            </div>
+            <div className="space-y-1">
+              <ProgressBar
+                label={<Trans>Memory</Trans>}
+                percentage={
+                  Number(routerosInfoQuery.data.resource["free-memory"]) /
+                  Number(routerosInfoQuery.data.resource["total-memory"])
+                }
+              />
+              <ProgressBar
+                label={<Trans>Disk</Trans>}
+                percentage={
+                  Number(routerosInfoQuery.data.resource["free-hdd-space"]) /
+                  Number(routerosInfoQuery.data.resource["total-hdd-space"])
+                }
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-12 gap-4">
+        <div className="col-span-5 space-y-3 rounded-xl border border-neutral-200 bg-white pt-5">
+          <div className="px-6">
+            <h2 className="text-base font-semibold">
+              <Trans>Hotspot Log</Trans>
+            </h2>
+          </div>
+          <div className="h-full max-h-72 overflow-y-auto">
+            <table className="h-full w-full text-left [&_tbody]:text-neutral-700 [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-2 [&_th]:sticky [&_th]:top-0 [&_th]:border-b [&_th]:bg-neutral-100 [&_th]:py-2.5 [&_th]:text-xs [&_th]:font-normal [&_th]:text-neutral-500 [&_th,&_td]:px-5 [&_thead_tr]:border-b">
+              <thead>
+                <tr>
+                  <th>
+                    <Trans>Time</Trans>
+                  </th>
+                  <th>
+                    <Trans>Users IP</Trans>
+                  </th>
+                  <th>
+                    <Trans>Messages</Trans>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {hotspotLogsQuery.data.length ? (
+                  hotspotLogsQuery.data.map((log) => (
+                    <tr key={log[".id"]}>
+                      <td>{log.time}</td>
+                      <td>{log.userIp}</td>
+                      <td>{log.message}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={3}>
+                      <div className="flex min-h-full items-center justify-center text-center font-medium">
+                        <Trans>No Results Found</Trans>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="col-span-7 space-y-3 rounded-xl border border-neutral-200 bg-white pt-5">
+          <div className="px-6">
+            <h2 className="text-base font-semibold">
+              <Trans>Hotspot Active</Trans>
+            </h2>
+          </div>
+          <div className="h-full max-h-72 overflow-y-auto">
+            <table className="h-full w-full text-left [&_tbody]:text-neutral-700 [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-2 [&_th]:sticky [&_th]:top-0 [&_th]:border-b [&_th]:bg-neutral-100 [&_th]:py-2.5 [&_th]:text-xs [&_th]:font-normal [&_th]:text-neutral-500 [&_th,&_td]:px-5 [&_thead_tr]:border-b">
+              <thead>
+                <tr>
+                  <th>
+                    <Trans>User</Trans>
+                  </th>
+                  <th>
+                    <Trans>Uptime</Trans>
+                  </th>
+                  <th>
+                    <Trans>Address</Trans>
+                  </th>
+                  <th>
+                    <Trans>Bytes In</Trans>
+                  </th>
+                  <th>
+                    <Trans>Bytes Out</Trans>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {hotspotActivesQuery.data.length ? (
+                  hotspotActivesQuery.data.map((log) => (
+                    <tr key={log[".id"]}>
+                      <td>{log.user}</td>
+                      <td>{log.address}</td>
+                      <td>{prettifyDuration(log.uptime)}</td>
+                      <td>{formatBytes(log["bytes-in"])}</td>
+                      <td>{formatBytes(log["bytes-out"])}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5}>
+                      <div className="flex min-h-full items-center justify-center text-center font-medium">
+                        <Trans>No Results Found</Trans>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );

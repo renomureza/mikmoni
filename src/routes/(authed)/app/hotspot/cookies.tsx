@@ -5,7 +5,7 @@ import {
   useDeleteHotspotCookieMutation,
   useGetHotspotCookiesSuspenseQuery,
 } from "~/serverfns/hotspot-cookies";
-import { formatUptime } from "~/utils/routeros";
+import { prettifyDuration } from "~/utils/routeros";
 
 export const Route = createFileRoute("/(authed)/app/hotspot/cookies")({
   component: RouteComponent,
@@ -62,7 +62,7 @@ function RouteComponent() {
                   <td>{cookie.user}</td>
                   <td>{cookie["mac-address"]}</td>
                   <td>{cookie.domain}</td>
-                  <td>{formatUptime(cookie["expires-in"] || "0s")}</td>
+                  <td>{prettifyDuration(cookie["expires-in"] || "0s")}</td>
                   <td>
                     <CookieMenuItem cookie={cookie} />
                   </td>
