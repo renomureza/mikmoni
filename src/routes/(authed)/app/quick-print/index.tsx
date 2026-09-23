@@ -13,6 +13,7 @@ import { msg } from "@lingui/core/macro";
 import Input from "~/components/input";
 import CreateQuickPrintForm from "./-components/create-quick-print-form";
 import QuickPrintTable from "./-components/quick-print-table";
+import TableContent from "~/components/table-content";
 
 export const Route = createFileRoute("/(authed)/app/quick-print/")({
   component: RouteComponent,
@@ -66,8 +67,8 @@ function RouteComponent() {
         </Dialog>
       }
     >
-      <div className="overflow-hidden rounded-xl border bg-white">
-        <div className="flex w-full justify-between gap-2 p-4">
+      <TableContent
+        filters={
           <Input
             className="w-sm"
             type="search"
@@ -77,15 +78,13 @@ function RouteComponent() {
               setSearchQuery(e.target.value);
             }}
           />
-        </div>
-
-        <div className="max-h-160 w-full overflow-y-auto">
-          <QuickPrintTable
-            searchQuery={searchQuery}
-            quickPrints={filteredQuickPrints}
-          />
-        </div>
-      </div>
+        }
+      >
+        <QuickPrintTable
+          searchQuery={searchQuery}
+          quickPrints={filteredQuickPrints}
+        />
+      </TableContent>
     </RouterosPage>
   );
 }

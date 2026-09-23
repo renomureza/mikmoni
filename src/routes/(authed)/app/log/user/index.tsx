@@ -10,7 +10,7 @@ import { msg } from "@lingui/core/macro";
 import TableContent from "~/components/table-content";
 import UserLogTable from "./-components/user-log-table";
 import { useLingui } from "@lingui/react/macro";
-import DateFilter from "./-components/date-filter";
+import DateFilter from "~/components/date-filter";
 
 export const Route = createFileRoute("/(authed)/app/log/user/")({
   validateSearch: (search: { day?: number; month?: number; year?: number }) =>

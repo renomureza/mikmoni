@@ -1,3 +1,4 @@
+import { Trans, useLingui } from "@lingui/react/macro";
 import { useEffect, useState } from "react";
 import Button from "~/components/button";
 import Select from "~/components/select";
@@ -29,6 +30,8 @@ export default function DateFilter({
   };
   onSubmit: (value?: { day?: number; month?: number; year?: number }) => void;
 }) {
+  const { t } = useLingui();
+
   const [filter, setFilter] = useState<{
     day: number | null;
     month: number | null;
@@ -61,7 +64,7 @@ export default function DateFilter({
     >
       <Select
         className="w-32"
-        options={[{ label: "Select day", value: null }, ...dayOptions]}
+        options={[{ label: t`Select day`, value: null }, ...dayOptions]}
         value={filter.day}
         onChange={(day) => {
           setFilter((prev) => ({ ...prev, day }));
@@ -69,7 +72,7 @@ export default function DateFilter({
       />
       <Select
         className="w-34"
-        options={[{ label: "Select month", value: null }, ...monthOptions]}
+        options={[{ label: t`Select month`, value: null }, ...monthOptions]}
         value={filter.month}
         onChange={(month) => {
           setFilter((prev) => ({ ...prev, month }));
@@ -77,7 +80,7 @@ export default function DateFilter({
       />
       <Select
         className="w-34"
-        options={[{ label: "Select year", value: null }, ...yearOptions]}
+        options={[{ label: t`Select year`, value: null }, ...yearOptions]}
         value={filter.year}
         onChange={(year) => {
           setFilter((prev) => ({ ...prev, year }));
@@ -91,7 +94,7 @@ export default function DateFilter({
           (!!filter.day && !filter.month && !filter.year)
         }
       >
-        Filter
+        <Trans>Filter</Trans>
       </Button>
       {(value?.day || value?.month || value?.year) && (
         <Button
@@ -101,7 +104,7 @@ export default function DateFilter({
             onSubmit(undefined);
           }}
         >
-          Clear
+          <Trans>Clear</Trans>
         </Button>
       )}
     </form>
