@@ -13,6 +13,7 @@ import { Trans, useLingui } from "@lingui/react/macro";
 import { msg } from "@lingui/core/macro";
 import Input from "~/components/input";
 import HotspotProfileTables from "./-components/hotspot-profiles-table";
+import TableContent from "~/components/table-content";
 
 export const Route = createFileRoute("/(authed)/app/hotspot/profiles/")({
   component: RouteComponent,
@@ -64,8 +65,8 @@ function RouteComponent() {
         </Dialog>
       }
     >
-      <div className="overflow-hidden rounded-xl border bg-white">
-        <div className="flex w-full justify-between gap-2 p-4">
+      <TableContent
+        filters={
           <Input
             className="w-sm"
             type="search"
@@ -75,15 +76,13 @@ function RouteComponent() {
               setSearchQuery(e.target.value);
             }}
           />
-        </div>
-
-        <div className="max-h-160 w-full overflow-y-auto">
-          <HotspotProfileTables
-            profiles={filteredUsers}
-            searchQuery={searchQuery}
-          />
-        </div>
-      </div>
+        }
+      >
+        <HotspotProfileTables
+          profiles={filteredUsers}
+          searchQuery={searchQuery}
+        />
+      </TableContent>
     </RouterosPage>
   );
 }

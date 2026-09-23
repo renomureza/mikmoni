@@ -67,7 +67,16 @@ const $getUserLogs = createServerFn()
     return logs.map(({ name, ...log }) => {
       const [date, time, user, , address, macAddress, validity] =
         name.split("-|-");
-      return { ...log, date, time, user, address, macAddress, validity };
+
+      return {
+        ...log,
+        date,
+        time,
+        user: user as string | undefined,
+        address: address as string | undefined,
+        macAddress: macAddress as string | undefined,
+        validity: validity as string | undefined,
+      };
     });
   });
 

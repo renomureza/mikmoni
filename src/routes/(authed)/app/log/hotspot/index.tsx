@@ -1,41 +1,42 @@
 import { createFileRoute } from "@tanstack/react-router";
 import RouterosPage from "~/components/routeros-page";
 import {
-  ensureGetHotspotActivesQuery,
-  useGetHotspotActivesSuspenseQuery,
-} from "~/serverfns/hotspot-active";
+  ensureGetHotspotLogsQuery,
+  useGetHotspotLogsSuspenseQuery,
+} from "~/serverfns/hotspot-log";
 import { msg } from "@lingui/core/macro";
+import TableContent from "~/components/table-content";
+import HotspotLogTable from "./-components/hotspot-log-table";
 import Input from "~/components/input";
 import { useMemo, useState } from "react";
 import { useLingui } from "@lingui/react/macro";
-import HotspotActivesTable from "./-components/hotspot-actives-table";
-import TableContent from "~/components/table-content";
 
-export const Route = createFileRoute("/(authed)/app/hotspot/actives/")({
+export const Route = createFileRoute("/(authed)/app/log/hotspot/")({
   component: RouteComponent,
   loader: async ({ context }) => {
-    await ensureGetHotspotActivesQuery({ queryClient: context.queryClient });
-    return { title: context.i18n.t(msg`Hotspot Actives`) };
+    await ensureGetHotspotLogsQuery({ queryClient: context.queryClient });
+    return { title: context.i18n.t(msg`Hotspot Log`) };
   },
   head: ({ loaderData }) => ({ meta: [{ title: loaderData?.title }] }),
 });
 
 function RouteComponent() {
+  const hotspotLogsQuery = useGetHotspotLogsSuspenseQuery();
   const { title } = Route.useLoaderData();
   const { t } = useLingui();
-  const hotspotActivesQuery = useGetHotspotActivesSuspenseQuery();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredActives = useMemo(() => {
+  const filteredLogs = useMemo(() => {
     const query = searchQuery.trim().toLocaleLowerCase();
-    if (!query) return hotspotActivesQuery.data;
-    return hotspotActivesQuery.data.filter((user) => {
+    if (!query) return hotspotLogsQuery.data;
+    return hotspotLogsQuery.data.filter((user) => {
       return (
-        user.user.toLowerCase().includes(query) ||
-        (user.address?.toLowerCase().includes(query) ?? false)
+        user.time.toLowerCase().includes(query) ||
+        (user.userIp.toLowerCase().includes(query) ?? false) ||
+        (user.message.toLowerCase().includes(query) ?? false)
       );
     });
-  }, [searchQuery, hotspotActivesQuery.data]);
+  }, [searchQuery, hotspotLogsQuery.data]);
 
   return (
     <RouterosPage title={title}>
@@ -44,7 +45,7 @@ function RouteComponent() {
           <Input
             className="w-sm"
             type="search"
-            placeholder={t`Search hotspot active...`}
+            placeholder={t`Search hotspot logs...`}
             value={searchQuery}
             onChange={(e) => {
               setSearchQuery(e.target.value);
@@ -52,10 +53,7 @@ function RouteComponent() {
           />
         }
       >
-        <HotspotActivesTable
-          searchQuery={searchQuery}
-          actives={filteredActives}
-        />
+        <HotspotLogTable searchQuery={searchQuery} hotspotLogs={filteredLogs} />
       </TableContent>
     </RouterosPage>
   );

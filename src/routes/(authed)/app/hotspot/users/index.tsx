@@ -24,6 +24,7 @@ import { msg } from "@lingui/core/macro";
 import { Trans, useLingui } from "@lingui/react/macro";
 import HotspotUserTable from "./-components/hotspot-user-table";
 import RouterosPage from "~/components/routeros-page";
+import TableContent from "~/components/table-content";
 
 export const Route = createFileRoute("/(authed)/app/hotspot/users/")({
   validateSearch: (search: { profile?: string; comment?: string }) => search,
@@ -111,9 +112,9 @@ function RouteComponent() {
         </>
       }
     >
-      <div className="overflow-hidden rounded-xl border bg-white">
-        <div className="flex w-full justify-between gap-2 p-4">
-          <div className="flex gap-2">
+      <TableContent
+        filters={
+          <>
             <Input
               className="w-sm"
               type="search"
@@ -178,24 +179,22 @@ function RouteComponent() {
               </div>
               <ChevronDownIcon className="size-3.5" />
             </PrintButton>
-          </div>
-        </div>
-
-        <div className="max-h-160 w-full overflow-y-auto">
-          <HotspotUserTable
-            searchQuery={searchQuery}
-            users={filteredUsers}
-            onClickComment={(comment) => {
-              void navigate({
-                search: (prev) => ({
-                  ...prev,
-                  comment: comment,
-                }),
-              });
-            }}
-          />
-        </div>
-      </div>
+          </>
+        }
+      >
+        <HotspotUserTable
+          searchQuery={searchQuery}
+          users={filteredUsers}
+          onClickComment={(comment) => {
+            void navigate({
+              search: (prev) => ({
+                ...prev,
+                comment: comment,
+              }),
+            });
+          }}
+        />
+      </TableContent>
     </RouterosPage>
   );
 }

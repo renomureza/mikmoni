@@ -9,6 +9,7 @@ import Input from "~/components/input";
 import { useLingui } from "@lingui/react/macro";
 import { useMemo, useState } from "react";
 import HotspotCookiesTable from "./-components/hotspot-cookies-table";
+import TableContent from "~/components/table-content";
 
 export const Route = createFileRoute("/(authed)/app/hotspot/cookies/")({
   component: RouteComponent,
@@ -39,8 +40,8 @@ function RouteComponent() {
 
   return (
     <RouterosPage title={title}>
-      <div className="overflow-hidden rounded-xl border bg-white">
-        <div className="flex w-full justify-between gap-2 p-4">
+      <TableContent
+        filters={
           <Input
             className="w-sm"
             type="search"
@@ -50,15 +51,13 @@ function RouteComponent() {
               setSearchQuery(e.target.value);
             }}
           />
-        </div>
-
-        <div className="max-h-160 w-full overflow-y-auto">
-          <HotspotCookiesTable
-            searchQuery={searchQuery}
-            cookies={filteredCookies}
-          />
-        </div>
-      </div>
+        }
+      >
+        <HotspotCookiesTable
+          searchQuery={searchQuery}
+          cookies={filteredCookies}
+        />
+      </TableContent>
     </RouterosPage>
   );
 }
