@@ -24,7 +24,6 @@ export default function UpdateHotspotUserForm({
       isUpdate
       isLoading={updateHotspotUserMutation.isPending}
       errors={updateHotspotUserMutation.data?.errors}
-      onCancel={onCancel}
       user={initialUser}
       onSubmit={(value) => {
         updateHotspotUserMutation.mutate(

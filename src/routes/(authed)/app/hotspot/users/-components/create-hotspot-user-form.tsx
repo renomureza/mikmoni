@@ -12,7 +12,6 @@ export default function CreateHotspotUserForm({
     <HotspotUserForm
       isLoading={createHotspotUserMutation.isPending}
       errors={createHotspotUserMutation.data?.errors}
-      onCancel={onCancel}
       onSubmit={(value) => {
         createHotspotUserMutation.mutate(
           {

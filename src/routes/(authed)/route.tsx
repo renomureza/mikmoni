@@ -228,7 +228,7 @@ function RouteComponent() {
   return (
     <div className="flex size-full">
       <div className="sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r bg-white">
-        <div className="flex h-14 items-center border-b px-4 py-2">
+        <div className="flex h-14 shrink-0 items-center border-b px-4 py-2">
           <Link
             to="/"
             className="inline-flex items-center gap-2 text-lg font-bold"

@@ -10,7 +10,6 @@ export default function CreateHotspotUserProfileForm({
 
   return (
     <HotspotUserProfileForm
-      onCancel={onClose}
       errors={createProfileMutation.data?.errors}
       isLoading={createProfileMutation.isPending}
       onSubmit={(profile) => {

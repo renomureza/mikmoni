@@ -19,6 +19,7 @@ import {
 } from "~/serverfns/quick-print";
 import { formatBytes } from "~/utils/routeros";
 import PrintButton from "../hotspot/users/-components/print-button";
+import { useLingui } from "@lingui/react/macro";
 
 export const Route = createFileRoute("/(authed)/app/quick-print/")({
   component: RouteComponent,
@@ -31,13 +32,13 @@ export const Route = createFileRoute("/(authed)/app/quick-print/")({
 
 function CreateQuickPrintForm({ onCancel }: { onCancel: () => void }) {
   const createMutation = useCreateQuickPrintMutation();
+  const { t } = useLingui();
 
   return (
     <HotspotUserGeneratorForm
       mode="quick_print"
       isLoading={createMutation.isPending}
-      actionLabel="Create"
-      onCancel={onCancel}
+      actionLabel={t`Create`}
       errors={createMutation.data?.errors}
       onSubmit={(data) => {
         createMutation.mutate(
@@ -63,14 +64,14 @@ function UpdateQuickPrintForm({
   quickPrint: QuickPrint;
 }) {
   const updateMutation = useUpdateQuickPrintMutation();
+  const { t } = useLingui();
 
   return (
     <HotspotUserGeneratorForm
       initialState={quickPrint}
       isLoading={updateMutation.isPending}
       mode="quick_print"
-      actionLabel="Update"
-      onCancel={onCancel}
+      actionLabel={t`Update`}
       errors={updateMutation.data?.errors}
       onSubmit={(data) => {
         updateMutation.mutate(

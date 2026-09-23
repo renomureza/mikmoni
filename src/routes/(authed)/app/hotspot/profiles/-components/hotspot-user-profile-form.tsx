@@ -1,7 +1,8 @@
+import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
 import type z from "zod/v4-mini";
-import Button from "~/components/button";
 import ComboboxSingle from "~/components/combobox-single";
+import DialogForm from "~/components/dialog-form";
 import Input from "~/components/input";
 import Select from "~/components/select";
 import Switch from "~/components/switch";
@@ -29,17 +30,17 @@ export default function HotspotUserProfileForm({
   onSubmit,
   isLoading,
   errors,
-  onCancel,
   initialState,
   isUpdate,
 }: {
   onSubmit: (profile: HotspotUserProfileFormState) => void;
   isLoading?: boolean;
   errors?: z.core.$ZodFlattenedError<HotspotUserProfileFormState>["fieldErrors"];
-  onCancel: () => void;
   initialState?: HotspotUserProfileFormState;
   isUpdate?: boolean;
 }) {
+  const { t } = useLingui();
+
   const [profile, setProfile] = useState<HotspotUserProfileFormState>({
     name: initialState?.name ?? "",
     "address-pool": initialState?.["address-pool"],
@@ -60,17 +61,16 @@ export default function HotspotUserProfileForm({
   const simpleQueuesQuery = useGetSimpleQueuesQuery();
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
+    <DialogForm
+      onSubmit={() => {
         onSubmit(profile);
       }}
-      className="space-y-3"
+      primaryAction={{ isLoading, children: !isUpdate ? t`Create` : t`Update` }}
     >
       <Input
         required
-        placeholder="My Profile"
-        label="Name"
+        placeholder={t`My Profile`}
+        label={t`Name`}
         value={profile.name}
         onChange={(e) => {
           setProfile((prev) => ({ ...prev, name: e.target.value }));
@@ -78,7 +78,7 @@ export default function HotspotUserProfileForm({
         error={errors?.name?.[0]}
       />
       <ComboboxSingle
-        label="Address Pool"
+        label={t`Address Pool`}
         value={profile["address-pool"]}
         onChange={(value) => {
           setProfile((prev) => ({
@@ -97,7 +97,7 @@ export default function HotspotUserProfileForm({
       <div className="flex gap-3">
         <Input
           placeholder="1"
-          label="Shared Users"
+          label={t`Shared Users`}
           type="number"
           min={1}
           value={profile["shared-users"]}
@@ -108,7 +108,7 @@ export default function HotspotUserProfileForm({
         />
         <Input
           placeholder="512k/1m"
-          label="Rate Limit"
+          label={t`Rate Limit`}
           value={profile["rate-limit"]}
           onChange={(e) => {
             setProfile((prev) => ({ ...prev, ["rate-limit"]: e.target.value }));
@@ -118,7 +118,7 @@ export default function HotspotUserProfileForm({
       </div>
       <div className="flex gap-3">
         <Select
-          label="Expired Mode"
+          label={t`Expired Mode`}
           options={expiredModeOptions}
           value={profile.expiredMode}
           onChange={(value) => {
@@ -133,7 +133,7 @@ export default function HotspotUserProfileForm({
         {profile.expiredMode && (
           <Input
             required
-            label="Validity"
+            label={t`Validity`}
             placeholder="1d"
             value={profile.validity}
             onChange={(e) => {
@@ -146,7 +146,7 @@ export default function HotspotUserProfileForm({
       <div className="flex gap-3">
         <Input
           placeholder="5000"
-          label="Price"
+          label={t`Price`}
           type="number"
           min={0}
           value={profile.price}
@@ -157,7 +157,7 @@ export default function HotspotUserProfileForm({
         />
         <Input
           placeholder="6000"
-          label="Selling Price"
+          label={t`Selling Price`}
           value={profile.sellingPrice}
           onChange={(e) => {
             setProfile((prev) => ({ ...prev, sellingPrice: e.target.value }));
@@ -166,7 +166,7 @@ export default function HotspotUserProfileForm({
         />
       </div>
       <Switch
-        label="Lock users"
+        label={t`Lock users`}
         checked={profile.lockUsers}
         onCheckedChange={(checked) => {
           setProfile((prev) => ({ ...prev, lockUsers: checked }));
@@ -175,7 +175,7 @@ export default function HotspotUserProfileForm({
       />
 
       <ComboboxSingle
-        label="Parent Queue"
+        label={t`Parent Queue`}
         value={profile["parent-queue"]}
         onChange={(value) => {
           setProfile((prev) => ({
@@ -191,15 +191,6 @@ export default function HotspotUserProfileForm({
         }
         error={errors?.["parent-queue"]?.[0]}
       />
-
-      <div className="mt-1 flex justify-end gap-2">
-        <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" isLoading={isLoading}>
-          {!isUpdate ? "Create" : "Update"}
-        </Button>
-      </div>
-    </form>
+    </DialogForm>
   );
 }

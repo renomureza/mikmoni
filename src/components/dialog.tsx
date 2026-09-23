@@ -14,7 +14,7 @@ export default function Dialog({
   triggerProps?: DialogTriggerProps;
   rootProps?: DialogRootProps;
   children: React.ReactNode;
-  title: string;
+  title: React.ReactNode;
 }) {
   return (
     <DialogPrimitive.Root {...rootProps}>
@@ -33,18 +33,7 @@ export default function Dialog({
               <XIcon className="size-4" />
             </DialogPrimitive.Close>
           </div>
-          <div className="overflow-y-auto px-6 pt-4 pb-6">{children}</div>
-          {/* <div className="px-6 pt-4 pb-6 overflow-y-auto space-y-2">
-            <Input label="User" />
-            <Input label="User" />
-            <Input label="User" />
-          </div>
-          <div className="border-t bg-neutral-100 px-6 gap-3 py-3 flex justify-end">
-            <Button type="button" variant="outline">
-              Cancel
-            </Button>
-            <Button type="button">Create</Button>
-          </div> */}
+          {children}
         </DialogPrimitive.Popup>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>

@@ -1,4 +1,5 @@
 import { PopoverTriggerProps } from "@base-ui/react";
+import { Trans, useLingui } from "@lingui/react/macro";
 import { LoaderIcon } from "lucide-react";
 import { useState } from "react";
 import Input from "~/components/input";
@@ -11,6 +12,7 @@ function PrintTemplateLists({
 }: {
   onClickTemplate: (id: number) => void;
 }) {
+  const { t } = useLingui();
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounceValue(searchQuery);
   const templatesQuery = useGetVoucherTemplatesInfiniteQuery({
@@ -21,7 +23,7 @@ function PrintTemplateLists({
     <div className="flex w-full flex-col">
       <div className="border-b p-1 pb-2">
         <Input
-          placeholder="Search Template..."
+          placeholder={t`Search Template...`}
           value={searchQuery}
           autoComplete="off"
           onChange={(e) => {
@@ -35,7 +37,9 @@ function PrintTemplateLists({
             <LoaderIcon className="size-4 animate-spin" />
           </div>
         ) : !templatesQuery.data?.length ? (
-          <div className="py-10 text-center font-medium">No Results Found</div>
+          <div className="py-10 text-center font-medium">
+            <Trans>No Results Found</Trans>
+          </div>
         ) : (
           <>
             {templatesQuery.data.map((template) => (

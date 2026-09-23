@@ -1,6 +1,12 @@
 import { cn } from "cn";
 import { Loader2Icon } from "lucide-react";
 
+export type ButtonProps = React.ComponentProps<"button"> & {
+  isLoading?: boolean;
+  size?: "xs" | "sm" | "lg";
+  variant?: "outline" | "secondary" | "ghost" | "destructive";
+};
+
 export default function Button({
   isLoading,
   children,
@@ -9,11 +15,7 @@ export default function Button({
   size,
   variant,
   ...props
-}: React.ComponentProps<"button"> & {
-  isLoading?: boolean;
-  size?: "xs" | "sm" | "lg";
-  variant?: "outline" | "secondary" | "ghost" | "destructive";
-}) {
+}: ButtonProps) {
   return (
     <button
       {...props}

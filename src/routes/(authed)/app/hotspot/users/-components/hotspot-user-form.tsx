@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from "~/components/button";
 import HotspotProfileCombobox from "~/components/hotspot-profile-combobox";
 import HotspotServerCombobox from "~/components/hotspot-server-combobox";
 import Input from "~/components/input";
@@ -10,6 +9,8 @@ import {
 } from "~/contants/hotspot-user";
 import { fromBytes } from "~/utils/routeros";
 import type * as z from "zod/v4-mini";
+import DialogForm from "~/components/dialog-form";
+import { useLingui } from "@lingui/react/macro";
 
 type HotspotUserFormState = {
   name: string;
@@ -34,7 +35,6 @@ type OnSubmitValue = {
 };
 
 export default function HotspotUserForm({
-  onCancel,
   user: initialUser,
   onSubmit,
   isLoading,
@@ -42,7 +42,6 @@ export default function HotspotUserForm({
   isUpdate,
 }: {
   isLoading?: boolean;
-  onCancel: () => void;
   user?: {
     name: string;
     password?: string;
@@ -56,6 +55,7 @@ export default function HotspotUserForm({
   errors?: z.core.$ZodFlattenedError<OnSubmitValue>["fieldErrors"];
   isUpdate?: boolean;
 }) {
+  const { t } = useLingui();
   const [state, setState] = useState<HotspotUserFormState>({
     name: initialUser?.name || "",
     password: initialUser?.password || "",
@@ -69,21 +69,20 @@ export default function HotspotUserForm({
   });
 
   return (
-    <form
-      className="space-y-3"
-      onSubmit={(e) => {
-        e.preventDefault();
+    <DialogForm
+      onSubmit={() => {
         onSubmit({
           ...state,
           server: state.server || "all",
           profile: state.profile || "default",
         });
       }}
+      primaryAction={{ isLoading, children: !isUpdate ? "Create" : "Update" }}
     >
       <div className="flex gap-3">
         <Input
           required
-          label="Name"
+          label={t`Name`}
           value={state.name}
           onChange={(e) => {
             setState((prev) => ({ ...prev, name: e.target.value }));
@@ -94,7 +93,7 @@ export default function HotspotUserForm({
         <Input
           required
           type="password"
-          label="Password"
+          label={t`Password`}
           value={state.password}
           onChange={(e) => {
             setState((prev) => ({ ...prev, password: e.target.value }));
@@ -103,7 +102,7 @@ export default function HotspotUserForm({
         />
       </div>
       <HotspotServerCombobox
-        label="Server"
+        label={t`Server`}
         value={state.server}
         onChange={(server) => {
           setState((prev) => ({ ...prev, server }));
@@ -111,7 +110,7 @@ export default function HotspotUserForm({
         error={errors?.server?.[0]}
       />
       <HotspotProfileCombobox
-        label="Profile"
+        label={t`Profile`}
         value={state.profile}
         onChange={(profile) => {
           setState((prev) => ({ ...prev, profile }));
@@ -121,18 +120,18 @@ export default function HotspotUserForm({
       />
       <div className="flex gap-3">
         <Input
-          label="Time Limit"
+          label={t`Time Limit`}
           value={state.timeLimit}
           placeholder="1d"
           onChange={(e) => {
             setState((prev) => ({ ...prev, timeLimit: e.target.value }));
           }}
           error={errors?.timeLimit?.[0]}
-          tooltip="Must be shorter than the validity period in the profile."
+          tooltip={t`Must be shorter than the validity period in the profile.`}
         />
         <div className="flex w-full items-end gap-2">
           <Input
-            label="Data Limit"
+            label={t`Data Limit`}
             placeholder="100"
             type="number"
             value={state.dataLimit}
@@ -154,24 +153,6 @@ export default function HotspotUserForm({
           />
         </div>
       </div>
-
-      <Input
-        label="Comment"
-        value={state.comment}
-        onChange={(e) => {
-          setState((prev) => ({ ...prev, comment: e.target.value }));
-        }}
-        error={errors?.comment?.[0]}
-      />
-
-      <div className="mt-1 flex justify-end gap-3">
-        <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" isLoading={isLoading}>
-          {!isUpdate ? "Create" : "Update"}
-        </Button>
-      </div>
-    </form>
+    </DialogForm>
   );
 }

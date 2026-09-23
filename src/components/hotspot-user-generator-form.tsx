@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type * as z from "zod/v4-mini";
-import Button from "~/components/button";
 import HotspotProfileCombobox from "~/components/hotspot-profile-combobox";
 import HotspotServerCombobox from "~/components/hotspot-server-combobox";
 import Input from "~/components/input";
@@ -15,6 +14,8 @@ import {
 } from "~/contants/hotspot-user";
 import { fromBytes } from "~/utils/routeros";
 import { NonNullableFields } from "~/utils/types";
+import DialogForm from "./dialog-form";
+import { Trans, useLingui } from "@lingui/react/macro";
 
 interface BaseFormState {
   userMode: UserModeValue;
@@ -47,7 +48,6 @@ export default function HotspotUserGeneratorForm<
     ? GenerateHotspotUserFormState
     : QuickPrintHotspotUserFormState),
 >({
-  onCancel,
   onSubmit,
   errors,
   isLoading,
@@ -55,7 +55,6 @@ export default function HotspotUserGeneratorForm<
   mode,
   actionLabel,
 }: {
-  onCancel: () => void;
   onSubmit: (value: NonNullableFields<TState>) => void;
   errors?: z.core.$ZodFlattenedError<NonNullableFields<TState>>["fieldErrors"];
   isLoading?: boolean;
@@ -63,6 +62,8 @@ export default function HotspotUserGeneratorForm<
   mode: TMode;
   actionLabel: string;
 }) {
+  const { t } = useLingui();
+
   const [state, setState] = useState<TState>({
     server: initialState?.server || "all",
     userMode: initialState?.userMode || "up",
@@ -85,10 +86,8 @@ export default function HotspotUserGeneratorForm<
   } as TState);
 
   return (
-    <form
-      className="flex flex-col gap-3"
-      onSubmit={(e) => {
-        e.preventDefault();
+    <DialogForm
+      onSubmit={() => {
         // @ts-ignore
         onSubmit({
           ...state,
@@ -96,10 +95,11 @@ export default function HotspotUserGeneratorForm<
           profile: state.profile || "default",
         } as TState);
       }}
+      primaryAction={{ isLoading, children: actionLabel }}
     >
       {mode === "generate" ? (
         <Input
-          label="Quantity"
+          label={t`Quantity`}
           min={1}
           // @ts-ignore
           value={state.quantity}
@@ -111,7 +111,7 @@ export default function HotspotUserGeneratorForm<
         />
       ) : (
         <Input
-          label="Name"
+          label={t`Name`}
           // @ts-ignore
           value={state.name}
           onChange={(e) => {
@@ -122,7 +122,7 @@ export default function HotspotUserGeneratorForm<
         />
       )}
       <HotspotServerCombobox
-        label="Server"
+        label={t`Server`}
         value={state.server ?? null}
         onChange={(server) => {
           setState((prev) => ({ ...prev, server }));
@@ -131,7 +131,7 @@ export default function HotspotUserGeneratorForm<
 
       <HotspotProfileCombobox
         showDetails
-        label="Profile"
+        label={t`Profile`}
         value={state.profile ?? null}
         error={errors?.profile?.[0]}
         onChange={(profile) => {
@@ -141,7 +141,7 @@ export default function HotspotUserGeneratorForm<
 
       <div className="flex gap-3">
         <Select
-          label="User Mode"
+          label={t`User Mode`}
           options={userModeOptions}
           value={state.userMode}
           onChange={(value) => {
@@ -151,7 +151,7 @@ export default function HotspotUserGeneratorForm<
           error={errors?.userMode?.[0]}
         />
         <Select
-          label="Name Length"
+          label={t`Name Length`}
           options={nameLengthOptions}
           value={state.nameLength}
           onChange={(value) => {
@@ -163,7 +163,7 @@ export default function HotspotUserGeneratorForm<
       </div>
       <div className="flex gap-3">
         <Input
-          label="Prefix"
+          label={t`Prefix`}
           value={state.prefix}
           onChange={(e) => {
             setState((prev) => ({ ...prev, prefix: e.target.value }));
@@ -171,7 +171,7 @@ export default function HotspotUserGeneratorForm<
           error={errors?.prefix?.[0]}
         />
         <Select
-          label="Character"
+          label={t`Character`}
           options={usernameCharacterOptions}
           value={state.character}
           onChange={(value) => {
@@ -184,7 +184,7 @@ export default function HotspotUserGeneratorForm<
 
       <div className="flex gap-3">
         <Input
-          label="Time Limit"
+          label={t`Time Limit`}
           value={state.timeLimit}
           placeholder="1d"
           onChange={(e) => {
@@ -192,12 +192,14 @@ export default function HotspotUserGeneratorForm<
           }}
           error={errors?.timeLimit?.[0]}
           tooltip={
-            <>Must be shorter than the validity period in the profile.</>
+            <Trans>
+              Must be shorter than the validity period in the profile.
+            </Trans>
           }
         />
         <div className="flex w-full items-end gap-2">
           <Input
-            label="Data Limit"
+            label={t`Data Limit`}
             placeholder="100"
             value={state.dataLimit}
             onChange={(e) => {
@@ -220,22 +222,13 @@ export default function HotspotUserGeneratorForm<
       </div>
 
       <Input
-        label="Comment"
+        label={t`Comment`}
         value={state.comment}
         onChange={(e) => {
           setState((prev) => ({ ...prev, comment: e.target.value }));
         }}
         error={errors?.comment?.[0]}
       />
-
-      <div className="mt-1 flex justify-end gap-3">
-        <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button type="submit" isLoading={isLoading}>
-          {actionLabel}
-        </Button>
-      </div>
-    </form>
+    </DialogForm>
   );
 }

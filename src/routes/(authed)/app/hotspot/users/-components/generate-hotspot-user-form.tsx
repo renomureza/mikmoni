@@ -1,3 +1,4 @@
+import { useLingui } from "@lingui/react/macro";
 import HotspotUserGeneratorForm from "~/components/hotspot-user-generator-form";
 import { useGenerateHotspotUsersMutation } from "~/serverfns/hotspot-users";
 
@@ -7,12 +8,12 @@ export default function GenerateHotspotUserForm({
   onCancel: () => void;
 }) {
   const generateUsersMutation = useGenerateHotspotUsersMutation();
+  const { t } = useLingui();
 
   return (
     <HotspotUserGeneratorForm
       mode="generate"
-      actionLabel="Generate"
-      onCancel={onCancel}
+      actionLabel={t`Generate`}
       errors={generateUsersMutation.data?.errors}
       isLoading={generateUsersMutation.isPending}
       onSubmit={(value) => {

@@ -16,7 +16,6 @@ export default function UpdateHotspotUserProfileForm({
     <HotspotUserProfileForm
       isUpdate
       initialState={profile}
-      onCancel={onClose}
       errors={updateProfileMutation.data?.errors}
       isLoading={updateProfileMutation.isPending}
       onSubmit={(updatedProfile) => {
