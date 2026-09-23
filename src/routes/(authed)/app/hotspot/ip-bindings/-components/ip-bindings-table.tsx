@@ -1,19 +1,22 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Trans } from "@lingui/react/macro";
 import { cn } from "cn";
 import { LockIcon, LockOpenIcon, Trash2Icon } from "lucide-react";
+import Table from "~/components/table";
 import {
-  ensureGetIpBindingQuery,
   useDeleteIpBindingMutation,
   useDisableIpBindingMutation,
-  useGetIpBindingSuspenseQuery,
 } from "~/serverfns/ip-binding";
 
-export const Route = createFileRoute("/(authed)/app/hotspot/ip-bindings")({
-  component: RouteComponent,
-  loader: async ({ context }) => {
-    await ensureGetIpBindingQuery({ queryClient: context.queryClient });
-  },
-});
+type IpBinding = {
+  ".id": string;
+  address?: string;
+  "to-address"?: string;
+  "mac-address"?: string;
+  server?: string;
+  comment?: string;
+  type?: "bypassed" | "blocked";
+  disabled?: "true" | "false";
+};
 
 function IpBindingIndicator({ type }: { type?: "bypassed" | "blocked" }) {
   switch (type) {
@@ -77,57 +80,61 @@ function IpBindingMenuItem({
   );
 }
 
-function RouteComponent() {
-  const ipBindingsQuery = useGetIpBindingSuspenseQuery();
-
+export default function IpBindingsTable({
+  ipBindings,
+  searchQuery,
+}: {
+  ipBindings: IpBinding[];
+  searchQuery?: string;
+}) {
   return (
-    <div className="w-full space-y-4">
-      <div className="flex justify-between">
-        <h1 className="text-xl font-semibold">IP Bindings</h1>
-      </div>
-
-      <div className="overflow-hidden rounded-lg border bg-white">
-        <table className="w-full text-left [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-1.5 [&_th]:py-2 [&_th]:font-medium [&_th]:text-neutral-500 [&_th,&_td]:px-3 [&_thead]:border-b [&_thead]:bg-neutral-100">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Mac Address</th>
-              <th>Address</th>
-              <th>To Address</th>
-              <th>Server</th>
-              <th>Comment</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {ipBindingsQuery.data?.length ? (
-              ipBindingsQuery.data.map((ipBinding) => (
-                <tr key={ipBinding[".id"]}>
-                  <td>
-                    <IpBindingIndicator type={ipBinding.type} />
-                  </td>
-                  <td>{ipBinding["mac-address"]}</td>
-                  <td>{ipBinding.address}</td>
-                  <td>{ipBinding["to-address"]}</td>
-                  <td>{ipBinding["server"]}</td>
-                  <td>{ipBinding["comment"]}</td>
-                  <td>
-                    <IpBindingMenuItem ipBinding={ipBinding} />
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={7}>
-                  <div className="flex min-h-60 items-center justify-center">
-                    <div>No Results Found</div>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <Table>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th></Table.Th>
+          <Table.Th>
+            <Trans>Mac Address</Trans>
+          </Table.Th>
+          <Table.Th>
+            <Trans>Address</Trans>
+          </Table.Th>
+          <Table.Th>
+            <Trans>To Address</Trans>
+          </Table.Th>
+          <Table.Th>
+            <Trans>Server</Trans>
+          </Table.Th>
+          <Table.Th>
+            <Trans>Comment</Trans>
+          </Table.Th>
+          <Table.Th></Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>
+        {ipBindings.length ? (
+          ipBindings.map((ipBinding) => (
+            <Table.Tr key={ipBinding[".id"]}>
+              <Table.Td>
+                <IpBindingIndicator type={ipBinding.type} />
+              </Table.Td>
+              <Table.Td>{ipBinding["mac-address"]}</Table.Td>
+              <Table.Td>{ipBinding.address}</Table.Td>
+              <Table.Td>{ipBinding["to-address"]}</Table.Td>
+              <Table.Td>{ipBinding["server"]}</Table.Td>
+              <Table.Td>{ipBinding["comment"]}</Table.Td>
+              <Table.Td>
+                <IpBindingMenuItem ipBinding={ipBinding} />
+              </Table.Td>
+            </Table.Tr>
+          ))
+        ) : (
+          <Table.Tr>
+            <Table.Td colSpan={7}>
+              <Table.Empty query={searchQuery} />
+            </Table.Td>
+          </Table.Tr>
+        )}
+      </Table.Tbody>
+    </Table>
   );
 }
