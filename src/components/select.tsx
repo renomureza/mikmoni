@@ -27,7 +27,7 @@ export default function Select<
     value: TRequired extends true ? TOption["value"] : TOption["value"] | null,
   ) => void;
   required?: boolean;
-  label?: string;
+  label?: React.ReactNode;
   placeholder?: string;
   error?: string;
   className?: string;
