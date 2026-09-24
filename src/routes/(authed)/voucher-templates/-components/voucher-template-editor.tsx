@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/react/macro";
 import { Editor } from "@monaco-editor/react";
 import { useRouteContext } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
@@ -50,8 +51,8 @@ export default function VoucherTemplateEditor({
   });
 
   return (
-    <div className="space-y-4">
-      <div className="flex w-full justify-between">
+    <div className="@container space-y-4">
+      <div className="flex w-full flex-col justify-between gap-2 @xl:flex-row">
         <h1 className="text-2xl font-semibold">
           {!isUpdate ? "Create Voucher Template" : "Update Voucher Template"}
         </h1>
@@ -76,7 +77,7 @@ export default function VoucherTemplateEditor({
         </div>
       </div>
 
-      <div className="relative flex h-190 gap-2">
+      <div className="relative flex h-190 flex-col gap-2 @3xl:flex-row">
         <div className="flex size-full flex-col border bg-white">
           <div className="w-full border-b px-3 py-2">
             <h2 className="font-medium">Handlebars</h2>
@@ -101,9 +102,13 @@ export default function VoucherTemplateEditor({
         </div>
         <div className="flex size-full flex-col border bg-white">
           <div className="flex w-full justify-between border-b px-3 py-2">
-            <h2 className="font-medium">Preview</h2>
+            <h2 className="font-medium">
+              <Trans>Preview</Trans>
+            </h2>
             <div className="inline-flex items-center gap-1 text-xs">
-              <div className="text-neutral-500">User Mode:</div>
+              <div className="hidden text-neutral-500 sm:block">
+                <Trans>User Mode</Trans>:
+              </div>
               <select
                 className="font-medium outline-none"
                 value={userMode}

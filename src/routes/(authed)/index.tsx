@@ -35,7 +35,9 @@ export const Route = createFileRoute("/(authed)/")({
       opts: {},
       queryClient: context.queryClient,
     });
+    return { title: "RouterOS" };
   },
+  head: ({ loaderData }) => ({ meta: [{ title: loaderData?.title }] }),
 });
 
 type RouterosFormState = {
@@ -380,13 +382,14 @@ function RouterosCard({
 }
 
 function RouteComponent() {
+  const { title } = Route.useLoaderData();
   const routerosQuery = useGetAllRouterosSuspenseInfiniteQuery({});
   const [openAddRouterosModal, setOpenAddRouterosModal] = useState(false);
 
   return (
     <div className="@container mx-auto w-full max-w-6xl space-y-4">
       <div className="flex justify-between gap-2">
-        <h1 className="text-2xl font-semibold">RouterOS</h1>
+        <h1 className="text-2xl font-semibold">{title}</h1>
         <Dialog
           rootProps={{
             open: openAddRouterosModal,

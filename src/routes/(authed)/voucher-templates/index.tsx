@@ -14,6 +14,7 @@ import {
   useDeleteVoucherTemplateMutation,
   useGetVoucherTemplatesSuspenseInfiniteQuery,
 } from "~/serverfns/vouer-templates";
+import { msg } from "@lingui/core/macro";
 
 export const Route = createFileRoute("/(authed)/voucher-templates/")({
   component: RouteComponent,
@@ -22,7 +23,10 @@ export const Route = createFileRoute("/(authed)/voucher-templates/")({
       queryClient: context.queryClient,
       opts: {},
     });
+
+    return { title: context.i18n.t(msg`Voucher Templates`) };
   },
+  head: ({ loaderData }) => ({ meta: [{ title: loaderData?.title }] }),
 });
 
 function VoucherTemplateCard({
@@ -49,7 +53,7 @@ function VoucherTemplateCard({
                 to="/voucher-templates/$id/edit"
                 params={{ id: String(template.id) }}
               >
-                <EditIcon className="size-4" /> Edit
+                <EditIcon className="size-4" /> <Trans>Edit</Trans>
               </Link>
               <button
                 disabled={deleteMutation.isPending}
@@ -63,7 +67,7 @@ function VoucherTemplateCard({
                   }
                 }}
               >
-                <Trash2Icon className="size-4" /> Delete
+                <Trash2Icon className="size-4" /> <Trans>Delete</Trans>
               </button>
             </Popover.Popup>
           </Popover.Positioner>
@@ -78,7 +82,7 @@ function RouteComponent() {
   const voucherTemplatesQuery = useGetVoucherTemplatesSuspenseInfiniteQuery({});
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-4">
+    <div className="@container mx-auto w-full max-w-5xl space-y-4">
       <div className="flex justify-between">
         <h1 className="text-2xl font-semibold">Voucher Templates</h1>
         <Button
@@ -91,7 +95,7 @@ function RouteComponent() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid w-full grid-cols-1 gap-3 @lg:grid-cols-2 @4xl:grid-cols-3">
         {!voucherTemplatesQuery.data.length ? (
           <div className="col-span-full flex min-h-60 w-full items-center justify-center rounded-xl border bg-white">
             <div className="font-medium">
