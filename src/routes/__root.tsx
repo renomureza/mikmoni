@@ -13,7 +13,6 @@ import type { QueryClient } from "@tanstack/react-query";
 import { DefaultCatchBoundary } from "~/components/DefaultCatchBoundary";
 import { NotFound } from "~/components/NotFound";
 import appCss from "~/styles/app.css?url";
-import { seo } from "~/utils/seo";
 import { Toaster } from "sonner";
 import { $getSession } from "~/serverfns/auth";
 import { $getIsInstalled } from "~/serverfns/installation";
@@ -44,7 +43,6 @@ export const Route = createRootRouteWithContext<{
       routeros: session?.routeros || null,
       installed,
       localization,
-      // localeMessages,
     };
   },
   head: () => ({
@@ -56,10 +54,13 @@ export const Route = createRootRouteWithContext<{
         name: "viewport",
         content: "width=device-width, initial-scale=1",
       },
-      ...seo({
+      {
         title: APP_NAME,
-        description: `TanStack Start is a type-safe, client-first, full-stack React framework. `,
-      }),
+      },
+      {
+        name: "robots",
+        content: "noindex, nofollow",
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

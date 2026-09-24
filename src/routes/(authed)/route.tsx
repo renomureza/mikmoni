@@ -12,6 +12,7 @@ import {
   ChevronDownIcon,
   GaugeCircleIcon,
   LucideIcon,
+  MegaphoneIcon,
   NetworkIcon,
   PanelLeftCloseIcon,
   PanelLeftOpenIcon,
@@ -21,14 +22,14 @@ import {
   SquareTextIcon,
   TicketIcon,
   UserIcon,
-  WaypointsIcon,
   WifiIcon,
   WorkflowIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { Logo } from "~/components/logo";
 import ProfilePopover from "~/components/profile-popover";
 import RouterosPopover from "~/components/routeros-popover";
-import { APP_NAME } from "~/contants/app";
+import { APP_NAME, GITHUB_URL } from "~/contants/app";
 
 export const Route = createFileRoute("/(authed)")({
   component: RouteComponent,
@@ -147,11 +148,6 @@ const generalMenus = [
     title: "Settings",
     to: "/settings",
   },
-  // {
-  //   icon: SettingsIcon,
-  //   title: "Settings",
-  //   to: "/",
-  // },
 ] satisfies MenuItem[];
 
 type MenuItem =
@@ -164,12 +160,14 @@ type MenuItem =
 
 function MenuWithChildren({
   menu,
+  onMenuClicked,
 }: {
   menu: Extract<MenuItem, { children: any[] }>;
+  onMenuClicked: () => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
   return (
-    <div className="flex flex-col gap-0.5 [&_a:has(active)]:bg-red-50">
+    <div className="flex flex-col gap-0.5">
       <button
         type="button"
         className="flex h-9 w-full items-center justify-between gap-2 rounded-lg px-3 transition-all hover:bg-neutral-100"
@@ -194,6 +192,7 @@ function MenuWithChildren({
           <Link
             key={i}
             to={childMenu.to}
+            onClick={onMenuClicked}
             className="flex h-9 w-full items-center gap-2 rounded-lg px-3 transition-all hover:bg-neutral-100 [&.active]:bg-brand/10 [&.active]:text-brand"
           >
             {childMenu.title}
@@ -204,7 +203,15 @@ function MenuWithChildren({
   );
 }
 
-function Menu({ visible, items }: { visible: boolean; items: MenuItem[] }) {
+function Menu({
+  visible,
+  items,
+  onMenuClicked,
+}: {
+  visible: boolean;
+  items: MenuItem[];
+  onMenuClicked: () => void;
+}) {
   return (
     <div
       inert={!visible}
@@ -222,6 +229,7 @@ function Menu({ visible, items }: { visible: boolean; items: MenuItem[] }) {
               key={i}
               to={menu.to}
               activeOptions={{ exact: true }}
+              onClick={onMenuClicked}
               className="flex h-9 w-full shrink-0 items-center gap-2 rounded-lg px-3 transition-all hover:bg-neutral-100 [&.active]:bg-brand/10 [&.active]:text-brand"
             >
               <menu.icon className="size-4.5" /> {menu.title}
@@ -229,98 +237,159 @@ function Menu({ visible, items }: { visible: boolean; items: MenuItem[] }) {
           );
         }
 
-        return <MenuWithChildren key={i} menu={menu} />;
+        return (
+          <MenuWithChildren key={i} menu={menu} onMenuClicked={onMenuClicked} />
+        );
       })}
     </div>
   );
 }
 
-function RouteComponent() {
-  const user = Route.useRouteContext({ select: (state) => state.user });
-  const routeros = Route.useRouteContext({ select: (state) => state.routeros });
+function useIsRouterosManagementPage() {
   const router = useRouter();
-  const currentPath = router.state.location.pathname;
+  const [currentPath, setCurrentPath] = useState(
+    router.state.location.pathname,
+  );
   const isRouterosManagementPage = currentPath.startsWith("/app");
 
+  useEffect(() => {
+    const unsubscribe = router.subscribe("onResolved", (e) => {
+      setCurrentPath(e.toLocation.pathname);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  return isRouterosManagementPage;
+}
+
+function Sidebar({
+  closeSidebar,
+  showSidebar,
+}: {
+  closeSidebar: () => void;
+  showSidebar: boolean;
+}) {
+  const isRouterosManagementPage = useIsRouterosManagementPage();
+
+  return (
+    <aside
+      className={cn(
+        "fixed top-0 z-20 h-screen w-full shrink-0 lg:pointer-events-auto lg:sticky lg:w-max",
+        showSidebar ? "lg:w-max" : "pointer-events-none",
+      )}
+    >
+      {/* backdrop */}
+      <div
+        className={cn(
+          "fixed size-full bg-black/50 transition-all lg:pointer-events-none",
+          showSidebar ? "opacity-100" : "opacity-0",
+        )}
+        onClick={closeSidebar}
+      />
+
+      <div
+        className={cn(
+          "relative z-1 flex h-full w-64 flex-col border-r bg-white transition-transform lg:translate-x-0",
+          showSidebar ? "translate-x-0" : "-translate-x-full",
+        )}
+      >
+        <div className="flex h-14 shrink-0 items-center border-b px-4 py-2">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-lg font-bold"
+            onClick={closeSidebar}
+          >
+            <Logo className="size-6" /> {APP_NAME}
+          </Link>
+          <button
+            type="button"
+            className="ml-auto text-neutral-500 transition-all hover:text-foreground lg:hidden"
+            onClick={closeSidebar}
+          >
+            <PanelLeftCloseIcon className="size-4.5" />
+          </button>
+        </div>
+        <div className="grow overflow-y-auto p-2">
+          <div className="relative overflow-x-hidden">
+            <Menu
+              onMenuClicked={closeSidebar}
+              items={menus}
+              visible={isRouterosManagementPage}
+            />
+            <Menu
+              onMenuClicked={closeSidebar}
+              items={generalMenus}
+              visible={!isRouterosManagementPage}
+            />
+          </div>
+        </div>
+        <div className="w-full border-t p-2">
+          <a
+            href={`${GITHUB_URL}/issues/new`}
+            target="_blank"
+            className="flex h-9 w-full items-center gap-2 rounded-lg px-3 text-neutral-700 hover:bg-neutral-100"
+            onClick={closeSidebar}
+          >
+            <MegaphoneIcon className="size-4.5" /> Feedback
+          </a>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+function Header({
+  showSidebar,
+  toggleSidebar,
+}: {
+  toggleSidebar: () => void;
+  showSidebar: boolean;
+}) {
+  const isRouterosManagementPage = useIsRouterosManagementPage();
+  const user = Route.useRouteContext({ select: (state) => state.user });
+  const routeros = Route.useRouteContext({ select: (state) => state.routeros });
+
+  return (
+    <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-white px-4 sm:px-6 md:px-8">
+      <div className="flex items-center gap-6">
+        <button
+          type="button"
+          className="text-neutral-500 transition-all hover:text-foreground lg:hidden"
+          onClick={toggleSidebar}
+        >
+          {showSidebar ? (
+            <PanelLeftCloseIcon className="size-4.5" />
+          ) : (
+            <PanelLeftOpenIcon className="size-4.5" />
+          )}
+        </button>
+        {routeros && isRouterosManagementPage && (
+          <RouterosPopover routeros={routeros} />
+        )}
+      </div>
+      <ProfilePopover user={user} />
+    </header>
+  );
+}
+
+function RouteComponent() {
   const [showSidebar, setShowSidebar] = useState(false);
+
+  const closeSidebar = useCallback(() => {
+    setShowSidebar(false);
+  }, []);
+
+  const toggleSidebar = useCallback(() => {
+    setShowSidebar((prev) => !prev);
+  }, []);
 
   return (
     <div className="flex size-full">
-      <aside
-        className={cn(
-          "fixed top-0 z-20 h-screen w-full shrink-0 lg:pointer-events-auto lg:sticky lg:w-max",
-          showSidebar ? "lg:w-max" : "pointer-events-none",
-        )}
-      >
-        {/* backdrop */}
-        <div
-          className={cn(
-            "fixed size-full bg-black/50 transition-all lg:pointer-events-none",
-            showSidebar ? "opacity-100" : "opacity-0",
-          )}
-          onClick={() => {
-            setShowSidebar(false);
-          }}
-        />
-
-        <div
-          className={cn(
-            "relative z-1 flex h-full w-64 flex-col border-r bg-white transition-transform lg:translate-x-0",
-            showSidebar ? "translate-x-0" : "-translate-x-full",
-          )}
-        >
-          <div className="flex h-14 shrink-0 items-center border-b px-4 py-2">
-            <Link
-              to="/"
-              className="inline-flex items-center gap-2 text-lg font-bold"
-            >
-              <WaypointsIcon className="size-5 text-brand" /> {APP_NAME}
-            </Link>
-            <button
-              type="button"
-              className="ml-auto text-neutral-500 transition-all hover:text-foreground lg:hidden"
-              onClick={() => {
-                setShowSidebar(false);
-              }}
-            >
-              <PanelLeftCloseIcon className="size-4.5" />
-            </button>
-          </div>
-          <div className="grow overflow-y-auto p-2">
-            <div className="relative overflow-x-hidden">
-              <Menu items={menus} visible={isRouterosManagementPage} />
-              <Menu items={generalMenus} visible={!isRouterosManagementPage} />
-            </div>
-          </div>
-          <div className="border-t px-2 py-2">
-            {/* <ProfilePopover /> */}
-            <div>dsa</div>
-          </div>
-        </div>
-      </aside>
-
+      <Sidebar showSidebar={showSidebar} closeSidebar={closeSidebar} />
       <div className="relative z-10 min-w-0 grow">
-        <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-white px-4 sm:px-6 md:px-8">
-          <div className="flex items-center gap-6">
-            <button
-              type="button"
-              className="text-neutral-500 transition-all hover:text-foreground lg:hidden"
-              onClick={() => {
-                setShowSidebar((prev) => !prev);
-              }}
-            >
-              {showSidebar ? (
-                <PanelLeftCloseIcon className="size-4.5" />
-              ) : (
-                <PanelLeftOpenIcon className="size-4.5" />
-              )}
-            </button>
-            {routeros && isRouterosManagementPage && (
-              <RouterosPopover routeros={routeros} />
-            )}
-          </div>
-          <ProfilePopover user={user} />
-        </header>
+        <Header showSidebar={showSidebar} toggleSidebar={toggleSidebar} />
         <main className="px-4 py-6 sm:px-6 md:px-8">
           <Outlet />
         </main>

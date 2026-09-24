@@ -2,8 +2,16 @@ import { useLogoutMutation } from "~/serverfns/auth";
 import Popover from "./popover";
 import { Link } from "@tanstack/react-router";
 import { LogOutIcon, SettingsIcon } from "lucide-react";
+import { useState } from "react";
+import { Trans } from "@lingui/react/macro";
 
-function ProfilePopoverContent({ user }: { user: User }) {
+function ProfilePopoverContent({
+  user,
+  closePopover,
+}: {
+  user: User;
+  closePopover: () => void;
+}) {
   const logoutMutation = useLogoutMutation();
 
   return (
@@ -22,10 +30,13 @@ function ProfilePopoverContent({ user }: { user: User }) {
       </div>
       <div className="flex flex-col gap-px pb-1">
         <Link
-          to="/"
+          to="/account"
           className="flex h-8.5 w-full items-center gap-2 rounded-lg px-3 text-neutral-700 transition-all hover:bg-neutral-100 hover:text-foreground"
+          onClick={closePopover}
         >
-          <div className="grow">Account</div>
+          <div className="grow">
+            <Trans>Account</Trans>
+          </div>
           <SettingsIcon className="size-4 shrink-0" />
         </Link>
         <button
@@ -36,7 +47,9 @@ function ProfilePopoverContent({ user }: { user: User }) {
             logoutMutation.mutate();
           }}
         >
-          <div className="grow">Logout</div>
+          <div className="grow">
+            <Trans>Logout</Trans>
+          </div>
           <LogOutIcon className="size-4 shrink-0" />
         </button>
       </div>
@@ -50,8 +63,10 @@ type User = {
 };
 
 export default function ProfilePopover({ user }: { user: User }) {
+  const [open, onOpenChange] = useState(false);
   return (
     <Popover
+      root={{ open, onOpenChange }}
       popoverTrigger={{
         className: "size-7.5 shrink-0 rounded-full overflow-hidden",
         children: (
@@ -63,7 +78,10 @@ export default function ProfilePopover({ user }: { user: User }) {
       }}
       popupClassName="flex flex-col gap-1 min-w-52"
     >
-      <ProfilePopoverContent user={user} />
+      <ProfilePopoverContent
+        closePopover={() => onOpenChange(false)}
+        user={user}
+      />
     </Popover>
   );
 }
