@@ -3,7 +3,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link
       href="https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,100..900;1,100..900&family=Geist:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
@@ -120,7 +120,7 @@
     {{#each users as |user|}}
       <div class="voucher">
         <div class="header">
-          {{this.hotspotName}}
+          {{../hotspotName}}
         </div>
         <div class="body">
           <div class="credential">
@@ -156,7 +156,7 @@
             {{qrcode
               (concat
                 "http://"
-                this.dnsName
+                ../dnsName
                 "/login?username="
                 user.username
                 "&password="
@@ -180,7 +180,7 @@
               <li class="meta__item">{{user.price}}</li>
             {{/if}}
           </ul>
-          <div class="dns">http://{{this.dnsName}}</div>
+          <div class="dns">http://{{../dnsName}}</div>
         </div>
       </div>
     {{/each}}

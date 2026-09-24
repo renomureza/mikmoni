@@ -1,5 +1,5 @@
+import { Trans } from "@lingui/react/macro";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useIntl } from "react-intl";
 import Button from "~/components/button";
 import InlineError from "~/components/inline-error";
 import Input from "~/components/input";
@@ -16,17 +16,16 @@ export const Route = createFileRoute("/login")({
 
 function RouteComponent() {
   const loginMutation = useLoginMutation();
-  const intl = useIntl();
 
   return (
     <main className="flex min-h-dvh items-center justify-center">
       <div className="w-full max-w-md space-y-4 rounded-2xl border bg-white p-10">
         <div>
           <h1 className="text-2xl font-semibold">
-            {intl.formatMessage({ id: "login.title" })}
+            <Trans>Welcome Back</Trans>
           </h1>
           <p className="text-neutral-600">
-            {intl.formatMessage({ id: "login.description" })}
+            <Trans>Login to manage your RouterOS</Trans>
           </p>
         </div>
         <form
@@ -39,13 +38,13 @@ function RouteComponent() {
           className="flex flex-col gap-3"
         >
           <Input
-            label={intl.formatMessage({ id: "username" })}
+            label={<Trans>Username</Trans>}
             placeholder="admin"
             name="username"
             error={loginMutation.data?.errors?.username?.[0]}
           />
           <Input
-            label={intl.formatMessage({ id: "password" })}
+            label={<Trans>Password</Trans>}
             name="password"
             placeholder="••••••••••"
             error={loginMutation.data?.errors?.password?.[0]}
@@ -58,7 +57,7 @@ function RouteComponent() {
             type="submit"
             className="mt-2 w-full"
           >
-            Login
+            <Trans>Login</Trans>
           </Button>
         </form>
       </div>

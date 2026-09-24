@@ -1,5 +1,7 @@
 import type { AnyRouter } from "@tanstack/react-router";
 import type { I18n } from "@lingui/core";
+import { Fragment } from "react";
+import { I18nProvider } from "@lingui/react";
 
 export function setupRouterSsrLinguiIntegration<TRouter extends AnyRouter>({
   router,
@@ -25,4 +27,14 @@ export function setupRouterSsrLinguiIntegration<TRouter extends AnyRouter>({
       });
     };
   }
+
+  const Wrap = router.options.Wrap || Fragment;
+
+  router.options.Wrap = ({ children }) => {
+    return (
+      <I18nProvider i18n={i18n}>
+        <Wrap>{children}</Wrap>
+      </I18nProvider>
+    );
+  };
 }

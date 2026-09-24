@@ -6,4 +6,5 @@ export default defineConfig({
     functions: ["cn"],
     stylesheet: "./src/styles/app.css",
   },
+  ignorePatterns: ["**/*.hbs"],
 });

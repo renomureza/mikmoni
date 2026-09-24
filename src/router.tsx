@@ -6,7 +6,6 @@ import { DefaultCatchBoundary } from "./components/DefaultCatchBoundary";
 import { NotFound } from "./components/NotFound";
 import { toast } from "sonner";
 import { setupI18n } from "@lingui/core";
-import { I18nProvider } from "@lingui/react";
 import { setupRouterSsrLinguiIntegration } from "./lib/localization/setup";
 
 export function getRouter() {
@@ -28,9 +27,6 @@ export function getRouter() {
     defaultPreload: "intent",
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: () => <NotFound />,
-    Wrap: ({ children }) => {
-      return <I18nProvider i18n={i18n}>{children}</I18nProvider>;
-    },
   });
 
   setupRouterSsrLinguiIntegration({

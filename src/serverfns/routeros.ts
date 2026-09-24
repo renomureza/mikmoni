@@ -2,6 +2,7 @@ import {
   infiniteQueryOptions,
   keepPreviousData,
   QueryClient,
+  useInfiniteQuery,
   useMutation,
   useQueryClient,
   useSuspenseInfiniteQuery,
@@ -262,6 +263,7 @@ export function useDeleteRouterosMutation() {
 //
 
 const getAllRouterosInputSchema = z.object({
+  query: z.string().optional(),
   ...getFindManyCursorInputSchema(20).shape,
 });
 
@@ -284,6 +286,11 @@ const $getAllRouteros = createServerFn()
             id: {
               lt: cursor?.id,
             },
+            name: data.query
+              ? {
+                  like: `%${data.query}%`,
+                }
+              : undefined,
           },
         });
       },
@@ -330,6 +337,14 @@ export function useGetAllRouterosSuspenseInfiniteQuery(
   );
 }
 
+export function useGetAllRouterosInfiniteQuery(
+  opts: GetAllRouterosInputSchema,
+) {
+  const getter = useServerFn($getAllRouteros);
+  return useInfiniteQuery(
+    getAllRouterosQueryOptions({ opts, queryFn: getter }),
+  );
+}
 //
 
 const getRouterosInputSchema = z.object({

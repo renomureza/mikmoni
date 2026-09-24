@@ -119,7 +119,7 @@ export default function ComboboxSingle<TOption extends Option>({
           <ComboboxPrimitive.Input
             id={id}
             placeholder={placeholder}
-            className="h-full w-full border-0 bg-white pl-3 outline-none placeholder:text-neutral-400 any-pointer-coarse:text-base"
+            className="h-full w-full border-0 bg-white pl-3 outline-none"
           />
           <div className="absolute right-0 bottom-0 flex h-full items-center justify-center text-neutral-500">
             <ComboboxPrimitive.Clear

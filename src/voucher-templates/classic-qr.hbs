@@ -3,7 +3,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://fonts.gstatic.com"
+      crossorigin="anonymous"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,100..900;1,100..900&family=Geist:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
@@ -129,68 +133,68 @@
     {{#each users as |user|}}
       <div class="voucher">
         <div class="header">
-          <div>{{this.hotspotName}}</div>
-          <div class="number">{{inc @index}}</div>
-        </div>
-        <div class="body">
-          <div class="credential">
-            {{#if (eq user.username user.password)}}
-              <div class="credential__item">
-                <div class="credential__label">
-                  Voucher:
-                </div>
-                <div class="credential__value">
-                  {{user.username}}
-                </div>
-              </div>
-            {{else}}
-              <div class="credential__item">
-                <div class="credential__label">
-                  Username:
-                </div>
-                <div class="credential__value">
-                  {{user.username}}
-                </div>
-              </div>
-              <div class="credential__item">
-                <div class="credential__label">
-                  Password:
-                </div>
-                <div class="credential__value">
-                  {{user.password}}
-                </div>
-              </div>
-            {{/if}}
+        <div>{{../hotspotName}}</div>
+        <div class="number">{{inc @index}}</div>
           </div>
-          <div class="qrcode">
-            {{qrcode
-              (concat
-                "http://"
-                this.dnsName
-                "/login?username="
-                user.username
-                "&password="
-                user.password
-              )
-            }}
+          <div class="body">
+            <div class="credential">
+              {{#if (eq user.username user.password)}}
+                <div class="credential__item">
+                  <div class="credential__label">
+                    Voucher:
+                  </div>
+                  <div class="credential__value">
+                    {{user.username}}
+                  </div>
+                </div>
+              {{else}}
+                <div class="credential__item">
+                  <div class="credential__label">
+                    Username:
+                  </div>
+                  <div class="credential__value">
+                    {{user.username}}
+                  </div>
+                </div>
+                <div class="credential__item">
+                  <div class="credential__label">
+                    Password:
+                  </div>
+                  <div class="credential__value">
+                    {{user.password}}
+                  </div>
+                </div>
+              {{/if}}
+            </div>
+            <div class="qrcode">
+              {{qrcode
+                (concat
+                  "http://"
+                  ../dnsName
+                  "/login?username="
+                  user.username
+                  "&password="
+                  user.password
+                )
+              }}
+            </div>
           </div>
-        </div>
-        <div class="footer">
-          <ul class="meta">
-            {{#if user.validity}}
-              <li class="meta__item">{{user.validity}}</li>
-            {{/if}}
-            {{#if user.timeLimit}}
-              <li class="meta__item">{{user.timeLimit}}</li>
-            {{/if}}
-            {{#if user.dataLimit}}
-              <li class="meta__item">{{user.dataLimit}}</li>
-            {{/if}}
-            {{#if user.price}}
-              <li class="meta__item">{{user.price}}</li>
-            {{/if}}
-          </ul>
-          <div class="dns">http://{{this.dnsName}}</div>
+          <div class="footer">
+            <ul class="meta">
+              {{#if user.validity}}
+                <li class="meta__item">{{user.validity}}</li>
+              {{/if}}
+              {{#if user.timeLimit}}
+                <li class="meta__item">{{user.timeLimit}}</li>
+              {{/if}}
+              {{#if user.dataLimit}}
+                <li class="meta__item">{{user.dataLimit}}</li>
+              {{/if}}
+              {{#if user.price}}
+                <li class="meta__item">{{user.price}}</li>
+              {{/if}}
+            </ul>
+            <div class="dns">http://{{../dnsName}}</div>
         </div>
       </div>
     {{/each}}

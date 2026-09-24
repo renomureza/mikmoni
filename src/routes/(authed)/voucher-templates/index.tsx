@@ -1,7 +1,14 @@
 import { Popover } from "@base-ui/react";
+import { Trans } from "@lingui/react/macro";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { EditIcon, EllipsisVerticalIcon, Trash2Icon } from "lucide-react";
+import {
+  EditIcon,
+  EllipsisVerticalIcon,
+  PlusIcon,
+  Trash2Icon,
+} from "lucide-react";
 import Button from "~/components/button";
+import { InfiniteQueryLoader } from "~/components/infinite-query-loader";
 import {
   ensureGetVoucherTemplatesInfiniteQueryData,
   useDeleteVoucherTemplateMutation,
@@ -71,25 +78,42 @@ function RouteComponent() {
   const voucherTemplatesQuery = useGetVoucherTemplatesSuspenseInfiniteQuery({});
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-4 py-6">
+    <div className="mx-auto w-full max-w-5xl space-y-4">
       <div className="flex justify-between">
         <h1 className="text-2xl font-semibold">Voucher Templates</h1>
-        <div className="flex items-center gap-3">
-          <Button
-            type="button"
-            onClick={() => {
-              void navigate({ to: "/voucher-templates/create" });
-            }}
-          >
-            Create
-          </Button>
-        </div>
+        <Button
+          type="button"
+          onClick={() => {
+            void navigate({ to: "/voucher-templates/create" });
+          }}
+        >
+          <PlusIcon className="size-4" /> <Trans>Create</Trans>
+        </Button>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        {voucherTemplatesQuery.data.map((template) => (
-          <VoucherTemplateCard key={template.id} template={template} />
-        ))}
+        {!voucherTemplatesQuery.data.length ? (
+          <div className="col-span-full flex min-h-60 w-full items-center justify-center rounded-xl border bg-white">
+            <div className="font-medium">
+              <Trans>No Results Found</Trans>
+            </div>
+          </div>
+        ) : (
+          <>
+            {voucherTemplatesQuery.data.map((template) => (
+              <VoucherTemplateCard key={template.id} template={template} />
+            ))}
+
+            {voucherTemplatesQuery.hasNextPage && (
+              <InfiniteQueryLoader
+                className="col-span-full"
+                fetchNextPage={voucherTemplatesQuery.fetchNextPage}
+                hasNextPage={voucherTemplatesQuery.hasNextPage}
+                isFetchingNextPage={voucherTemplatesQuery.isFetchingNextPage}
+              />
+            )}
+          </>
+        )}
       </div>
     </div>
   );

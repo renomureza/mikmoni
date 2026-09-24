@@ -52,7 +52,7 @@ export default function VoucherTemplateEditor({
   return (
     <div className="space-y-4">
       <div className="flex w-full justify-between">
-        <h1 className="text-xl font-semibold">
+        <h1 className="text-2xl font-semibold">
           {!isUpdate ? "Create Voucher Template" : "Update Voucher Template"}
         </h1>
 

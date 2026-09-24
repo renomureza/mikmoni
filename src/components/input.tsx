@@ -13,7 +13,7 @@ export default function Input({
   tooltip,
   ...props
 }: React.ComponentProps<"input"> & {
-  label?: string;
+  label?: React.ReactNode;
   error?: string;
   suffix?: React.ReactNode;
   prefix?: React.ReactNode;

@@ -8,6 +8,7 @@ import {
   useSuspenseInfiniteQuery,
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
+import { redirect } from "@tanstack/react-router";
 import { eq } from "drizzle-orm";
 import { toast } from "sonner";
 import * as z from "zod/v4";
@@ -27,6 +28,7 @@ const createVoucherTemplateInputSchema = z.object({
   source: z
     .string()
     .trim()
+    .min(1)
     .transform((source, ctx) => {
       try {
         compileVoucherTemplate({
@@ -72,21 +74,17 @@ const $createVoucherTemplate = createServerFn({ method: "POST" })
       .insert(schema.voucherTemplates)
       .values({ name: validation.data.name, source: validation.data.source });
 
-    return { success: true };
+    throw redirect({ to: "/voucher-templates", reloadDocument: true });
   });
 
 export function useCreateVoucherTemplateMutation() {
   const mutate = useServerFn($createVoucherTemplate);
-  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: mutate,
     onSuccess: async (data) => {
-      if (data.success) {
-        await queryClient.invalidateQueries({
-          queryKey: ["voucher-templates"],
-        });
-        toast.success("Voucher template successfully created.");
+      if (data?.error) {
+        toast.error(data.error);
       }
     },
   });

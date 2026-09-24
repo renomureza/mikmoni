@@ -23,7 +23,7 @@ export const Route = createFileRoute("/(authed)/app/report/")({
       opts: deps,
     });
 
-    return { title: context.i18n.t(msg`Seling Report`) };
+    return { title: context.i18n.t(msg`Selling Report`) };
   },
   head: ({ loaderData }) => ({ meta: [{ title: loaderData?.title }] }),
 });

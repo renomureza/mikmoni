@@ -8,6 +8,7 @@ import {
   EditIcon,
   EllipsisVerticalIcon,
   ExternalLinkIcon,
+  Loader2Icon,
   PlusIcon,
   RouterIcon,
   Trash2Icon,
@@ -23,6 +24,9 @@ import {
   useSetRouterosMutation,
 } from "~/serverfns/routeros";
 import { cn } from "cn";
+import { InfiniteQueryLoader } from "~/components/infinite-query-loader";
+import { Trans } from "@lingui/react/macro";
+import DialogForm from "~/components/dialog-form";
 
 export const Route = createFileRoute("/(authed)/")({
   component: RouteComponent,
@@ -49,13 +53,11 @@ function RouterosForm({
   onSubmit,
   initialState,
   errors,
-  onCancel,
   isLoading,
 }: {
   onSubmit: (routeros: RouterosFormState) => void;
   initialState?: RouterosFormState;
   errors?: z.core.$ZodFlattenedError<RouterosFormState>["fieldErrors"];
-  onCancel?: () => void;
   isLoading: boolean;
 }) {
   const [state, setState] = useState<RouterosFormState>({
@@ -80,12 +82,11 @@ function RouterosForm({
   };
 
   return (
-    <form
-      className="flex flex-col gap-3"
-      onSubmit={(e) => {
-        e.preventDefault();
+    <DialogForm
+      onSubmit={() => {
         onSubmit(state);
       }}
+      primaryAction={{ isLoading, children: "Test & Save" }}
     >
       <Input
         label="Name"
@@ -173,16 +174,7 @@ function RouterosForm({
           error={errors?.dnsName?.[0]}
         />
       </div>
-
-      <div className="mt-1 flex justify-end gap-3">
-        <Button type="button" variant="secondary" onClick={onCancel}>
-          Cancel
-        </Button>
-        <Button isLoading={isLoading} type="submit">
-          Test & Save
-        </Button>
-      </div>
-    </form>
+    </DialogForm>
   );
 }
 
@@ -191,7 +183,6 @@ function CreateRouterosForm({ onClose }: { onClose: () => void }) {
 
   return (
     <RouterosForm
-      onCancel={onClose}
       isLoading={createRouterosMutation.isPending}
       errors={createRouterosMutation.data?.error}
       onSubmit={(routeros) => {
@@ -221,7 +212,6 @@ function UpdateRouterosForm({
 
   return (
     <RouterosForm
-      onCancel={onClose}
       initialState={routeros}
       isLoading={updateRouterosMutation.isPending}
       errors={updateRouterosMutation.data?.errors}
@@ -240,6 +230,49 @@ function UpdateRouterosForm({
     />
   );
 }
+
+// function RouterosCardDetail({ routerosId }: { routerosId: number }) {
+//   const resourceQuery = useGetRouterosResourceSuspenseQuery({ id: routerosId });
+//   return (
+//     <div className="space-y-2 px-6 py-4">
+//       <div className="flex items-center justify-between [&>div:first-child]:text-neutral-500">
+//         <div>Status</div>
+//         <div
+//           className={cn(
+//             resourceQuery.data.success ? "text-green-600" : "text-red-600",
+//           )}
+//         >
+//           {resourceQuery.data.success ? "Online" : "Offline"}
+//         </div>
+//       </div>
+//       <div className="flex items-center justify-between [&>div:first-child]:text-neutral-500">
+//         <div>Boardname</div>
+//         <div>{resourceQuery.data.data?.["board-name"] ?? "-"}</div>
+//       </div>
+//       <div className="flex items-center justify-between [&>div:first-child]:text-neutral-500">
+//         <div>Model</div>
+//         <div>{resourceQuery.data.data?.model ?? "-"}</div>
+//       </div>
+//       <div className="flex items-center justify-between [&>div:first-child]:text-neutral-500">
+//         <div>Version</div>
+//         <div>{resourceQuery.data.data?.version ?? "-"}</div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// function RouterosCardDetailSkeleton() {
+//   return (
+//     <div className="space-y-2 px-6 py-4">
+//       {Array.from({ length: 4 }, (_, i) => (
+//         <div
+//           key={i}
+//           className="h-5 w-full animate-pulse rounded-full bg-neutral-200"
+//         />
+//       ))}
+//     </div>
+//   );
+// }
 
 function RouterosCard({
   routeros,
@@ -263,74 +296,85 @@ function RouterosCard({
   return (
     <div
       className={cn(
-        "relative flex items-center justify-between overflow-hidden rounded-xl border bg-white px-4 py-4",
+        "relative flex flex-col overflow-hidden rounded-xl border bg-white",
         setRouterosMutation.isPending && "pointer-events-none opacity-50",
       )}
     >
-      <button
-        type="button"
-        className="group flex w-full items-center gap-3 text-left"
-        onClick={() => {
-          setRouterosMutation.mutate({ data: { id: routeros.id } });
-        }}
-      >
-        <div className="relative flex size-7 items-center justify-center">
-          <ExternalLinkIcon className="invisible absolute size-full text-neutral-500 opacity-0 transition-all group-hover:visible group-hover:opacity-100" />
-          <RouterIcon className="visible absolute size-full text-neutral-500 opacity-100 transition-all group-hover:invisible group-hover:opacity-0" />
-        </div>
-        <div>
-          <h2 className="leading-tight font-semibold">{routeros.name}</h2>
-          <div className="leading-tight text-neutral-600">
-            {routeros.host}:{routeros.port}
+      <div className="flex w-full items-center justify-between gap-2 px-6 py-5">
+        <button
+          type="button"
+          className="group flex w-full items-center gap-3 text-left"
+          onClick={() => {
+            setRouterosMutation.mutate({ data: { id: routeros.id } });
+          }}
+        >
+          <div className="relative flex size-7 items-center justify-center">
+            {setRouterosMutation.isPending ? (
+              <Loader2Icon className="size-full animate-spin" />
+            ) : (
+              <>
+                <ExternalLinkIcon className="invisible absolute size-full text-neutral-400 opacity-0 transition-all group-hover:visible group-hover:opacity-100" />
+                <RouterIcon className="visible absolute size-full text-neutral-400 opacity-100 transition-all group-hover:invisible group-hover:opacity-0" />
+              </>
+            )}
           </div>
-        </div>
-      </button>
-      <Popover.Root>
-        <Popover.Trigger className="flex items-center justify-center rounded-lg bg-white px-1 py-2 text-neutral-600 transition-all select-none hover:bg-neutral-100 hover:text-foreground data-popup-open:bg-neutral-100 data-popup-open:text-foreground">
-          <EllipsisVerticalIcon className="size-4" />
-        </Popover.Trigger>
-        <Popover.Portal>
-          <Popover.Positioner sideOffset={8}>
-            <Popover.Popup className="relative flex h-(--popup-height,auto) w-(--popup-width,auto) max-w-125 min-w-40 origin-(--transform-origin) flex-col gap-px rounded-lg border bg-white p-1 shadow-lg transition-[scale,opacity] duration-100 ease-out outline-none data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
-              <Dialog
-                rootProps={{
-                  open: showUpdateModal,
-                  onOpenChange: setShowUpdateModal,
-                }}
-                title="Update RouterOS"
-                triggerProps={{
-                  children: (
-                    <>
-                      <EditIcon className="size-4" /> Edit
-                    </>
-                  ),
-                  className:
-                    "flex w-full gap-2 items-center h-8 px-2 hover:bg-neutral-100 transition-all text-neutral-600 hover:text-foreground rounded-lg",
-                }}
-              >
-                <UpdateRouterosForm
-                  routeros={routeros}
-                  onClose={() => setShowUpdateModal(false)}
-                />
-              </Dialog>
-              <button
-                disabled={deleteRouterosMutation.isPending}
-                type="button"
-                className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none disabled:opacity-50"
-                onClick={() => {
-                  if (window.confirm("Are you sure you want to remove it?")) {
-                    deleteRouterosMutation.mutate({
-                      data: { id: routeros.id },
-                    });
-                  }
-                }}
-              >
-                <Trash2Icon className="size-4" /> Delete
-              </button>
-            </Popover.Popup>
-          </Popover.Positioner>
-        </Popover.Portal>
-      </Popover.Root>
+          <div>
+            <h2 className="font-semibold">{routeros.name}</h2>
+            <div className="text-neutral-500">
+              {routeros.host}:{routeros.port}
+            </div>
+          </div>
+        </button>
+        <Popover.Root>
+          <Popover.Trigger className="flex items-center justify-center rounded-lg bg-white px-1 py-2 text-neutral-600 transition-all select-none hover:bg-neutral-100 hover:text-foreground data-popup-open:bg-neutral-100 data-popup-open:text-foreground">
+            <EllipsisVerticalIcon className="size-4" />
+          </Popover.Trigger>
+          <Popover.Portal>
+            <Popover.Positioner sideOffset={8}>
+              <Popover.Popup className="relative flex h-(--popup-height,auto) w-(--popup-width,auto) max-w-125 min-w-40 origin-(--transform-origin) flex-col gap-px rounded-lg border bg-white p-1 shadow-lg transition-[scale,opacity] duration-100 ease-out outline-none data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
+                <Dialog
+                  rootProps={{
+                    open: showUpdateModal,
+                    onOpenChange: setShowUpdateModal,
+                  }}
+                  title={<Trans>Update RouterOS</Trans>}
+                  triggerProps={{
+                    children: (
+                      <>
+                        <EditIcon className="size-4" /> <Trans>Edit</Trans>
+                      </>
+                    ),
+                    className:
+                      "flex w-full gap-2 items-center h-8 px-2 hover:bg-neutral-100 transition-all text-neutral-600 hover:text-foreground rounded-lg",
+                  }}
+                >
+                  <UpdateRouterosForm
+                    routeros={routeros}
+                    onClose={() => setShowUpdateModal(false)}
+                  />
+                </Dialog>
+                <button
+                  disabled={deleteRouterosMutation.isPending}
+                  type="button"
+                  className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-red-600 transition-all hover:bg-red-50 hover:text-red-700 disabled:pointer-events-none disabled:opacity-50"
+                  onClick={() => {
+                    if (window.confirm("Are you sure you want to remove it?")) {
+                      deleteRouterosMutation.mutate({
+                        data: { id: routeros.id },
+                      });
+                    }
+                  }}
+                >
+                  <Trash2Icon className="size-4" /> <Trans>Delete</Trans>
+                </button>
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
+      </div>
+      {/* <Suspense fallback={<RouterosCardDetailSkeleton />}>
+        <RouterosCardDetail routerosId={routeros.id} />
+      </Suspense> */}
     </div>
   );
 }
@@ -340,7 +384,7 @@ function RouteComponent() {
   const [openAddRouterosModal, setOpenAddRouterosModal] = useState(false);
 
   return (
-    <main className="mx-auto w-full max-w-5xl space-y-4 py-6">
+    <div className="@container mx-auto w-full max-w-6xl space-y-4">
       <div className="flex justify-between gap-2">
         <h1 className="text-2xl font-semibold">RouterOS</h1>
         <Dialog
@@ -352,7 +396,7 @@ function RouteComponent() {
           triggerProps={{
             render: (props) => (
               <Button {...props} type="button">
-                <PlusIcon className="size-4" /> Add
+                <PlusIcon className="size-4" /> <Trans>Add</Trans>
               </Button>
             ),
           }}
@@ -360,19 +404,30 @@ function RouteComponent() {
           <CreateRouterosForm onClose={() => setOpenAddRouterosModal(false)} />
         </Dialog>
       </div>
-      <div className="grid w-full grid-cols-3 gap-3">
+      <div className="grid w-full grid-cols-1 gap-3 @lg:grid-cols-2 @4xl:grid-cols-3">
         {!routerosQuery.data.length ? (
           <div className="col-span-full flex min-h-60 w-full items-center justify-center rounded-xl border bg-white">
-            <div className="font-medium">No Results Found</div>
+            <div className="font-medium">
+              <Trans>No Results Found</Trans>
+            </div>
           </div>
         ) : (
           <>
             {routerosQuery.data?.map((routeros) => (
               <RouterosCard key={routeros.id} routeros={routeros} />
             ))}
+
+            {routerosQuery.hasNextPage && (
+              <InfiniteQueryLoader
+                className="col-span-full"
+                fetchNextPage={routerosQuery.fetchNextPage}
+                hasNextPage={routerosQuery.hasNextPage}
+                isFetchingNextPage={routerosQuery.isFetchingNextPage}
+              />
+            )}
           </>
         )}
       </div>
-    </main>
+    </div>
   );
 }

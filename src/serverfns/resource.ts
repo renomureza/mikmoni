@@ -6,157 +6,125 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
-import {
-  constructRouterosDate,
-  formatDuration,
-  getRouterosMonthList,
-  parseDuration,
-  parseScriptName,
-} from "~/utils/routeros";
+import * as z from "zod/v4";
+import { db } from "~/lib/db";
+import { RouterOSClient } from "~/lib/routeros-client";
+import { authMiddleware } from "~/middlewares/auth";
+import { tryCatch } from "~/utils/utilities";
 
 type Resource = {
-  "free-memory": string;
-  "total-memory": string;
-  "cpu-load": string;
-  "free-hdd-space": string;
-  "total-hdd-space": string;
+  version: string;
+  "board-name": string;
+  model?: string;
 };
 
-const $getRouterosInfo = createServerFn()
-  .middleware([authAndRouterosMiddleware])
-  .handler(async ({ context }) => {
-    const today = new Date();
+const getRouterosResourceInputSchema = z.object({
+  id: z.coerce.number(),
+});
 
-    const sampleDate = await context.routerosClient
-      .write("/system/clock/print", {
-        ".proplist": "date",
-      })
-      .then((d) => d[0].date);
+type GetRouterosResourceInputSchema = z.input<
+  typeof getRouterosResourceInputSchema
+>;
 
-    const months = getRouterosMonthList(sampleDate);
+const $getRouterosResource = createServerFn()
+  .middleware([authMiddleware])
+  .validator((d: GetRouterosResourceInputSchema) => d)
+  .handler(async ({ data }) => {
+    const validation = getRouterosResourceInputSchema.safeParse(data);
 
-    const [resource, actives, users, scripts, ppp] = await Promise.all([
-      context.routerosClient
+    if (!validation.success) {
+      return { success: false, error: "Routeros not found" };
+    }
+
+    const routeros = await db.query.routeros.findFirst({
+      where: {
+        id: validation.data.id,
+      },
+      columns: {
+        host: true,
+        port: true,
+        tls: true,
+        username: true,
+        password: true,
+      },
+    });
+
+    if (!routeros) {
+      return { success: false, error: "Routeros not found" };
+    }
+
+    const client = new RouterOSClient({
+      host: routeros.host,
+      port: routeros.port,
+      user: routeros.username,
+      password: routeros.password,
+      tls: routeros.tls,
+      timeout: 5_000,
+    });
+
+    const connectRes = await tryCatch(client.connect());
+
+    if (!connectRes.ok) {
+      return { success: false, error: connectRes.error };
+    }
+
+    const writeRes = await tryCatch(
+      client
         .write("/system/resource/print", {
-          ".proplist":
-            "free-memory,total-memory,cpu-load,total-hdd-space,free-hdd-space",
+          ".proplist": "version,board-name,model",
         })
-        .then((d) => d[0] as Resource),
-      context.routerosClient.write("/ip/hotspot/active/print", {
-        ".proplist": "uptime",
-      }) as Promise<{ uptime: string }[]>,
-      context.routerosClient.write(
-        "/ip/hotspot/user/print",
-        {
-          ".proplist": "uptime,comment",
-        },
-        [".id=*0", "#!"],
-      ) as Promise<{ comment: string; uptime: string }[]>,
-      context.routerosClient.write(
-        "/system/script/print",
-        {
-          ".proplist": "name",
-        },
-        [
-          "comment=mikhmon",
-          `owner=${months[today.getMonth()]}${today.getFullYear()}`,
-          "#&",
-        ],
-      ) as Promise<{ name: string }[]>,
-      context.routerosClient.write("/ppp/active/print", {
-        ".proplist": "uptime",
-      }) as Promise<{ uptime: string }[]>,
-    ]);
-
-    const avgUptimeSeconds = actives.length
-      ? actives.reduce((acc, curr) => parseDuration(curr.uptime) + acc, 0) /
-        actives.length
-      : 0;
-
-    const voucher = users.reduce(
-      (acc, curr) => {
-        const isUnused =
-          (curr.comment.startsWith("vc-") || curr.comment.startsWith("up-")) &&
-          curr.uptime === "0s";
-
-        if (isUnused) {
-          return { ...acc, unused: acc.unused + 1 };
-        }
-
-        return { ...acc, used: acc.used + 1 };
-      },
-      { used: 0, unused: 0 },
+        .then((d) => d[0]) as Promise<Resource>,
     );
 
-    const todayDateRouteros = constructRouterosDate(sampleDate, today);
+    await client.close();
 
-    const revenue = scripts.reduce(
-      (acc, curr) => {
-        const { price, date } = parseScriptName(curr.name);
-        const isToday = date === todayDateRouteros;
+    if (!writeRes.ok) {
+      return { success: false, error: writeRes.error };
+    }
 
-        return {
-          ...acc,
-          today: !isToday ? acc.today : acc.today + price,
-          todayVoucher: !isToday ? acc.todayVoucher : acc.todayVoucher + 1,
-          thisMonth: acc.thisMonth + price,
-          thisMonthVoucher: acc.thisMonthVoucher + 1,
-        };
-      },
-      { today: 0, todayVoucher: 0, thisMonth: 0, thisMonthVoucher: 0 },
-    );
-
-    const pppAvgUptime = ppp.length
-      ? ppp.reduce((acc, curr) => parseDuration(curr.uptime) + acc, 0) /
-        ppp.length
-      : 0;
-
-    return {
-      resource,
-      actives: {
-        count: actives.length,
-        avgUptimeSeconds: formatDuration(avgUptimeSeconds),
-      },
-      voucher,
-      revenue,
-      ppp: {
-        count: ppp.length,
-        pppAvgUptime: formatDuration(pppAvgUptime),
-      },
-    };
+    return { success: true, data: writeRes.data };
   });
 
-function getRouterosInfoQueryOptions({
+function getRouterosResourceQueryOptions({
   queryFn,
+  opts,
 }: {
   queryFn: (
-    ...args: Parameters<typeof $getRouterosInfo>
-  ) => ReturnType<typeof $getRouterosInfo>;
+    ...args: Parameters<typeof $getRouterosResource>
+  ) => ReturnType<typeof $getRouterosResource>;
+  opts: GetRouterosResourceInputSchema;
 }) {
   return queryOptions({
-    queryKey: ["routeros", "info"],
-    queryFn: () => queryFn(),
+    queryKey: ["routeros", "resource", opts],
+    queryFn: () => queryFn({ data: opts }),
     placeholderData: keepPreviousData,
   });
 }
 
-export function usegetRouterosInfoQuery() {
-  const query = useServerFn($getRouterosInfo);
-  return useQuery(getRouterosInfoQueryOptions({ queryFn: query }));
+export function usegetRouterosResourceQuery(
+  opts: GetRouterosResourceInputSchema,
+) {
+  const query = useServerFn($getRouterosResource);
+  return useQuery(getRouterosResourceQueryOptions({ queryFn: query, opts }));
 }
 
-export function ensureGetRouterosInfoQueryData({
+export function ensureGetRouterosResourceQueryData({
   queryClient,
+  opts,
 }: {
   queryClient: QueryClient;
+  opts: GetRouterosResourceInputSchema;
 }) {
   return queryClient.query(
-    getRouterosInfoQueryOptions({ queryFn: $getRouterosInfo }),
+    getRouterosResourceQueryOptions({ queryFn: $getRouterosResource, opts }),
   );
 }
 
-export function useGetRouterosInfoSuspenseQuery() {
-  const getter = useServerFn($getRouterosInfo);
-  return useSuspenseQuery(getRouterosInfoQueryOptions({ queryFn: getter }));
+export function useGetRouterosResourceSuspenseQuery(
+  opts: GetRouterosResourceInputSchema,
+) {
+  const getter = useServerFn($getRouterosResource);
+  return useSuspenseQuery(
+    getRouterosResourceQueryOptions({ queryFn: getter, opts }),
+  );
 }

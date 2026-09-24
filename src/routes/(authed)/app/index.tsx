@@ -7,10 +7,6 @@ import {
   UserPlusIcon,
   UserRoundArrowLeftIcon,
 } from "lucide-react";
-import {
-  ensureGetRouterosInfoQueryData,
-  useGetRouterosInfoSuspenseQuery,
-} from "~/serverfns/resource";
 import { formatBytes, prettifyDuration } from "~/utils/routeros";
 import {
   Area,
@@ -38,12 +34,16 @@ import {
 } from "~/serverfns/hotspot-active";
 import { msg } from "@lingui/core/macro";
 import RouterosPage from "~/components/routeros-page";
+import {
+  ensureGetStatsOverviewQueryData,
+  useGetStatsOverviewSuspenseQuery,
+} from "~/serverfns/stats";
 
 export const Route = createFileRoute("/(authed)/app/")({
   component: RouteComponent,
   loader: async ({ context }) => {
     await Promise.all([
-      ensureGetRouterosInfoQueryData({
+      ensureGetStatsOverviewQueryData({
         queryClient: context.queryClient,
       }),
       ensureGetHotspotLogsQuery({
@@ -293,7 +293,7 @@ function RouteComponent() {
   const { title } = Route.useLoaderData();
   const { t } = useLingui();
 
-  const routerosInfoQuery = useGetRouterosInfoSuspenseQuery();
+  const statsOverviewQuery = useGetStatsOverviewSuspenseQuery();
   const hotspotLogsQuery = useGetHotspotLogsSuspenseQuery();
   const hotspotActivesQuery = useGetHotspotActivesSuspenseQuery();
 
@@ -302,6 +302,7 @@ function RouteComponent() {
 
   return (
     <RouterosPage
+      className="@container"
       title={title}
       actions={
         <Button>
@@ -310,46 +311,46 @@ function RouteComponent() {
         </Button>
       }
     >
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @5xl:grid-cols-4">
         <StatsCard
           title={<Trans>Hotspot User</Trans>}
           icon={UserRoundArrowLeftIcon}
           subTitle={
-            <Trans>{`${routerosInfoQuery.data.actives.avgUptimeSeconds} avg uptime`}</Trans>
+            <Trans>{`${statsOverviewQuery.data.actives.avgUptimeSeconds} avg uptime`}</Trans>
           }
-          value={formatNum(routerosInfoQuery.data.actives.count)}
+          value={formatNum(statsOverviewQuery.data.actives.count)}
         />
         <StatsCard
           title={<Trans>Unused Voucher</Trans>}
           icon={TicketIcon}
           subTitle={
-            <Trans>{`${routerosInfoQuery.data.voucher.used} used`}</Trans>
+            <Trans>{`${statsOverviewQuery.data.voucher.used} used`}</Trans>
           }
-          value={formatNum(routerosInfoQuery.data.voucher.unused)}
+          value={formatNum(statsOverviewQuery.data.voucher.unused)}
         />
         <StatsCard
           title={<Trans>Active PPP</Trans>}
           icon={HouseWifiIcon}
           subTitle={
-            <Trans>{`${routerosInfoQuery.data.ppp.pppAvgUptime} avg uptime`}</Trans>
+            <Trans>{`${statsOverviewQuery.data.ppp.pppAvgUptime} avg uptime`}</Trans>
           }
-          value={formatNum(routerosInfoQuery.data.ppp.count)}
+          value={formatNum(statsOverviewQuery.data.ppp.count)}
         />
         <StatsCard
           title={<Trans>Today's Revenue</Trans>}
           icon={BadgeDollarSignIcon}
-          subTitle={`${formatCurrency(routerosInfoQuery.data.revenue.thisMonth, { currency, locale: language })} this month (${routerosInfoQuery.data.revenue.thisMonthVoucher} vcr)`}
-          value={formatCurrency(routerosInfoQuery.data.revenue.today, {
+          subTitle={`${formatCurrency(statsOverviewQuery.data.revenue.thisMonth, { currency, locale: language })} this month (${statsOverviewQuery.data.revenue.thisMonthVoucher} vcr)`}
+          value={formatCurrency(statsOverviewQuery.data.revenue.today, {
             currency,
             locale: language,
           })}
           subValue={
-            <Trans>{`${routerosInfoQuery.data.revenue.todayVoucher} vcr`}</Trans>
+            <Trans>{`${statsOverviewQuery.data.revenue.todayVoucher} vcr`}</Trans>
           }
         />
       </div>
 
-      <div className="flex w-full gap-4">
+      <div className="flex w-full flex-col gap-4 @2xl:flex-row">
         <div className="grow space-y-3 rounded-xl border border-neutral-200 bg-white px-6 py-5">
           <h2 className="text-base font-semibold">
             <Trans>Traffic</Trans>
@@ -359,7 +360,7 @@ function RouteComponent() {
           </div>
         </div>
 
-        <div className="w-sm space-y-3 rounded-xl border border-neutral-200 bg-white px-6 py-5">
+        <div className="space-y-3 rounded-xl border border-neutral-200 bg-white px-6 py-5 lg:w-sm">
           <h2 className="text-base font-semibold">
             <Trans>RouterOS Health</Trans>
           </h2>
@@ -368,22 +369,22 @@ function RouteComponent() {
               <Gauge
                 label={t`CPU Usage`}
                 size={250}
-                value={Number(routerosInfoQuery.data.resource["cpu-load"])}
+                value={Number(statsOverviewQuery.data.resource["cpu-load"])}
               />
             </div>
             <div className="space-y-1">
               <ProgressBar
                 label={<Trans>Memory</Trans>}
                 percentage={
-                  Number(routerosInfoQuery.data.resource["free-memory"]) /
-                  Number(routerosInfoQuery.data.resource["total-memory"])
+                  Number(statsOverviewQuery.data.resource["free-memory"]) /
+                  Number(statsOverviewQuery.data.resource["total-memory"])
                 }
               />
               <ProgressBar
                 label={<Trans>Disk</Trans>}
                 percentage={
-                  Number(routerosInfoQuery.data.resource["free-hdd-space"]) /
-                  Number(routerosInfoQuery.data.resource["total-hdd-space"])
+                  Number(statsOverviewQuery.data.resource["free-hdd-space"]) /
+                  Number(statsOverviewQuery.data.resource["total-hdd-space"])
                 }
               />
             </div>
@@ -391,8 +392,8 @@ function RouteComponent() {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-4">
-        <div className="col-span-5 space-y-3 rounded-xl border border-neutral-200 bg-white pt-5">
+      <div className="grid grid-cols-1 gap-4 @3xl:grid-cols-12">
+        <div className="space-y-3 rounded-xl border border-neutral-200 bg-white pt-5 @3xl:col-span-5">
           <div className="px-6">
             <h2 className="text-base font-semibold">
               <Trans>Hotspot Log</Trans>
@@ -436,7 +437,7 @@ function RouteComponent() {
           </div>
         </div>
 
-        <div className="col-span-7 space-y-3 rounded-xl border border-neutral-200 bg-white pt-5">
+        <div className="space-y-3 rounded-xl border border-neutral-200 bg-white pt-5 @3xl:col-span-7">
           <div className="px-6">
             <h2 className="text-base font-semibold">
               <Trans>Hotspot Active</Trans>
@@ -490,194 +491,4 @@ function RouteComponent() {
       </div>
     </RouterosPage>
   );
-  // return (
-  //   <div className="w-full space-y-4">
-  //     <div className="flex justify-between">
-  //       <h1 className="text-2xl font-semibold">{title}</h1>
-  //       <Button>
-  //         <UserPlusIcon className="size-4" />
-  //         <Trans>Generate Users</Trans>
-  //       </Button>
-  //     </div>
-
-  //     <div className="grid grid-cols-4 gap-4">
-  //       <StatsCard
-  //         title={<Trans>Hotspot User</Trans>}
-  //         icon={UserRoundArrowLeftIcon}
-  //         subTitle={
-  //           <Trans>{`${routerosInfoQuery.data.actives.avgUptimeSeconds} avg uptime`}</Trans>
-  //         }
-  //         value={formatNum(routerosInfoQuery.data.actives.count)}
-  //       />
-  //       <StatsCard
-  //         title={<Trans>Unused Voucher</Trans>}
-  //         icon={TicketIcon}
-  //         subTitle={
-  //           <Trans>{`${routerosInfoQuery.data.voucher.used} used`}</Trans>
-  //         }
-  //         value={formatNum(routerosInfoQuery.data.voucher.unused)}
-  //       />
-  //       <StatsCard
-  //         title={<Trans>Active PPP</Trans>}
-  //         icon={HouseWifiIcon}
-  //         subTitle={
-  //           <Trans>{`${routerosInfoQuery.data.ppp.pppAvgUptime} avg uptime`}</Trans>
-  //         }
-  //         value={formatNum(routerosInfoQuery.data.ppp.count)}
-  //       />
-  //       <StatsCard
-  //         title={<Trans>Today's Revenue</Trans>}
-  //         icon={BadgeDollarSignIcon}
-  //         subTitle={`${formatCurrency(routerosInfoQuery.data.revenue.thisMonth, { currency, locale: language })} this month (${routerosInfoQuery.data.revenue.thisMonthVoucher} vcr)`}
-  //         value={formatCurrency(routerosInfoQuery.data.revenue.today, {
-  //           currency,
-  //           locale: language,
-  //         })}
-  //         subValue={
-  //           <Trans>{`${routerosInfoQuery.data.revenue.todayVoucher} vcr`}</Trans>
-  //         }
-  //       />
-  //     </div>
-
-  //     <div className="flex w-full gap-4">
-  //       <div className="grow space-y-3 rounded-xl border border-neutral-200 bg-white px-6 py-5">
-  //         <h2 className="text-base font-semibold">
-  //           <Trans>Traffic</Trans>
-  //         </h2>
-  //         <div>
-  //           <TrafficChart className="h-50" />
-  //         </div>
-  //       </div>
-
-  //       <div className="w-sm space-y-3 rounded-xl border border-neutral-200 bg-white px-6 py-5">
-  //         <h2 className="text-base font-semibold">
-  //           <Trans>RouterOS Health</Trans>
-  //         </h2>
-  //         <div>
-  //           <div className="flex items-center justify-center">
-  //             <Gauge
-  //               label={t`CPU Usage`}
-  //               size={250}
-  //               value={Number(routerosInfoQuery.data.resource["cpu-load"])}
-  //             />
-  //           </div>
-  //           <div className="space-y-1">
-  //             <ProgressBar
-  //               label={<Trans>Memory</Trans>}
-  //               percentage={
-  //                 Number(routerosInfoQuery.data.resource["free-memory"]) /
-  //                 Number(routerosInfoQuery.data.resource["total-memory"])
-  //               }
-  //             />
-  //             <ProgressBar
-  //               label={<Trans>Disk</Trans>}
-  //               percentage={
-  //                 Number(routerosInfoQuery.data.resource["free-hdd-space"]) /
-  //                 Number(routerosInfoQuery.data.resource["total-hdd-space"])
-  //               }
-  //             />
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-
-  //     <div className="grid grid-cols-12 gap-4">
-  //       <div className="col-span-5 space-y-3 rounded-xl border border-neutral-200 bg-white pt-5">
-  //         <div className="px-6">
-  //           <h2 className="text-base font-semibold">
-  //             <Trans>Hotspot Log</Trans>
-  //           </h2>
-  //         </div>
-  //         <div className="h-full max-h-72 overflow-y-auto">
-  //           <table className="h-full w-full text-left [&_tbody]:text-neutral-700 [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-2 [&_th]:sticky [&_th]:top-0 [&_th]:border-b [&_th]:bg-neutral-100 [&_th]:py-2.5 [&_th]:text-xs [&_th]:font-normal [&_th]:text-neutral-500 [&_th,&_td]:px-5 [&_thead_tr]:border-b">
-  //             <thead>
-  //               <tr>
-  //                 <th>
-  //                   <Trans>Time</Trans>
-  //                 </th>
-  //                 <th>
-  //                   <Trans>Users IP</Trans>
-  //                 </th>
-  //                 <th>
-  //                   <Trans>Messages</Trans>
-  //                 </th>
-  //               </tr>
-  //             </thead>
-  //             <tbody>
-  //               {hotspotLogsQuery.data.length ? (
-  //                 hotspotLogsQuery.data.map((log) => (
-  //                   <tr key={log[".id"]}>
-  //                     <td>{log.time}</td>
-  //                     <td>{log.userIp}</td>
-  //                     <td>{log.message}</td>
-  //                   </tr>
-  //                 ))
-  //               ) : (
-  //                 <tr>
-  //                   <td colSpan={3}>
-  //                     <div className="flex min-h-full items-center justify-center text-center font-medium">
-  //                       <Trans>No Results Found</Trans>
-  //                     </div>
-  //                   </td>
-  //                 </tr>
-  //               )}
-  //             </tbody>
-  //           </table>
-  //         </div>
-  //       </div>
-
-  //       <div className="col-span-7 space-y-3 rounded-xl border border-neutral-200 bg-white pt-5">
-  //         <div className="px-6">
-  //           <h2 className="text-base font-semibold">
-  //             <Trans>Hotspot Active</Trans>
-  //           </h2>
-  //         </div>
-  //         <div className="h-full max-h-72 overflow-y-auto">
-  //           <table className="h-full w-full text-left [&_tbody]:text-neutral-700 [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-2 [&_th]:sticky [&_th]:top-0 [&_th]:border-b [&_th]:bg-neutral-100 [&_th]:py-2.5 [&_th]:text-xs [&_th]:font-normal [&_th]:text-neutral-500 [&_th,&_td]:px-5 [&_thead_tr]:border-b">
-  //             <thead>
-  //               <tr>
-  //                 <th>
-  //                   <Trans>User</Trans>
-  //                 </th>
-  //                 <th>
-  //                   <Trans>Uptime</Trans>
-  //                 </th>
-  //                 <th>
-  //                   <Trans>Address</Trans>
-  //                 </th>
-  //                 <th>
-  //                   <Trans>Bytes In</Trans>
-  //                 </th>
-  //                 <th>
-  //                   <Trans>Bytes Out</Trans>
-  //                 </th>
-  //               </tr>
-  //             </thead>
-  //             <tbody>
-  //               {hotspotActivesQuery.data.length ? (
-  //                 hotspotActivesQuery.data.map((log) => (
-  //                   <tr key={log[".id"]}>
-  //                     <td>{log.user}</td>
-  //                     <td>{log.address}</td>
-  //                     <td>{prettifyDuration(log.uptime)}</td>
-  //                     <td>{formatBytes(log["bytes-in"])}</td>
-  //                     <td>{formatBytes(log["bytes-out"])}</td>
-  //                   </tr>
-  //                 ))
-  //               ) : (
-  //                 <tr>
-  //                   <td colSpan={5}>
-  //                     <div className="flex min-h-full items-center justify-center text-center font-medium">
-  //                       <Trans>No Results Found</Trans>
-  //                     </div>
-  //                   </td>
-  //                 </tr>
-  //               )}
-  //             </tbody>
-  //           </table>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 }

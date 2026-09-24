@@ -1,4 +1,3 @@
-import { Popover } from "@base-ui/react";
 import {
   createFileRoute,
   Link,
@@ -11,24 +10,25 @@ import { cn } from "cn";
 import {
   BanknoteIcon,
   ChevronDownIcon,
-  EllipsisVerticalIcon,
   GaugeCircleIcon,
-  LogOutIcon,
   LucideIcon,
   NetworkIcon,
   PanelLeftCloseIcon,
+  PanelLeftOpenIcon,
   PrinterIcon,
   RouterIcon,
-  SearchIcon,
   SettingsIcon,
   SquareTextIcon,
   TicketIcon,
-  UsersIcon,
+  UserIcon,
   WaypointsIcon,
   WifiIcon,
+  WorkflowIcon,
 } from "lucide-react";
 import { useState } from "react";
-import { useLogoutMutation } from "~/serverfns/auth";
+import ProfilePopover from "~/components/profile-popover";
+import RouterosPopover from "~/components/routeros-popover";
+import { APP_NAME } from "~/contants/app";
 
 export const Route = createFileRoute("/(authed)")({
   component: RouteComponent,
@@ -83,6 +83,24 @@ const menus = [
     to: "/app/quick-print",
   },
   {
+    icon: WorkflowIcon,
+    title: "PPP",
+    children: [
+      {
+        title: "Secrets",
+        to: "/app/ppp/secrets",
+      },
+      {
+        title: "Profiles",
+        to: "/app/ppp/profiles",
+      },
+      {
+        title: "Actives",
+        to: "/app/ppp/actives",
+      },
+    ],
+  },
+  {
     icon: SquareTextIcon,
     title: "Logs",
     children: [
@@ -120,9 +138,9 @@ const generalMenus = [
     to: "/voucher-templates",
   },
   {
-    icon: UsersIcon,
-    title: "Users",
-    to: "/users",
+    icon: UserIcon,
+    title: "Account",
+    to: "/account",
   },
   {
     icon: SettingsIcon,
@@ -219,108 +237,93 @@ function Menu({ visible, items }: { visible: boolean; items: MenuItem[] }) {
 
 function RouteComponent() {
   const user = Route.useRouteContext({ select: (state) => state.user });
+  const routeros = Route.useRouteContext({ select: (state) => state.routeros });
   const router = useRouter();
   const currentPath = router.state.location.pathname;
-  const showRouterosMenu = currentPath.startsWith("/app");
+  const isRouterosManagementPage = currentPath.startsWith("/app");
 
-  const logoutMutation = useLogoutMutation();
+  const [showSidebar, setShowSidebar] = useState(false);
 
   return (
     <div className="flex size-full">
-      <div className="sticky top-0 flex h-screen w-64 shrink-0 flex-col border-r bg-white">
-        <div className="flex h-14 shrink-0 items-center border-b px-4 py-2">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-lg font-bold"
-          >
-            <WaypointsIcon /> Mikmoni
-          </Link>
-        </div>
-        <div className="grow overflow-y-auto p-2">
-          <div className="relative overflow-x-hidden">
-            <Menu items={menus} visible={showRouterosMenu} />
-            <Menu items={generalMenus} visible={!showRouterosMenu} />
-          </div>
-        </div>
-        <div className="border-t px-2 py-2">
-          <Popover.Root>
-            <Popover.Trigger className="w-full rounded-xl px-2 py-2 transition-all hover:bg-neutral-100 data-popup-open:bg-neutral-100">
-              <div className="flex items-center gap-2 text-left">
-                <img
-                  src={`https://avatar.vercel.sh/${user.name}?size=30`}
-                  className="size-7.5 shrink-0 rounded-full"
-                />
-                <div className="grow">
-                  <div className="leading-tight">{user.name}</div>
-                  <div className="text-xs leading-tight text-neutral-600">
-                    {user.username}
-                  </div>
-                </div>
-                <EllipsisVerticalIcon className="size-4 shrink-0 text-neutral-600" />
-              </div>
-            </Popover.Trigger>
-            <Popover.Portal>
-              <Popover.Positioner sideOffset={8}>
-                <Popover.Popup className="relative flex h-(--popup-height,auto) w-(--popup-width,auto) max-w-125 min-w-(--anchor-width) origin-(--transform-origin) flex-col gap-1 rounded-xl border bg-white shadow-lg transition-[scale,opacity] duration-100 ease-out outline-none data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0">
-                  <div className="flex items-center gap-2 border-b px-2 py-2.5 text-left">
-                    <img
-                      src={`https://avatar.vercel.sh/${user.name}?size=30`}
-                      className="size-7.5 shrink-0 rounded-full"
-                    />
-                    <div className="grow">
-                      <div className="leading-tight">{user.name}</div>
-                      <div className="text-xs leading-tight text-neutral-600">
-                        {user.username}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-px px-1 pb-1">
-                    <Link
-                      to="/"
-                      className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-neutral-700 transition-all hover:bg-neutral-100 hover:text-foreground"
-                    >
-                      <div className="grow">Settings</div>
-                      <SettingsIcon className="size-4 shrink-0" />
-                    </Link>
-                    <button
-                      disabled={logoutMutation.isPending}
-                      className="flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-neutral-700 transition-all hover:bg-neutral-100 hover:text-foreground"
-                      type="button"
-                      onClick={() => {
-                        logoutMutation.mutate();
-                      }}
-                    >
-                      <div className="grow">Logout</div>
-                      <LogOutIcon className="size-4 shrink-0" />
-                    </button>
-                  </div>
-                </Popover.Popup>
-              </Popover.Positioner>
-            </Popover.Portal>
-          </Popover.Root>
-        </div>
-      </div>
-      <div className="relative min-w-0 grow">
-        <div className="sticky top-0 flex h-14 justify-between border-b bg-white px-8">
-          <div className="flex items-center gap-6">
-            <button type="button" className="text-neutral-500">
+      <aside
+        className={cn(
+          "fixed top-0 z-20 h-screen w-full shrink-0 lg:pointer-events-auto lg:sticky lg:w-max",
+          showSidebar ? "lg:w-max" : "pointer-events-none",
+        )}
+      >
+        {/* backdrop */}
+        <div
+          className={cn(
+            "fixed size-full bg-black/50 transition-all lg:pointer-events-none",
+            showSidebar ? "opacity-100" : "opacity-0",
+          )}
+          onClick={() => {
+            setShowSidebar(false);
+          }}
+        />
+
+        <div
+          className={cn(
+            "relative z-1 flex h-full w-64 flex-col border-r bg-white transition-transform lg:translate-x-0",
+            showSidebar ? "translate-x-0" : "-translate-x-full",
+          )}
+        >
+          <div className="flex h-14 shrink-0 items-center border-b px-4 py-2">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 text-lg font-bold"
+            >
+              <WaypointsIcon className="size-5 text-brand" /> {APP_NAME}
+            </Link>
+            <button
+              type="button"
+              className="ml-auto text-neutral-500 transition-all hover:text-foreground lg:hidden"
+              onClick={() => {
+                setShowSidebar(false);
+              }}
+            >
               <PanelLeftCloseIcon className="size-4.5" />
             </button>
-
-            {/* <div className="relative flex h-9 items-center rounded-lg border border-neutral-300 bg-neutral-50 ring-3 ring-transparent transition-all focus-within:border-brand focus-within:ring-brand/20">
-              <SearchIcon className="pointer-events-none absolute left-3 size-4 text-neutral-600" />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="size-full pr-3 pl-9 outline-none"
-              />
-            </div> */}
           </div>
-          <button type="button">right</button>
+          <div className="grow overflow-y-auto p-2">
+            <div className="relative overflow-x-hidden">
+              <Menu items={menus} visible={isRouterosManagementPage} />
+              <Menu items={generalMenus} visible={!isRouterosManagementPage} />
+            </div>
+          </div>
+          <div className="border-t px-2 py-2">
+            {/* <ProfilePopover /> */}
+            <div>dsa</div>
+          </div>
         </div>
-        <div className="px-8 py-6">
+      </aside>
+
+      <div className="relative z-10 min-w-0 grow">
+        <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-white px-4 sm:px-6 md:px-8">
+          <div className="flex items-center gap-6">
+            <button
+              type="button"
+              className="text-neutral-500 transition-all hover:text-foreground lg:hidden"
+              onClick={() => {
+                setShowSidebar((prev) => !prev);
+              }}
+            >
+              {showSidebar ? (
+                <PanelLeftCloseIcon className="size-4.5" />
+              ) : (
+                <PanelLeftOpenIcon className="size-4.5" />
+              )}
+            </button>
+            {routeros && isRouterosManagementPage && (
+              <RouterosPopover routeros={routeros} />
+            )}
+          </div>
+          <ProfilePopover user={user} />
+        </header>
+        <main className="px-4 py-6 sm:px-6 md:px-8">
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
   );
