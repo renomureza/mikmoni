@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/react/macro";
 import { cn } from "cn";
 import { useId } from "react";
 import Button from "~/components/button";
@@ -11,8 +12,8 @@ export default function SectionForm({
   primaryAction,
   isLoading,
 }: {
-  title: string;
-  description: string;
+  title: React.ReactNode;
+  description: React.ReactNode;
   onSubmit: () => void;
   children: React.ReactNode;
   secondaryAction: { disabled?: boolean; onClick: () => void };
@@ -22,7 +23,7 @@ export default function SectionForm({
   const formId = useId();
 
   return (
-    <div className="w-full space-y-6 rounded-2xl border bg-white p-8">
+    <div className="w-full space-y-6 rounded-2xl border bg-white p-8 px-6 sm:px-8">
       <div className="space-y-1">
         <h2 className="text-xl font-medium">{title}</h2>
         <p className="text-neutral-500">{description}</p>
@@ -46,7 +47,7 @@ export default function SectionForm({
         )}
       >
         <Button variant="secondary" className="w-full" {...secondaryAction}>
-          Back
+          <Trans>Back</Trans>
         </Button>
         <Button form={formId} className="w-full" {...primaryAction} />
       </div>

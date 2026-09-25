@@ -6,6 +6,7 @@ import { currencies, Currency, Language, languages } from "~/contants/locale";
 import { useInstallMutation } from "~/serverfns/installation";
 import SectionForm from "./-components/section-form";
 import InlineError from "~/components/inline-error";
+import { Trans, useLingui } from "@lingui/react/macro";
 
 export const Route = createFileRoute("/install/")({
   component: RouteComponent,
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/install/")({
 type Data = {
   language: Language | null;
   currency: Currency | null;
+  name: string;
   username: string;
   password: string;
 };
@@ -29,37 +31,48 @@ function RouteComponent() {
     language: null,
     currency: null,
 
+    name: "",
     username: "",
     password: "",
   });
 
   const installMutation = useInstallMutation();
+  const { t } = useLingui();
 
   return (
-    <div className="flex min-h-dvh items-center justify-center">
+    <div className="flex min-h-dvh items-center justify-center p-4">
       <div className="flex w-full max-w-md flex-col justify-center space-y-6">
         <div className="space-y-2 text-center">
-          <h1 className="text-center text-2xl font-semibold">Install</h1>
+          <h1 className="text-center text-2xl font-semibold">
+            <Trans>Install</Trans>
+          </h1>
           {!!Object.values(installMutation.data?.errors ?? {}).length && (
-            <InlineError message="One or more fields are invalid." />
+            <InlineError
+              message={<Trans>One or more fields are invalid.</Trans>}
+            />
           )}
         </div>
 
         <div className="flex w-full items-center justify-center">
           {step === 0 ? (
             <SectionForm
-              title="Localization"
-              description="Choose the display language and default currency used across the app. You can change these later in settings."
+              title={<Trans>Localization</Trans>}
+              description={
+                <Trans>
+                  Choose the display language and default currency used across
+                  the app. You can change these later in settings.
+                </Trans>
+              }
               onSubmit={() => {
                 setStep((prev) => prev + 1);
               }}
               secondaryAction={{ disabled: true, onClick: () => {} }}
-              primaryAction={{ children: "Next" }}
+              primaryAction={{ children: <Trans>Next</Trans> }}
             >
               <Select
                 required
-                placeholder="Select language..."
-                label="Language"
+                placeholder={t`Select language...`}
+                label={<Trans>Language</Trans>}
                 options={languages}
                 value={data.language}
                 onChange={(val) => {
@@ -69,8 +82,8 @@ function RouteComponent() {
               />
               <Select
                 required
-                label="Currency"
-                placeholder="Select currency..."
+                label={<Trans>Currency</Trans>}
+                placeholder={t`Select currency...`}
                 options={currencies}
                 value={data.currency}
                 onChange={(val) => {
@@ -81,8 +94,12 @@ function RouteComponent() {
             </SectionForm>
           ) : (
             <SectionForm
-              title="User"
-              description="Create the first admin account to sign in and manage this app."
+              title={<Trans>User</Trans>}
+              description={
+                <Trans>
+                  Create the first admin account to sign in and manage this app.
+                </Trans>
+              }
               onSubmit={() => {
                 installMutation.mutate({ data: data as any });
               }}
@@ -91,13 +108,23 @@ function RouteComponent() {
                   setStep((prev) => prev - 1);
                 },
               }}
-              primaryAction={{ children: "Install" }}
+              primaryAction={{ children: <Trans>Install</Trans> }}
               isLoading={installMutation.isPending}
             >
               <Input
                 required
-                label="Username"
-                placeholder="admin"
+                label={<Trans>Name</Trans>}
+                placeholder={t`Admin`}
+                value={data.name}
+                onChange={(e) => {
+                  setData((prev) => ({ ...prev, name: e.target.value }));
+                }}
+                error={installMutation.data?.errors.name?.[0]}
+              />
+              <Input
+                required
+                label={<Trans>Username</Trans>}
+                placeholder={t`admin`}
                 value={data.username}
                 onChange={(e) => {
                   setData((prev) => ({ ...prev, username: e.target.value }));
@@ -107,7 +134,10 @@ function RouteComponent() {
               <Input
                 required
                 type="password"
-                label="Password"
+                autoComplete="new-password"
+                autoCorrect="off"
+                autoCapitalize="none"
+                label={<Trans>Password</Trans>}
                 value={data.password}
                 onChange={(e) => {
                   setData((prev) => ({ ...prev, password: e.target.value }));

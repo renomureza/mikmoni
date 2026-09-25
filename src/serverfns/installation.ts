@@ -1,6 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { redirect } from "@tanstack/react-router";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
+import path from "node:path";
+import fs from "node:fs/promises";
 import * as z from "zod/v4";
 import { currencyValues, languageValues } from "~/contants/locale";
 import { db, schema } from "~/lib/db";
@@ -11,6 +13,8 @@ import { hashPassword } from "~/utils/encryption";
 const installInputSchema = z.object({
   language: z.enum(languageValues),
   currency: z.enum(currencyValues),
+
+  name: z.string().trim().min(1),
   username: z
     .string()
     .min(3)
@@ -38,12 +42,23 @@ const $install = createServerFn({ method: "POST" })
       };
     }
 
+    const templateDir = path.resolve("src", "voucher-templates");
+    const templateFiles = await fs.readdir(templateDir);
+
+    const templates = await Promise.all(
+      templateFiles.map(async (filename) => ({
+        name: filename,
+        source: await fs.readFile(path.join(templateDir, filename), "utf-8"),
+      })),
+    );
+
     await Promise.all([
       db.insert(schema.users).values({
-        name: validation.data.username,
+        name: validation.data.name,
         username: validation.data.username,
         password: await hashPassword(validation.data.password),
       }),
+      db.insert(schema.voucherTemplates).values(templates),
       languageSetting.upsert(validation.data.language),
       currencySetting.upsert(validation.data.currency),
       installedOption.upsert(true),

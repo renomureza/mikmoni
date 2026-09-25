@@ -4,7 +4,7 @@ export default function InlineError({
   message,
   className,
 }: {
-  message?: string;
+  message?: React.ReactNode;
   className?: string;
 }) {
   if (!message) return null;
