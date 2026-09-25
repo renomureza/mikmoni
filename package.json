@@ -33,7 +33,7 @@
     "handlebars": "^4.7.9",
     "html-to-image": "^1.11.13",
     "jsdom": "^30.1.1",
-    "lucide-react": "^1.47.0",
+    "lucide-react": "^1.48.0",
     "nitro": "^3.0.260903-beta",
     "qrcode": "^1.5.4",
     "react": "^19.3.0",
@@ -60,10 +60,10 @@
     "drizzle-kit": "^1.0.0-rc.4",
     "oxfmt": "^0.70.0",
     "oxlint": "^1.85.0",
-    "oxlint-tsgolint": "^7.0.2002",
+    "oxlint-tsgolint": "^7.0.2003",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.15",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
-    "vite": "^8.3.0"
+    "vite": "^8.3.1"
   }
 }

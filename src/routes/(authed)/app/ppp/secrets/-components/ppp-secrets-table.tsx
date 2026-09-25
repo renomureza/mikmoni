@@ -64,7 +64,7 @@ function SecretMenu({ secret }: { secret: Secret }) {
           open: showUpdateModal,
           onOpenChange: setShowUpdateModal,
         }}
-        title={t`Update User`}
+        title={t`Update PPP Secret`}
         triggerProps={{
           className:
             "text-neutral-600 rounded-lg transition-all hover:text-neutral-700 hover:bg-neutral-50 size-7 flex justify-center items-center",
