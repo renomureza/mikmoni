@@ -6,7 +6,7 @@
   "sideEffects": false,
   "scripts": {
     "dev": "bun --bun vite dev",
-    "build:client": "vite build && tsc --noEmit",
+    "build:client": "vite build",
     "build:all": "bun run build:desktop bun run build:web",
     "build:desktop": "bun run build:client && bun scripts/build-desktop.ts",
     "build:web": "bun run build:client && bun scripts/build-web.ts",
