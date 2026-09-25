@@ -29,7 +29,7 @@ export default function ComboboxSingle<TOption extends Option>({
   className,
 }: {
   options: TOption[] | readonly TOption[];
-  label?: string;
+  label?: React.ReactNode;
   placeholder?: string;
   value?: TOption["value"] | null;
   onChange: (value: TOption["value"] | null) => void;

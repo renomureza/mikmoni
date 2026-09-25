@@ -25,6 +25,7 @@ type Secret = {
   "remote-address"?: string;
   disabled?: "false" | "true";
   comment?: string;
+  isOnline: boolean;
 };
 
 function SecretMenu({ secret }: { secret: Secret }) {
@@ -139,7 +140,18 @@ export default function PppSecretsTable({
             return (
               <Table.Tr key={secret[".id"]}>
                 <Table.Td className="font-semibold text-foreground">
-                  {secret.name}
+                  <div className="inline-flex items-center gap-2">
+                    <div
+                      title={secret.isOnline ? "Online" : "Offline"}
+                      className={cn(
+                        "relative size-2 rounded-full",
+                        secret.isOnline
+                          ? "bg-green-500 after:absolute after:size-full after:animate-ping after:rounded-full after:bg-inherit after:content-['']"
+                          : "bg-neutral-400",
+                      )}
+                    />
+                    {secret.name}
+                  </div>
                 </Table.Td>
                 <Table.Td>{secret["profile"]}</Table.Td>
                 <Table.Td>{secret.service}</Table.Td>

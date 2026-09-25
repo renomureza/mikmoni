@@ -44,13 +44,23 @@ const $getPppSecrets = createServerFn()
   .middleware([authAndRouterosMiddleware])
   .validator((d: GetPppSecretsInputSchema) => d)
   .handler(async ({ context, data }) => {
-    const secrets = (await context.routerosClient.write(
-      "/ppp/secret/print",
-      {},
-      [...(data?.profile ? [`profile=${data.profile}`] : [])],
-    )) as PppSecret[];
+    const [secrets, activeNames] = await Promise.all([
+      context.routerosClient.write("/ppp/secret/print", {}, [
+        ...(data?.profile ? [`profile=${data.profile}`] : []),
+      ]) as Promise<PppSecret[]>,
+      context.routerosClient
+        .write("/ppp/active/print", { ".proplist": "name" })
+        .then((actives) => actives.flatMap((active) => active.name)) as Promise<
+        string[]
+      >,
+    ]);
 
-    return secrets;
+    const active = new Set(activeNames);
+
+    return secrets.map((secret) => ({
+      ...secret,
+      isOnline: active.has(secret.name),
+    }));
   });
 
 function getPppSecretsQueryOptions({

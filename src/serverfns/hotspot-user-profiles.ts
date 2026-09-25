@@ -37,13 +37,19 @@ type HotspotUserProfile = {
 const $getHotspotUserProfiles = createServerFn()
   .middleware([authAndRouterosMiddleware])
   .handler(async ({ context }) => {
-    const profiles = (await context.routerosClient.write(
-      "/ip/hotspot/user/profile/print",
-      {
+    const [profiles, scriptNames] = await Promise.all([
+      context.routerosClient.write("/ip/hotspot/user/profile/print", {
         ".proplist":
           ".id,name,rate-limit,shared-users,parent-queue,address-pool,on-login",
-      },
-    )) as HotspotUserProfile[];
+      }) as Promise<HotspotUserProfile[]>,
+      context.routerosClient
+        .write("/system/scheduler/print", { ".proplist": "name" })
+        .then((scripts) => scripts.flatMap((script) => script.name)) as Promise<
+        string[]
+      >,
+    ]);
+
+    const scriptNamesSet = new Set(scriptNames);
 
     return profiles.map(({ "on-login": onLoginScript, ...profile }) => {
       const { expireMode, lockUser, price, sellingPrice, validity } =
@@ -56,6 +62,7 @@ const $getHotspotUserProfiles = createServerFn()
         price: !price || price === "0" ? "" : price,
         sellingPrice: !sellingPrice || sellingPrice === "0" ? "" : sellingPrice,
         lockUsers: lockUser === "Enable",
+        hasScheduler: scriptNamesSet.has(profile.name),
       };
     });
   });

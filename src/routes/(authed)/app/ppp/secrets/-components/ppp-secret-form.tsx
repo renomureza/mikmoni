@@ -112,7 +112,7 @@ export default function PppSecretForm({
         error={errors?.service?.[0]}
       />
       <ComboboxSingle
-        label="Profile"
+        label={<Trans>Profile</Trans>}
         options={
           profilesQuery.data?.map((profile) => ({
             label: profile.name,

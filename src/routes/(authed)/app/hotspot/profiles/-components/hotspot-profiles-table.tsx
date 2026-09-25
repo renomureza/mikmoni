@@ -9,6 +9,7 @@ import UpdateHotspotUserProfileForm from "./update-hotspot-user-profile-form";
 import { EditIcon, LockIcon, LockOpenIcon, Trash2Icon } from "lucide-react";
 import Table from "~/components/table";
 import { Trans, useLingui } from "@lingui/react/macro";
+import { cn } from "cn";
 
 type Profile = {
   expiredMode: ExpiredModeValue;
@@ -22,6 +23,7 @@ type Profile = {
   "rate-limit"?: string;
   "parent-queue"?: string;
   "address-pool"?: string;
+  hasScheduler: boolean;
 };
 
 function UserProfileMenu({ profile }: { profile: Profile }) {
@@ -71,6 +73,7 @@ export default function HotspotProfileTables({
   profiles: Profile[];
   searchQuery?: string;
 }) {
+  const { t } = useLingui();
   return (
     <Table>
       <Table.Thead>
@@ -108,7 +111,20 @@ export default function HotspotProfileTables({
             return (
               <Table.Tr key={profile[".id"]}>
                 <Table.Td className="font-semibold text-foreground">
-                  {profile.name}
+                  <div className="flex items-center gap-2">
+                    <div
+                      title={
+                        profile.hasScheduler
+                          ? t`Has a scheduler`
+                          : t`Does not have a scheduler`
+                      }
+                      className={cn(
+                        "size-2 rounded-full",
+                        profile.hasScheduler ? "bg-green-500" : "bg-yellow-500",
+                      )}
+                    />
+                    {profile.name}
+                  </div>
                 </Table.Td>
                 <Table.Td>{profile["shared-users"]}</Table.Td>
                 <Table.Td>{profile["rate-limit"]}</Table.Td>
