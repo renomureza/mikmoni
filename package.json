@@ -1,5 +1,6 @@
 {
   "name": "tanstack-start-example-basic-react-query",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "sideEffects": false,
@@ -17,8 +18,10 @@
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
+    "typecheck": "tsc --noEmit",
     "lingui:extract": "lingui extract",
-    "lingui:compile": "lingui compile"
+    "lingui:compile": "lingui compile",
+    "release": "bun run scripts/release.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
