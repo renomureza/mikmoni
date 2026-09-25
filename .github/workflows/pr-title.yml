@@ -1,0 +1,41 @@
+name: PR Title Check
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  lint-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR title (Conventional Commits)
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            chore
+            ci
+            refactor
+            docs
+            deps
+            perf
+            test
+            revert
+          requireScope: false
+
+      - name: Extract type and apply matching label
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          type=$(echo "$PR_TITLE" | grep -oE '^[a-z]+' || true)
+          if [ -n "$type" ]; then
+            gh pr edit "$PR_NUMBER" --add-label "$type" --repo "${{ github.repository }}"
+          fi

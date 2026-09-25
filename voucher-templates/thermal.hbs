@@ -1,0 +1,188 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:ital,wght@0,100..900;1,100..900&family=Geist:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    :root {
+      --font-sans: "Geist", sans-serif;
+      --font-mono: "Geist Mono", monospace;
+
+      --color-muted: #404040;
+      --color-foreground: #171717;
+      --color-border: #a3a3a3;
+
+      --text-xs: 0.75rem;
+      --text-xs--line-height: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-sm--line-height: 0.875;
+    }
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    body {
+      font-size: var(--text-xs);
+      line-height: var(--text-xs--line-height);
+      font-family: var(--font-sans);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      background-color: white;
+      padding: 4px;
+      color: var(--color-foreground);
+    }
+    .voucher {
+      border: 1px solid var(--color-border);
+      width: 11.25rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .header,
+    .footer,
+    .body {
+      padding: 0.5rem 0.5rem;
+    }
+    .header {
+      border-bottom: 1px solid var(--color-border);
+      font-weight: 600;
+      text-align: center;
+    }
+    .body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .credential {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      gap: 0.5rem;
+      width: 100%;
+    }
+    .credential__item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.275rem;
+      width: 100%;
+    }
+    .credential__label {
+      color: var(--color-muted);
+    }
+    .credential__value {
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+    .qrcode {
+      width: 60%;
+    }
+    .footer {
+      border-top: 1px solid var(--color-border);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.275rem;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+      list-style: none;
+      gap: 0.175rem;
+      color: var(--color-muted);
+    }
+    .meta__item:not(:last-child):after {
+      content: "\00B7";
+      margin-left: 0.175rem;
+    }
+    @media print {
+      .voucher {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+  <body>
+    {{#each users as |user|}}
+      <div class="voucher">
+        <div class="header">
+          {{../hotspotName}}
+        </div>
+        <div class="body">
+          <div class="credential">
+            {{#if (eq user.username user.password)}}
+              <div class="credential__item">
+                <div class="credential__label">
+                  Voucher
+                </div>
+                <div class="credential__value">
+                  {{user.username}}
+                </div>
+              </div>
+            {{else}}
+              <div class="credential__item">
+                <div class="credential__label">
+                  Username
+                </div>
+                <div class="credential__value">
+                  {{user.username}}
+                </div>
+              </div>
+              <div class="credential__item">
+                <div class="credential__label">
+                  Password
+                </div>
+                <div class="credential__value">
+                  {{user.password}}
+                </div>
+              </div>
+            {{/if}}
+          </div>
+          <div class="qrcode">
+            {{qrcode
+              (concat
+                "http://"
+                ../dnsName
+                "/login?username="
+                user.username
+                "&password="
+                user.password
+              )
+            }}
+          </div>
+        </div>
+        <div class="footer">
+          <ul class="meta">
+            {{#if user.validity}}
+              <li class="meta__item">{{user.validity}}</li>
+            {{/if}}
+            {{#if user.timeLimit}}
+              <li class="meta__item">{{user.timeLimit}}</li>
+            {{/if}}
+            {{#if user.dataLimit}}
+              <li class="meta__item">{{user.dataLimit}}</li>
+            {{/if}}
+            {{#if user.price}}
+              <li class="meta__item">{{user.price}}</li>
+            {{/if}}
+          </ul>
+          <div class="dns">http://{{../dnsName}}</div>
+        </div>
+      </div>
+    {{/each}}
+  </body>
+</html>
