@@ -42,7 +42,11 @@ const $install = createServerFn({ method: "POST" })
       };
     }
 
-    const templateDir = path.resolve("src", "voucher-templates");
+    const templateDir =
+      RUNTIME === "web"
+        ? path.resolve("voucher-templates")
+        : path.join(import.meta.dir, "voucher-templates");
+
     const templateFiles = await fs.readdir(templateDir);
 
     const templates = await Promise.all(

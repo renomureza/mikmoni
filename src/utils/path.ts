@@ -5,7 +5,7 @@ import path from "node:path";
 export function getAppDataDir(...paths: string[]) {
   let DATA_DIR;
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "production" && RUNTIME === "desktop") {
     const APP_DIR = path.dirname(process.execPath);
     DATA_DIR = path.join(APP_DIR, "data");
   } else {

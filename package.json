@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "bun --bun vite dev",
     "build:client": "vite build && tsc --noEmit",
-    "build": "bun run build:client && bun scripts/build.ts",
+    "build:all": "bun run build:desktop bun run build:web",
+    "build:desktop": "bun run build:client && bun scripts/build-desktop.ts",
+    "build:web": "bun run build:client && bun scripts/build-web.ts",
     "preview": "vite preview",
     "start": "pnpx srvx --prod -s ../client dist/server/server.js",
     "db:seed": "bun --bun src/lib/db/seed.ts",
@@ -31,18 +33,13 @@
     "cn": "latest",
     "drizzle-orm": "^1.0.0-rc.4",
     "handlebars": "^4.7.9",
-    "html-to-image": "^1.11.13",
-    "jsdom": "^30.1.1",
     "lucide-react": "^1.48.0",
-    "nitro": "^3.0.260903-beta",
     "qrcode": "^1.5.4",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-intersection-observer": "^11.0.1",
     "recharts": "^3.10.1",
-    "redaxios": "^0.5.1",
     "sonner": "^2.0.8",
-    "tailwind-merge": "^3.7.0",
     "zod": "^4.6.5"
   },
   "devDependencies": {
@@ -62,7 +59,6 @@
     "oxlint": "^1.85.0",
     "oxlint-tsgolint": "^7.0.2003",
     "tailwindcss": "^4.3.3",
-    "tsx": "^4.23.15",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.3.1"
   }

@@ -6,5 +6,5 @@ export default defineConfig({
     functions: ["cn"],
     stylesheet: "./src/styles/app.css",
   },
-  ignorePatterns: ["**/*.hbs"],
+  ignorePatterns: ["**/*.hbs", "routeTree.gen.ts"],
 });

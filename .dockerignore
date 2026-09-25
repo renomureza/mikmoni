@@ -1,0 +1,14 @@
+node_modules
+dist
+data
+*.sqlite
+.env
+.env.local
+.git
+.gitignore
+README.md
+*.log
+.DS_Store
+docker-compose.yml
+Dockerfile
+.dockerignore
