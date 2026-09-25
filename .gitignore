@@ -22,6 +22,6 @@ yarn.lock
 /sqlite.db
 /docker-data
 /data
-/src/locales/**/*.js
+/src/locales/**/*.ts
 docker-compose.yml
 /playground.ts
