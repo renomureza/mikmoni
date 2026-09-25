@@ -6,7 +6,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 
 type HotspotLog = {
   ".id": string;
@@ -15,7 +15,7 @@ type HotspotLog = {
 };
 
 const $getHotspotLogs = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const logs = (await context.routerosClient.write(
       "/log/print",

@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import * as z from "zod/v4";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 import { getRouterosMonthList, isISORouterOSDate } from "~/utils/routeros";
 
 type UserLog = {
@@ -31,7 +31,7 @@ const getUserLogsInputSchema = z.object({
 type GetUserLogsInputSchema = z.input<typeof getUserLogsInputSchema>;
 
 const $getUserLogs = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator(getUserLogsInputSchema)
   .handler(async ({ context, data }) => {
     const sampleDateFormat = await context.routerosClient

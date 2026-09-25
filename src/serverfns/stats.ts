@@ -6,7 +6,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 import {
   constructRouterosDate,
   formatDuration,
@@ -24,7 +24,7 @@ type Resource = {
 };
 
 const $getStatsOverview = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const today = new Date();
 

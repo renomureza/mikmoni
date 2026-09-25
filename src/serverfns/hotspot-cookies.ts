@@ -10,7 +10,7 @@ import {
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import * as z from "zod/v4";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 
 type HotspotCookie = {
   ".id": string;
@@ -22,7 +22,7 @@ type HotspotCookie = {
 };
 
 const $getHotspotCookies = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const cookies = (await context.routerosClient.write(
       "/ip/hotspot/cookie/print",
@@ -77,7 +77,7 @@ type DeleteHotspotCookieInputSchema = z.input<
 >;
 
 const $deleteHotspotCookie = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DeleteHotspotCookieInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = deleteHotspotCookieInputSchema.safeParse(data);

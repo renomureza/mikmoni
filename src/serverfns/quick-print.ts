@@ -10,7 +10,7 @@ import {
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import * as z from "zod/v4";
 import { UserModeValue, UsernameCharacterValue } from "~/contants/hotspot-user";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 import { hotspotUserGeneratorSchema } from "~/schema/hotspot-user";
 import { randomInt } from "~/utils/number";
 import {
@@ -20,7 +20,7 @@ import {
 } from "~/utils/routeros";
 
 const $getQuickPrints = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const scripts = (await context.routerosClient.write(
       "/system/script/print",
@@ -110,7 +110,7 @@ const createQuickPrintInputSchema = hotspotUserGeneratorSchema.extend({
 type CreateQuickPrintInputSchema = z.input<typeof createQuickPrintInputSchema>;
 
 const $createQuickPrint = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: CreateQuickPrintInputSchema) => d)
   .handler(async ({ context, data }) => {
     const validation = createQuickPrintInputSchema.safeParse(data);
@@ -179,7 +179,7 @@ const updateQuickPrintInputSchema = createQuickPrintInputSchema.extend({
 type UpdateQuickPrintInputSchema = z.input<typeof updateQuickPrintInputSchema>;
 
 const $updateQuickPrint = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: UpdateQuickPrintInputSchema) => d)
   .handler(async ({ context, data }) => {
     const validation = updateQuickPrintInputSchema.safeParse(data);
@@ -257,7 +257,7 @@ type GenerateHotspotUserInputSchema = z.input<
 >;
 
 const $quickPrintGenerate = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: GenerateHotspotUserInputSchema) => d)
   .handler(async ({ context, data }) => {
     const validation = quickPrintGenerateInputSchema.safeParse(data);
@@ -340,7 +340,7 @@ const deleteQuickPrintInputSchema = z.object({
 type DeleteQuickPrintInputSchema = z.input<typeof deleteQuickPrintInputSchema>;
 
 const $deleteQuickPrint = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DeleteQuickPrintInputSchema) => d)
   .handler(async ({ context, data }) => {
     const validation = deleteQuickPrintInputSchema.safeParse(data);

@@ -6,7 +6,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 
 type DhcpLease = {
   ".id": string;
@@ -28,7 +28,7 @@ type DhcpLease = {
 };
 
 const $getDhcpLeases = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const dhcpLeases = (await context.routerosClient.write(
       "/ip/dhcp-server/lease/print",

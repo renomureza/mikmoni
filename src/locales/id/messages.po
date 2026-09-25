@@ -59,6 +59,7 @@ msgstr ""
 #: src/routes/(authed)/app/hotspot/ip-bindings/-components/ip-bindings-table.tsx:99
 #: src/routes/(authed)/app/index.tsx:457
 #: src/routes/(authed)/app/log/user/-components/user-log-table.tsx:36
+#: src/routes/(authed)/app/ppp/actives/-components/ppp-actives-table.tsx:59
 msgid "Address"
 msgstr ""
 
@@ -66,11 +67,26 @@ msgstr ""
 msgid "Address Pool"
 msgstr ""
 
+#: src/routes/install/index.tsx:127
+msgid "admin"
+msgstr ""
+
+#: src/routes/install/index.tsx:117
+msgid "Admin"
+msgstr ""
+
 #: src/routes/(authed)/app/hotspot/actives/-components/hotspot-actives-table.tsx:36
 #: src/routes/(authed)/app/hotspot/hosts/-components/hotspot-hosts-table.tsx:62
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:56
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:58
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:100
+#: src/routes/(authed)/app/ppp/actives/-components/ppp-actives-table.tsx:28
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profiles-table.tsx:49
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:86
 msgid "Are you sure you want to delete it?"
+msgstr ""
+
+#: src/routes/install/-components/section-form.tsx:50
+msgid "Back"
 msgstr ""
 
 #: src/routes/(authed)/app/hotspot/actives/-components/hotspot-actives-table.tsx:74
@@ -85,6 +101,11 @@ msgstr ""
 msgid "Bytes Out"
 msgstr ""
 
+#: src/routes/(authed)/app/ppp/actives/-components/ppp-actives-table.tsx:56
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:120
+msgid "Caller ID"
+msgstr ""
+
 #: src/components/dialog-form.tsx:27
 msgid "Cancel"
 msgstr ""
@@ -95,6 +116,10 @@ msgstr ""
 
 #: src/routes/(authed)/settings.tsx:62
 msgid "Choose the currency used to display prices across the app."
+msgstr ""
+
+#: src/routes/install/index.tsx:61
+msgid "Choose the display language and default currency used across the app. You can change these later in settings."
 msgstr ""
 
 #: src/routes/(authed)/account.tsx:37
@@ -113,6 +138,10 @@ msgstr ""
 #: src/routes/(authed)/app/hotspot/hosts/-components/hotspot-hosts-table.tsx:98
 #: src/routes/(authed)/app/hotspot/ip-bindings/-components/ip-bindings-table.tsx:108
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:146
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profile-form.tsx:109
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profiles-table.tsx:89
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secret-form.tsx:204
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:132
 #: src/routes/(authed)/app/quick-print/-components/quick-print-table.tsx:154
 #: src/routes/(authed)/app/report/-components/selling-report-table.tsx:38
 msgid "Comment"
@@ -128,10 +157,20 @@ msgstr "Penggunaan CPU"
 
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:68
 #: src/routes/(authed)/app/hotspot/users/index.tsx:87
+#: src/routes/(authed)/app/ppp/profiles/index.tsx:62
+#: src/routes/(authed)/app/ppp/secrets/index.tsx:69
 #: src/routes/(authed)/app/quick-print/-components/create-quick-print-form.tsx:17
 #: src/routes/(authed)/app/quick-print/index.tsx:61
 #: src/routes/(authed)/voucher-templates/index.tsx:94
 msgid "Create"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/profiles/index.tsx:58
+msgid "Create PPP Profile"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/secrets/index.tsx:65
+msgid "Create PPP Secret"
 msgstr ""
 
 #: src/routes/(authed)/app/hotspot/profiles/index.tsx:53
@@ -140,6 +179,10 @@ msgstr ""
 
 #: src/routes/(authed)/app/quick-print/index.tsx:57
 msgid "Create Quick Print"
+msgstr ""
+
+#: src/routes/install/index.tsx:99
+msgid "Create the first admin account to sign in and manage this app."
 msgstr ""
 
 #: src/routes/(authed)/app/hotspot/users/index.tsx:83
@@ -151,6 +194,7 @@ msgid "Critical"
 msgstr ""
 
 #: src/routes/(authed)/settings.tsx:60
+#: src/routes/install/index.tsx:85
 msgid "Currency"
 msgstr ""
 
@@ -182,12 +226,20 @@ msgstr ""
 msgid "DHCP Leases"
 msgstr ""
 
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:55
+msgid "Disable PPP"
+msgstr ""
+
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:69
 msgid "Disable user"
 msgstr ""
 
 #: src/routes/(authed)/app/index.tsx:384
 msgid "Disk"
+msgstr ""
+
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:119
+msgid "Does not have a scheduler"
 msgstr ""
 
 #: src/routes/(authed)/app/hotspot/cookies/-components/hotspot-cookies-table.tsx:55
@@ -203,11 +255,15 @@ msgstr ""
 msgid "Elevated"
 msgstr ""
 
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:55
+msgid "Enable PPP"
+msgstr ""
+
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:69
 msgid "Enable user"
 msgstr ""
 
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:88
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:91
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:121
 msgid "Expired Mode"
 msgstr ""
@@ -228,6 +284,10 @@ msgstr ""
 #: src/routes/(authed)/app/hotspot/users/index.tsx:99
 #: src/routes/(authed)/app/index.tsx:310
 msgid "Generate Users"
+msgstr ""
+
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:118
+msgid "Has a scheduler"
 msgstr ""
 
 #: src/routes/(authed)/app/dhcp-leases/-components/dhcp-lease-table.tsx:55
@@ -263,19 +323,48 @@ msgstr "Pengguna Hotspot"
 msgid "Hotspot Users"
 msgstr ""
 
+#: src/routes/install/index.tsx:47
+#: src/routes/install/index.tsx:111
+msgid "Install"
+msgstr ""
+
 #: src/routes/(authed)/app/hotspot/ip-bindings/index.tsx:18
 msgid "IP Bindings"
 msgstr ""
 
 #: src/routes/(authed)/settings.tsx:39
+#: src/routes/install/index.tsx:75
 msgid "Language"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:129
+msgid "Last Loged Out"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secret-form.tsx:154
+msgid "Limit Bytes In"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secret-form.tsx:179
+msgid "Limit Bytes Out"
 msgstr ""
 
 #: src/components/infinite-query-loader.tsx:60
 msgid "Load more"
 msgstr ""
 
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:100
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profile-form.tsx:77
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profiles-table.tsx:80
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secret-form.tsx:130
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:123
+msgid "Local Address"
+msgstr ""
+
+#: src/routes/install/index.tsx:59
+msgid "Localization"
+msgstr ""
+
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:103
 msgid "Lock User"
 msgstr ""
 
@@ -332,11 +421,17 @@ msgstr ""
 
 #: src/components/hotspot-user-generator-form.tsx:114
 #: src/routes/(authed)/account.tsx:35
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:79
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:82
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:73
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-form.tsx:85
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:125
+#: src/routes/(authed)/app/ppp/actives/-components/ppp-actives-table.tsx:53
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profile-form.tsx:58
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profiles-table.tsx:74
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secret-form.tsx:83
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:111
 #: src/routes/(authed)/app/quick-print/-components/quick-print-table.tsx:130
+#: src/routes/install/index.tsx:116
 msgid "Name"
 msgstr ""
 
@@ -347,6 +442,10 @@ msgstr ""
 
 #: src/routes/(authed)/account.tsx:125
 msgid "New password"
+msgstr ""
+
+#: src/routes/install/index.tsx:70
+msgid "Next"
 msgstr ""
 
 #: src/components/routeros-popover.tsx:74
@@ -363,14 +462,37 @@ msgstr ""
 msgid "Normal"
 msgstr ""
 
+#: src/routes/install/index.tsx:51
+msgid "One or more fields are invalid."
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profile-form.tsx:99
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profiles-table.tsx:86
+msgid "Only One"
+msgstr ""
+
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:178
 msgid "Parent Queue"
 msgstr ""
 
 #: src/routes/(authed)/account.tsx:85
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-form.tsx:96
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secret-form.tsx:92
+#: src/routes/install/index.tsx:140
 #: src/routes/login.tsx:47
 msgid "Password"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/actives/index.tsx:20
+msgid "PPP Actives"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/profiles/index.tsx:26
+msgid "PPP Profiles"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/secrets/index.tsx:29
+msgid "PPP Secrets"
 msgstr ""
 
 #: src/components/hotspot-user-generator-form.tsx:166
@@ -382,7 +504,7 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:94
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:97
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:149
 #: src/routes/(authed)/app/report/-components/selling-report-table.tsx:41
 msgid "Price"
@@ -396,6 +518,8 @@ msgstr ""
 #: src/routes/(authed)/app/hotspot/profiles/index.tsx:57
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-form.tsx:113
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:131
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secret-form.tsx:115
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:114
 #: src/routes/(authed)/app/quick-print/-components/quick-print-table.tsx:136
 #: src/routes/(authed)/app/report/-components/selling-report-table.tsx:35
 msgid "Profile"
@@ -409,9 +533,18 @@ msgstr ""
 msgid "Quick Print"
 msgstr ""
 
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:85
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:88
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:111
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profile-form.tsx:67
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profiles-table.tsx:77
 msgid "Rate Limit"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profile-form.tsx:86
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profiles-table.tsx:83
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secret-form.tsx:139
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:126
+msgid "Remote Address"
 msgstr ""
 
 #: src/routes/(authed)/app/index.tsx:365
@@ -420,6 +553,10 @@ msgstr ""
 
 #: src/components/setting-card.tsx:35
 msgid "Save"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/actives/index.tsx:49
+msgid "Search actives..."
 msgstr ""
 
 #: src/routes/(authed)/app/dhcp-leases/index.tsx:47
@@ -442,7 +579,12 @@ msgstr ""
 msgid "Search IP Bindings..."
 msgstr ""
 
+#: src/components/ppp-profile-combobox.tsx:34
+msgid "Search profile..."
+msgstr ""
+
 #: src/routes/(authed)/app/hotspot/profiles/index.tsx:73
+#: src/routes/(authed)/app/ppp/profiles/index.tsx:76
 msgid "Search profiles..."
 msgstr ""
 
@@ -456,6 +598,10 @@ msgstr ""
 
 #: src/components/routeros-popover.tsx:65
 msgid "Search routeros..."
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/secrets/index.tsx:84
+msgid "Search secrets..."
 msgstr ""
 
 #: src/routes/(authed)/app/hotspot/users/-components/print-button.tsx:26
@@ -475,8 +621,16 @@ msgstr ""
 msgid "Select comment..."
 msgstr ""
 
+#: src/routes/install/index.tsx:86
+msgid "Select currency..."
+msgstr ""
+
 #: src/components/date-filter.tsx:67
 msgid "Select day"
+msgstr ""
+
+#: src/routes/install/index.tsx:74
+msgid "Select language..."
 msgstr ""
 
 #: src/components/date-filter.tsx:75
@@ -491,7 +645,7 @@ msgstr ""
 msgid "Select year"
 msgstr ""
 
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:97
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:100
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:160
 msgid "Selling Price"
 msgstr ""
@@ -511,11 +665,17 @@ msgstr ""
 msgid "Server"
 msgstr ""
 
+#: src/routes/(authed)/app/ppp/actives/-components/ppp-actives-table.tsx:65
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secret-form.tsx:102
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:117
+msgid "Service"
+msgstr ""
+
 #: src/routes/(authed)/settings.tsx:16
 msgid "Settings"
 msgstr ""
 
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:82
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:85
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:100
 msgid "Shared Users"
 msgstr ""
@@ -563,7 +723,15 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:39
+#: src/routes/(authed)/app/ppp/profiles/-components/ppp-profiles-table.tsx:31
+msgid "Update PPP Profile"
+msgstr ""
+
+#: src/routes/(authed)/app/ppp/secrets/-components/ppp-secrets-table.tsx:68
+msgid "Update PPP Secret"
+msgstr ""
+
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:41
 msgid "Update Profile"
 msgstr ""
 
@@ -582,6 +750,7 @@ msgstr ""
 #: src/routes/(authed)/app/hotspot/actives/-components/hotspot-actives-table.tsx:71
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:137
 #: src/routes/(authed)/app/index.tsx:454
+#: src/routes/(authed)/app/ppp/actives/-components/ppp-actives-table.tsx:62
 msgid "Uptime"
 msgstr ""
 
@@ -591,6 +760,7 @@ msgstr ""
 #: src/routes/(authed)/app/log/hotspot/-components/hotspot-log-table.tsx:26
 #: src/routes/(authed)/app/log/user/-components/user-log-table.tsx:33
 #: src/routes/(authed)/app/report/-components/selling-report-table.tsx:32
+#: src/routes/install/index.tsx:97
 msgid "User"
 msgstr ""
 
@@ -609,6 +779,7 @@ msgid "User Profiles"
 msgstr ""
 
 #: src/routes/(authed)/account.tsx:60
+#: src/routes/install/index.tsx:126
 #: src/routes/login.tsx:41
 msgid "Username"
 msgstr ""
@@ -621,7 +792,7 @@ msgstr ""
 msgid "Users IP"
 msgstr ""
 
-#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:91
+#: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:94
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:136
 #: src/routes/(authed)/app/log/user/-components/user-log-table.tsx:42
 msgid "Validity"

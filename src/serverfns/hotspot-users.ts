@@ -8,7 +8,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 import * as z from "zod/v4";
 import { toast } from "sonner";
 import { randomInt } from "node:crypto";
@@ -42,7 +42,7 @@ const getHotspotUsersInputSchema = z
 type GetHotspotUsersInputSchema = z.input<typeof getHotspotUsersInputSchema>;
 
 const $getHotspotUsers = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: GetHotspotUsersInputSchema) => d)
   .handler(async ({ context, data }) => {
     const users = (await context.routerosClient.write(
@@ -107,7 +107,7 @@ export function useGetHotspotUsersSuspenseQuery(
 //
 
 const $getHotspotUserComments = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const comments = (await context.routerosClient.write(
       "/ip/hotspot/user/print",
@@ -165,7 +165,7 @@ type GenerateHotspotUserInputSchema = z.input<
 >;
 
 const $generateHotspotUsers = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: GenerateHotspotUserInputSchema) => d)
   .handler(async ({ context, data }) => {
     const validation = generateHotspotUserInputSchema.safeParse(data);
@@ -263,7 +263,7 @@ type CreateHotspotUserInputSchema = z.input<
 >;
 
 const $createHotspotUsers = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: CreateHotspotUserInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = createHotspotUserInputSchema.safeParse(data);
@@ -341,7 +341,7 @@ type UpdateHotspotUserInputSchema = z.input<
 >;
 
 const $updateHotspotUsers = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: UpdateHotspotUserInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = updateHotspotUserInputSchema.safeParse(data);
@@ -413,7 +413,7 @@ type DisableHotspotUserInputSchema = z.input<
 >;
 
 const $disableHotspotUsers = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DisableHotspotUserInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = disableHotspotUserInputSchema.safeParse(data);

@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import * as z from "zod/v4";
 import { dataLimitUnitValues } from "~/contants/hotspot-user";
 import { PppService, pppServices } from "~/contants/ppp";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 import { toBytes } from "~/utils/routeros";
 import { tryCatch } from "~/utils/utilities";
 
@@ -41,7 +41,7 @@ const getPppSecretsInputSchema = z
 type GetPppSecretsInputSchema = z.input<typeof getPppSecretsInputSchema>;
 
 const $getPppSecrets = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: GetPppSecretsInputSchema) => d)
   .handler(async ({ context, data }) => {
     const [secrets, activeNames] = await Promise.all([
@@ -120,7 +120,7 @@ const createPppSecretInputSchema = z.object({
 type CreatePppSecretInputSchema = z.input<typeof createPppSecretInputSchema>;
 
 const $createPppSecret = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: CreatePppSecretInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = createPppSecretInputSchema.safeParse(data);
@@ -190,7 +190,7 @@ const updatePppSecretInputSchema = createPppSecretInputSchema.extend({
 type UpdatePppSecretInputSchema = z.input<typeof updatePppSecretInputSchema>;
 
 const $updatePppSecret = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: UpdatePppSecretInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = updatePppSecretInputSchema.safeParse(data);
@@ -262,7 +262,7 @@ const disablePppSecretInputSchema = z.object({
 type DisablePppSecretInputSchema = z.input<typeof disablePppSecretInputSchema>;
 
 const $disablePppSecret = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DisablePppSecretInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = disablePppSecretInputSchema.safeParse(data);
@@ -313,7 +313,7 @@ const deletePppSecretInputSchema = z.object({
 type DeletePppSecretInputSchema = z.input<typeof deletePppSecretInputSchema>;
 
 const $deletePppSecret = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DeletePppSecretInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = deletePppSecretInputSchema.safeParse(data);

@@ -15,7 +15,7 @@ import {
   ExpiredModeValue,
   expiredModeValues,
 } from "~/contants/hotspot-profile";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 import {
   extractOnLoginScriptPutFields,
   getRouterOSDatePositions,
@@ -35,7 +35,7 @@ type HotspotUserProfile = {
 };
 
 const $getHotspotUserProfiles = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const [profiles, scriptNames] = await Promise.all([
       context.routerosClient.write("/ip/hotspot/user/profile/print", {
@@ -266,7 +266,7 @@ type CreateHotspotUserProfileInputSchema = z.input<
 >;
 
 const $createHotspotUserProfile = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: CreateHotspotUserProfileInputSchema) => d)
   .handler(async ({ context, data }) => {
     const validation = createHotspotUserProfileInputSchema.safeParse(data);
@@ -365,7 +365,7 @@ type UpdateHotspotUserProfileInputSchema = z.input<
 >;
 
 const $updateHotspotUserProfile = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: UpdateHotspotUserProfileInputSchema) => d)
   .handler(async ({ context, data }) => {
     const validation = updateHotspotUserProfileInputSchema.safeParse(data);
@@ -506,7 +506,7 @@ type DeleteHotspotUserProfileInputSchema = z.input<
 >;
 
 const $deleteHotspotUserProfile = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DeleteHotspotUserProfileInputSchema) => d)
   .handler(async ({ context, data }) => {
     const validation = deleteHotspotUserProfileInputSchema.safeParse(data);

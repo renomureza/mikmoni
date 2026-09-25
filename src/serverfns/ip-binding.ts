@@ -10,7 +10,7 @@ import {
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import * as z from "zod/v4";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 
 type IpBinding = {
   ".id": string;
@@ -24,7 +24,7 @@ type IpBinding = {
 };
 
 const $getIpBinding = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const ipBindings = (await context.routerosClient.write(
       "/ip/hotspot/ip-binding/print",
@@ -77,7 +77,7 @@ const deleteIpBindingInputSchema = z.object({
 type DeleteIpBindingInputSchema = z.input<typeof deleteIpBindingInputSchema>;
 
 const $deleteIpBinding = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DeleteIpBindingInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = deleteIpBindingInputSchema.safeParse(data);
@@ -122,7 +122,7 @@ const disableIpBindingInputSchema = z.object({
 type DisableIpBindingInputSchema = z.input<typeof disableIpBindingInputSchema>;
 
 const $disableIpBinding = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DisableIpBindingInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = disableIpBindingInputSchema.safeParse(data);

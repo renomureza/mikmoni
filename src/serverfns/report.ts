@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import * as z from "zod/v4";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 import { getRouterosMonthList, isISORouterOSDate } from "~/utils/routeros";
 
 type Report = {
@@ -31,7 +31,7 @@ const getReportsInputSchema = z.object({
 type GetReportsInputSchema = z.input<typeof getReportsInputSchema>;
 
 const $getReports = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator(getReportsInputSchema)
   .handler(async ({ context, data }) => {
     const sampleDateFormat = await context.routerosClient

@@ -11,7 +11,7 @@ import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import * as z from "zod/v4";
 import { onlyOneOptions } from "~/contants/ppp";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 import { tryCatch } from "~/utils/utilities";
 
 type PppProfiles = {
@@ -31,7 +31,7 @@ const getPppProfilesInputSchema = z.object({
 type GetPppProfilesInputSchema = z.input<typeof getPppProfilesInputSchema>;
 
 const $getPppProfiles = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator(getPppProfilesInputSchema)
   .handler(async ({ context, data }) => {
     const profiles = (await context.routerosClient.write(
@@ -102,7 +102,7 @@ const createPppProfileInputSchema = z.object({
 type CreatePppProfileInputSchema = z.input<typeof createPppProfileInputSchema>;
 
 const $createPppProfile = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: CreatePppProfileInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = createPppProfileInputSchema.safeParse(data);
@@ -165,7 +165,7 @@ const updatePppProfileInputSchema = createPppProfileInputSchema.extend({
 type UpdatePppProfileInputSchema = z.input<typeof updatePppProfileInputSchema>;
 
 const $updatePppProfile = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: UpdatePppProfileInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = updatePppProfileInputSchema.safeParse(data);
@@ -233,7 +233,7 @@ const deletePppProfileInputSchema = z.object({
 type DeletePppProfileInputSchema = z.input<typeof deletePppProfileInputSchema>;
 
 const $deletePppProfile = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DeletePppProfileInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = deletePppProfileInputSchema.safeParse(data);

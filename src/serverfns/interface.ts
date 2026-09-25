@@ -6,7 +6,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 
 type Interface = {
   ".id": string;
@@ -21,7 +21,7 @@ type Interface = {
 };
 
 const $getInterfaces = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const users = (await context.routerosClient.write(
       "/interface/print",
@@ -67,7 +67,7 @@ export function useGetInterfacesSuspenseQuery() {
 //
 
 export const $getInterfaceTraffic = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const traffic = await context.routerosClient
       .write("/interface/monitor-traffic", {

@@ -11,7 +11,7 @@ import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import * as z from "zod/v4";
 import { PppService } from "~/contants/ppp";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 import { tryCatch } from "~/utils/utilities";
 
 type PppActive = {
@@ -24,7 +24,7 @@ type PppActive = {
 };
 
 const $getPppActives = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const actives = (await context.routerosClient.write("/ppp/active/print", {
       ".proplist": ".id,name,service,caller-id,address,uptime",
@@ -78,7 +78,7 @@ type DeletePppActiveInputSchema = z.input<
 >;
 
 const $deleteActiveProfile = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DeletePppActiveInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = deleteActiveProfileInputSchema.safeParse(data);

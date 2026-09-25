@@ -9,7 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import * as z from "zod/v4";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 
 type HotspotActive = {
   ".id": string;
@@ -26,7 +26,7 @@ type HotspotActive = {
 };
 
 const $getHotspotActives = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const actives = (await context.routerosClient.write(
       "/ip/hotspot/active/print",
@@ -81,7 +81,7 @@ type DeleteHotpotActiveInputSchema = z.input<
 >;
 
 const $deleteHotspotActive = createServerFn({ method: "POST" })
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .validator((d: DeleteHotpotActiveInputSchema) => d)
   .handler(async ({ data, context }) => {
     const validation = deleteHotspotActiveInputSchema.safeParse(data);

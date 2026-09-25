@@ -6,7 +6,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createServerFn, useServerFn } from "@tanstack/react-start";
-import { authAndRouterosMiddleware } from "~/middlewares/auth";
+import { routerosMiddleware } from "~/middlewares/auth";
 
 type IpPool = {
   ".id": string;
@@ -14,7 +14,7 @@ type IpPool = {
 };
 
 const $getSimpleQueues = createServerFn()
-  .middleware([authAndRouterosMiddleware])
+  .middleware([routerosMiddleware])
   .handler(async ({ context }) => {
     const simpleQueues = (await context.routerosClient.write(
       "/queue/simple/print",
