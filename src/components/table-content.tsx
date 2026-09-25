@@ -7,7 +7,7 @@ export default function TableContent({
 }) {
   return (
     <div className="overflow-hidden rounded-xl border bg-white">
-      <div className="flex w-full gap-2 p-4">{filters}</div>
+      <div className="flex w-full flex-wrap gap-2 p-4">{filters}</div>
       <div className="max-h-160 w-full overflow-y-auto">{children}</div>
     </div>
   );

@@ -62,7 +62,7 @@ function RouteComponent() {
                 setSearchQuery(e.target.value);
               }}
             />
-            <div className="mx-1 h-8 w-px bg-neutral-200"></div>
+            <div className="mx-1 hidden h-8 w-px bg-neutral-200 xl:block"></div>
             <DateFilter
               value={deps}
               onSubmit={(search) => {

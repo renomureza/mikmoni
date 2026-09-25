@@ -139,7 +139,7 @@ export default function HotspotUserGeneratorForm<
         }}
       />
 
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <Select
           label={t`User Mode`}
           options={userModeOptions}
@@ -161,7 +161,7 @@ export default function HotspotUserGeneratorForm<
           error={errors?.nameLength?.[0]}
         />
       </div>
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <Input
           label={t`Prefix`}
           value={state.prefix}
@@ -182,7 +182,7 @@ export default function HotspotUserGeneratorForm<
         />
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <Input
           label={t`Time Limit`}
           value={state.timeLimit}

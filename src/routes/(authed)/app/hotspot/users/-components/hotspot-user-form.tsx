@@ -79,7 +79,7 @@ export default function HotspotUserForm({
       }}
       primaryAction={{ isLoading, children: !isUpdate ? "Create" : "Update" }}
     >
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <Input
           required
           label={t`Name`}
@@ -118,7 +118,7 @@ export default function HotspotUserForm({
         error={errors?.profile?.[0]}
         showDetails
       />
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <Input
           label={t`Time Limit`}
           value={state.timeLimit}

@@ -163,7 +163,7 @@ function RouteComponent() {
               }}
             />
             <PrintButton
-              className="flex items-center gap-2 rounded-lg border border-blue-50 bg-blue-100 px-3 font-medium text-blue-600 disabled:pointer-events-none disabled:opacity-50"
+              className="flex h-9 items-center gap-2 rounded-lg border border-blue-50 bg-blue-100 px-3 font-medium text-blue-600 disabled:pointer-events-none disabled:opacity-50"
               disabled={!loaderDeps.comment}
               onClickTemplate={(templateId) => {
                 void navigate({

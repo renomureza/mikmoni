@@ -60,7 +60,7 @@ export default function DateFilter({
           year: filter.year || undefined,
         });
       }}
-      className="flex items-center gap-2"
+      className="flex flex-wrap items-center gap-2"
     >
       <Select
         className="w-32"

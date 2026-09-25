@@ -13,7 +13,7 @@ export default function RouterosPage({
 }) {
   return (
     <div className={cn("size-full space-y-4", className)}>
-      <div className="flex justify-between">
+      <div className="flex flex-wrap justify-between gap-3">
         <h1 className="text-2xl font-semibold">{title}</h1>
         {actions && <div className="flex items-center gap-3">{actions}</div>}
       </div>

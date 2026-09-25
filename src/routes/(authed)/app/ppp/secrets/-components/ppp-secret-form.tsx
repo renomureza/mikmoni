@@ -148,7 +148,7 @@ export default function PppSecretForm({
           error={errors?.remoteAddress?.[0]}
         />
       </div>
-      <div className="flex gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <div className="flex w-full items-end gap-1">
           <Input
             label={<Trans>Limit Bytes In</Trans>}

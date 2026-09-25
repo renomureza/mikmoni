@@ -6,7 +6,7 @@ function Table({ className, ...props }: React.ComponentProps<"table">) {
     <table
       {...props}
       className={cn(
-        "w-full table-fixed text-left [&_tbody]:text-neutral-700 [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-2 [&_th]:sticky [&_th]:top-0 [&_th]:bg-neutral-100 [&_th]:py-2 [&_th]:font-normal [&_th]:text-neutral-500 [&_th,&_td]:px-3 [&_thead_tr]:border-b",
+        "w-full text-left whitespace-nowrap [&_tbody]:text-neutral-700 [&_tbody_tr:not(:last-child)]:border-b [&_td]:py-2 [&_th]:sticky [&_th]:top-0 [&_th]:bg-neutral-100 [&_th]:py-2 [&_th]:font-normal [&_th]:text-neutral-500 [&_th,&_td]:px-3 [&_thead_tr]:border-b",
         className,
       )}
     />
