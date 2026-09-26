@@ -4,7 +4,6 @@ import {
   HouseWifiIcon,
   LucideIcon,
   TicketIcon,
-  UserPlusIcon,
   UserRoundArrowLeftIcon,
 } from "lucide-react";
 import { formatBytes, prettifyDuration } from "~/utils/routeros";
@@ -20,7 +19,6 @@ import {
 import { CSSProperties, useEffect, useState } from "react";
 import { cn } from "cn";
 import { $getInterfaceTraffic } from "~/serverfns/interface";
-import Button from "~/components/button";
 import Gauge from "~/components/gauge";
 import { formatCurrency, formatNumber } from "~/utils/number";
 import { Trans, useLingui } from "@lingui/react/macro";
