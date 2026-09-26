@@ -301,16 +301,7 @@ function RouteComponent() {
     formatNumber(value, { locale: language });
 
   return (
-    <RouterosPage
-      className="@container"
-      title={title}
-      actions={
-        <Button>
-          <UserPlusIcon className="size-4" />
-          <Trans>Generate Users</Trans>
-        </Button>
-      }
-    >
+    <RouterosPage className="@container" title={title}>
       <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @5xl:grid-cols-4">
         <StatsCard
           title={<Trans>Hotspot User</Trans>}
