@@ -103,7 +103,7 @@ function RouterosForm({
       <div className="flex w-full gap-4">
         <Input
           label="Host"
-          placeholder="192.7.0.1"
+          placeholder="192.168.100.1"
           required
           value={state.host}
           onChange={(e) => {
@@ -113,7 +113,7 @@ function RouterosForm({
         />
         <Input
           label="Port"
-          placeholder="8729"
+          placeholder="8728"
           required
           value={state.port}
           type="number"
@@ -186,7 +186,7 @@ function CreateRouterosForm({ onClose }: { onClose: () => void }) {
   return (
     <RouterosForm
       isLoading={createRouterosMutation.isPending}
-      errors={createRouterosMutation.data?.error}
+      errors={createRouterosMutation.data?.errors}
       onSubmit={(routeros) => {
         createRouterosMutation.mutate(
           { data: routeros },

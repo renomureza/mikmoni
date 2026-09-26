@@ -20,6 +20,7 @@ import {
   getFindManyCursorInputSchema,
 } from "~/utils/find-many-cursor";
 import { RouterOSClient } from "~/lib/routeros-client";
+import { tryCatch } from "~/utils/utilities";
 
 const setRouterosInputSchema = z.object({
   id: z.coerce.number().int(),
@@ -106,7 +107,7 @@ const $createRouteros = createServerFn({ method: "POST" })
     if (!validation.success) {
       return {
         success: false,
-        error: z.flattenError(validation.error).fieldErrors,
+        errors: z.flattenError(validation.error).fieldErrors,
       };
     }
 
@@ -121,6 +122,22 @@ const $createRouteros = createServerFn({ method: "POST" })
       dnsName: validation.data.dnsName,
     });
 
+    const routerosClient = new RouterOSClient({
+      host: validation.data.host,
+      port: validation.data.port,
+      password: validation.data.password,
+      user: validation.data.username,
+      timeout: 5_000,
+    });
+
+    const res = await tryCatch(routerosClient.connect());
+
+    if (!res.ok) {
+      return { success: false, error: res.error };
+    }
+
+    await routerosClient.close();
+
     return { success: true, data: routeros };
   });
 
@@ -133,6 +150,8 @@ export function useCreateRouterosMutation() {
     onSuccess: async (data) => {
       if (data.success) {
         await queryClient.invalidateQueries({ queryKey: ["routeros"] });
+      } else if (data.error) {
+        toast.error(data.error);
       }
     },
   });
@@ -171,6 +190,22 @@ const $updateRouteros = createServerFn({ method: "POST" })
     if (!routeros) {
       return { success: false, error: "RouterOS not found" };
     }
+
+    const routerosClient = new RouterOSClient({
+      host: validation.data.host,
+      port: validation.data.port,
+      password: validation.data.password,
+      user: validation.data.username,
+      timeout: 5_000,
+    });
+
+    const res = await tryCatch(routerosClient.connect());
+
+    if (!res.ok) {
+      return { success: false, error: res.error };
+    }
+
+    await routerosClient.close();
 
     const updatedRouteros = await db
       .update(schema.routeros)
