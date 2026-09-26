@@ -1,6 +1,5 @@
 {
   "name": "tanstack-start-example-basic-react-query",
-  "version": "0.1.2",
   "private": true,
   "type": "module",
   "sideEffects": false,
