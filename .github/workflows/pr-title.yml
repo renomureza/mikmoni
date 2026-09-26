@@ -4,9 +4,6 @@ on:
   pull_request:
     types: [opened, edited, synchronize]
 
-permissions:
-  pull-requests: write
-
 jobs:
   lint-title:
     runs-on: ubuntu-latest
@@ -16,26 +13,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          # https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716
           types: |
+            breaking
             feat
             fix
-            chore
-            ci
             refactor
-            docs
-            deps
-            perf
+            chore
             test
-            revert
+            ci
           requireScope: false
-
-      - name: Extract type and apply matching label
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          type=$(echo "$PR_TITLE" | grep -oE '^[a-z]+' || true)
-          if [ -n "$type" ]; then
-            gh pr edit "$PR_NUMBER" --add-label "$type" --repo "${{ github.repository }}"
-          fi

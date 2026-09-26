@@ -1,10 +1,16 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*.*.*"
   workflow_dispatch:
+    inputs:
+      bump:
+        description: "Version bump type"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
 permissions:
   contents: write
@@ -46,6 +52,11 @@ jobs:
           path: dist/bin
           merge-multiple: true
 
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: List downloaded files
         run: ls -la dist/bin
 
@@ -56,13 +67,11 @@ jobs:
           cat checksums.txt
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v3
-        with:
-          files: |
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_FILES: |
             dist/bin/*
-          generate_release_notes: true
-          draft: false
-          prerelease: false
+        run: bun run release ${{ inputs.bump }}
 
   docker:
     runs-on: ubuntu-latest
