@@ -20,8 +20,7 @@
     "lint:fix": "oxlint --fix",
     "typecheck": "tsc --noEmit",
     "lingui:extract": "lingui extract",
-    "lingui:compile": "lingui compile --typescript",
-    "release": "bun run scripts/release.ts"
+    "lingui:compile": "lingui compile --typescript"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
