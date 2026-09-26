@@ -10,6 +10,7 @@ Requirements: [Bun](https://bun.sh) 1.4+
 git clone https://github.com/renomureza/mikmoni.git
 cd mikmoni
 bun install
+bunx drizzle-kit push
 bun run dev
 ```
 
@@ -31,16 +32,13 @@ PR titles must follow [Conventional Commits](https://www.conventionalcommits.org
 
 | Type       | Use for                             | Appears in changelog as |
 | ---------- | ----------------------------------- | ----------------------- |
-| `feat`     | A new feature                       | 🚀 Features             |
-| `fix`      | A bug fix                           | 🐛 Bug Fixes            |
-| `deps`     | A dependency bump                   | 📦 Dependencies         |
-| `chore`    | Maintenance, tooling, misc          | 🧰 Maintenance          |
+| `breaking` | A breaking change                   | ⚠️ Breaking Changes     |
+| `feat`     | A new feature                       | Features                |
+| `fix`      | A bug fix                           | Fixes                   |
+| `chore`    | Maintenance, tooling, misc          | Chore                   |
+| `refactor` | Code change with no behavior change | Refactor                |
 | `ci`       | CI/workflow changes                 | 🧰 Maintenance          |
-| `refactor` | Code change with no behavior change | 🧰 Maintenance          |
-| `docs`     | Documentation only                  | 🧰 Maintenance          |
-| `perf`     | Performance improvement             | 🧰 Maintenance          |
 | `test`     | Adding or fixing tests              | 🧰 Maintenance          |
-| `revert`   | Reverts a previous change           | —                       |
 
 Examples:
 

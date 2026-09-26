@@ -128,7 +128,7 @@ async function buildChangelog({
     ) as string;
 
     // Only include user-facing change types
-    if (!["chore", "feat", "fix", "breaking", "refactor"].includes(type)) {
+    if (!["breaking", "feat", "refactor", "fix", "chore"].includes(type)) {
       continue;
     }
 

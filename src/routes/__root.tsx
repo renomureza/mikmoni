@@ -115,10 +115,7 @@ function RootComponent() {
 }
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  const {
-    localization,
-    // localeMessages
-  } = Route.useRouteContext();
+  const { localization } = Route.useRouteContext();
 
   return (
     <html lang={localization.language}>
@@ -126,13 +123,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {/* <IntlProvider locale={localization.language} messages={localeMessages}> */}
         <div className="isolate">{children}</div>
         <TanStackRouterDevtools position="bottom-right" />
         <ReactQueryDevtools buttonPosition="bottom-right" />
         <Scripts />
         <Toaster richColors position="bottom-center" />
-        {/* </IntlProvider> */}
       </body>
     </html>
   );

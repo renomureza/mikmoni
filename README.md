@@ -66,6 +66,7 @@ Requirements: [Bun](https://bun.sh) 1.4+
 git clone https://github.com/renomureza/mikmoni.git
 cd mikmoni
 bun install
+bunx drizzle-kit push
 bun run dev
 ```
 

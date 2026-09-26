@@ -42,7 +42,10 @@ const $install = createServerFn({ method: "POST" })
       };
     }
 
-    const templateDir = path.join(import.meta.dir, "voucher-templates");
+    const templateDir =
+      process.env.NODE_ENV === "production"
+        ? path.resolve(import.meta.dir, "voucher-templates")
+        : path.resolve("voucher-templates");
 
     const templateFiles = await fs.readdir(templateDir);
 
