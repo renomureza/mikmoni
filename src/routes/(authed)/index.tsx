@@ -186,7 +186,7 @@ function CreateRouterosForm({ onClose }: { onClose: () => void }) {
   return (
     <RouterosForm
       isLoading={createRouterosMutation.isPending}
-      errors={createRouterosMutation.data?.error}
+      errors={createRouterosMutation.data?.errors}
       onSubmit={(routeros) => {
         createRouterosMutation.mutate(
           { data: routeros },
