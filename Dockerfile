@@ -16,11 +16,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
-COPY --from=builder /app/dist/client ./dist/client
-COPY --from=builder /app/dist/server ./dist/server
-COPY --from=builder /app/dist/server.js ./dist/server.js
-COPY --from=builder /app/drizzle ./dist/drizzle
-COPY --from=builder /app/voucher-templates ./voucher-templates
+COPY --from=builder /app/dist ./dist
 
 RUN mkdir -p /app/data
 

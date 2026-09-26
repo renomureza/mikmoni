@@ -46,10 +46,3 @@ await (async () => {
     }
   }
 })();
-
-// docker run -d \
-//   --name mikmoni \
-//   -p 3000:3000 \
-//   -v ./docker-data/mikmoni:/app/data \
-//   -e APP_SECRET="" \
-//   mikmoni

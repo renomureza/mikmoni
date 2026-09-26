@@ -1,4 +1,9 @@
+import { cpSync } from "node:fs";
+
 void (async () => {
+  cpSync("drizzle", "dist/drizzle", { recursive: true });
+  cpSync("voucher-templates", "dist/voucher-templates", { recursive: true });
+
   const result = await Bun.build({
     entrypoints: ["./scripts/server.ts"],
     target: "bun",
