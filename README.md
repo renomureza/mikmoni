@@ -1,5 +1,7 @@
 # Mikmoni - Mikrotik Hotspot Management
 
+<img width="1669" height="945" alt="Mikmoni" src="https://github.com/user-attachments/assets/b52c376e-4678-4578-bbc1-c13f9cf4d785" />
+
 A self-hosted management tool for MikroTik RouterOS hotspot networks. Built with TanStack Start, Bun, and SQLite — ships as a single portable executable (Windows / Linux / macOS) or as a Docker image for server deployments.
 
 ## Features
@@ -8,6 +10,7 @@ A self-hosted management tool for MikroTik RouterOS hotspot networks. Built with
 - Works with MikroTik routers running RouterOS 6 or 7
 - Runs as a portable executable or a lightweight Docker container
 - SQLite storage — no external database required
+- Compatible with Mikhmon
 
 ## Installation
 
@@ -77,11 +80,3 @@ bun run build:client    # build client bundle
 bun run build:web       # bundle server entry for web / Docker
 bun run build:desktop   # compile standalone executables for all platforms
 ```
-
-### Release
-
-```bash
-bun run release patch   # or minor / major
-```
-
-This bumps the version, commits, tags, and pushes to `main`. GitHub Actions takes it from there: builds the executables, creates a GitHub Release with checksums, and publishes the Docker image.
