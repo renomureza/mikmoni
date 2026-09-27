@@ -75,6 +75,7 @@ export default function Gauge({
 
   const gradientId = useId();
   const clamped = Math.min(100, Math.max(0, value));
+  const clamedRounded = Math.round(clamped);
 
   const status = useMemo(
     () => getStatus(clamped, thresholds),
@@ -98,7 +99,10 @@ export default function Gauge({
       warning: t`Elevated`,
       critical: t`Critical`,
     } satisfies Record<GaugeStatus, string>;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const statusLabel = STATUS_LABEL[status];
 
   return (
     <div className={className}>
@@ -107,7 +111,7 @@ export default function Gauge({
         width={size}
         height={size * 0.625}
         role="img"
-        aria-label={t`${label}: ${Math.round(clamped)} percent, status ${STATUS_LABEL[status]}`}
+        aria-label={t`${label}: ${clamedRounded} percent, status ${statusLabel}`}
       >
         <defs>
           <clipPath id={`${gradientId}-clip`}>
@@ -139,7 +143,7 @@ export default function Gauge({
           fontWeight={600}
           fill="var(--color-foreground)"
         >
-          {Math.round(clamped)}%
+          {clamedRounded}%
         </text>
 
         <text x="200" y="200" textAnchor="middle" fontSize="18">

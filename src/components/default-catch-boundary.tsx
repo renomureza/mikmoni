@@ -1,6 +1,10 @@
 import { Trans } from "@lingui/react/macro";
-import { Link, useLocation, useRouter } from "@tanstack/react-router";
-import type { ErrorComponentProps } from "@tanstack/react-router";
+import {
+  Link,
+  useLocation,
+  useRouter,
+  type ErrorComponentProps,
+} from "@tanstack/react-router";
 import Button from "./button";
 
 export default function DefaultCatchBoundary({ error }: ErrorComponentProps) {

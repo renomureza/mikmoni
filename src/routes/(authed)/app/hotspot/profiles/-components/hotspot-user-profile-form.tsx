@@ -1,6 +1,6 @@
 import { useLingui } from "@lingui/react/macro";
 import { useState } from "react";
-import type z from "zod/v4-mini";
+import type z from "zod/v4";
 import ComboboxSingle from "~/components/combobox-single";
 import DialogForm from "~/components/dialog-form";
 import Input from "~/components/input";

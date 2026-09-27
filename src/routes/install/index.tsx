@@ -7,6 +7,7 @@ import { useInstallMutation } from "~/serverfns/installation";
 import SectionForm from "./-components/section-form";
 import InlineError from "~/components/inline-error";
 import { Trans, useLingui } from "@lingui/react/macro";
+import type { NonNullableFields } from "~/utils/types";
 
 export const Route = createFileRoute("/install/")({
   component: RouteComponent,
@@ -101,7 +102,9 @@ function RouteComponent() {
                 </Trans>
               }
               onSubmit={() => {
-                installMutation.mutate({ data: data as any });
+                installMutation.mutate({
+                  data: data as NonNullableFields<Data>,
+                });
               }}
               secondaryAction={{
                 onClick: () => {

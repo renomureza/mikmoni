@@ -43,7 +43,7 @@ type GetHotspotUsersInputSchema = z.input<typeof getHotspotUsersInputSchema>;
 
 const $getHotspotUsers = createServerFn()
   .middleware([routerosMiddleware])
-  .validator((d: GetHotspotUsersInputSchema) => d)
+  .validator(getHotspotUsersInputSchema)
   .handler(async ({ context, data }) => {
     const users = (await context.routerosClient.write(
       "/ip/hotspot/user/print",
@@ -78,7 +78,7 @@ function getHotspotUsersQueryOptions({
   });
 }
 
-export function useGetHotspotUsersQuery(opts: GetHotspotUsersInputSchema) {
+export function useGetHotspotUsersQuery(opts?: GetHotspotUsersInputSchema) {
   const query = useServerFn($getHotspotUsers);
   return useQuery(getHotspotUsersQueryOptions({ queryFn: query, opts }));
 }
@@ -88,7 +88,7 @@ export function ensureGetHotspotUsersQuery({
   opts,
 }: {
   queryClient: QueryClient;
-  opts: GetHotspotUsersInputSchema;
+  opts?: GetHotspotUsersInputSchema;
 }) {
   return queryClient.query(
     getHotspotUsersQueryOptions({ queryFn: $getHotspotUsers, opts }),
@@ -96,7 +96,7 @@ export function ensureGetHotspotUsersQuery({
 }
 
 export function useGetHotspotUsersSuspenseQuery(
-  opts: GetHotspotUsersInputSchema,
+  opts?: GetHotspotUsersInputSchema,
 ) {
   const getter = useServerFn($getHotspotUsers);
   return useSuspenseQuery(

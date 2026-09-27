@@ -15,7 +15,7 @@ export function setupRouterSsrLinguiIntegration<TRouter extends AnyRouter>({
   const ogDehydrate = ogOptions.dehydrate;
   const ogHydrate = ogOptions.hydrate;
 
-  router.options.Wrap = ({ children }) => {
+  router.options.Wrap = ({ children }: { children: React.ReactNode }) => {
     return (
       <I18nProvider i18n={i18n}>
         <OgWrap>{children}</OgWrap>

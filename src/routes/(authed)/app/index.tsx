@@ -200,7 +200,8 @@ function TrafficChart({ className }: { className?: string }) {
       />
       <Typed.Area
         dot={false}
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         dataKey="tx"
         stroke="var(--color-green-600)"
         strokeWidth={1.75}
@@ -210,7 +211,8 @@ function TrafficChart({ className }: { className?: string }) {
       />
       <Typed.Area
         dot={false}
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         dataKey="rx"
         stroke="var(--color-purple-600)"
         strokeWidth={1.75}
@@ -298,44 +300,55 @@ function RouteComponent() {
   const formatNum = (value: number) =>
     formatNumber(value, { locale: language });
 
+  const activeAvgUptimeSeconds =
+    statsOverviewQuery.data.actives.avgUptimeSeconds;
+  const voucherUsedCount = statsOverviewQuery.data.voucher.used;
+  const pppAvgUptime = statsOverviewQuery.data.ppp.pppAvgUptime;
+  const todayVoucherCount = statsOverviewQuery.data.revenue.todayVoucher;
+  const thisMonthRevenue = formatCurrency(
+    statsOverviewQuery.data.revenue.thisMonth,
+    {
+      currency,
+      locale: language,
+    },
+  );
+  const thisMonthVoucherCount =
+    statsOverviewQuery.data.revenue.thisMonthVoucher;
+
   return (
     <RouterosPage className="@container" title={title}>
       <div className="grid grid-cols-1 gap-4 @xl:grid-cols-2 @5xl:grid-cols-4">
         <StatsCard
           title={<Trans>Hotspot User</Trans>}
           icon={UserRoundArrowLeftIcon}
-          subTitle={
-            <Trans>{`${statsOverviewQuery.data.actives.avgUptimeSeconds} avg uptime`}</Trans>
-          }
+          subTitle={<Trans>{activeAvgUptimeSeconds} avg uptime</Trans>}
           value={formatNum(statsOverviewQuery.data.actives.count)}
         />
         <StatsCard
           title={<Trans>Unused Voucher</Trans>}
           icon={TicketIcon}
-          subTitle={
-            <Trans>{`${statsOverviewQuery.data.voucher.used} used`}</Trans>
-          }
+          subTitle={<Trans>{voucherUsedCount} used</Trans>}
           value={formatNum(statsOverviewQuery.data.voucher.unused)}
         />
         <StatsCard
           title={<Trans>Active PPP</Trans>}
           icon={HouseWifiIcon}
-          subTitle={
-            <Trans>{`${statsOverviewQuery.data.ppp.pppAvgUptime} avg uptime`}</Trans>
-          }
+          subTitle={<Trans>{pppAvgUptime} avg uptime</Trans>}
           value={formatNum(statsOverviewQuery.data.ppp.count)}
         />
         <StatsCard
-          title={<Trans>Today's Revenue</Trans>}
+          title={<Trans>Today&apos;s Revenue</Trans>}
           icon={BadgeDollarSignIcon}
-          subTitle={`${formatCurrency(statsOverviewQuery.data.revenue.thisMonth, { currency, locale: language })} this month (${statsOverviewQuery.data.revenue.thisMonthVoucher} vcr)`}
+          subTitle={
+            <Trans>
+              {thisMonthRevenue} this month ({thisMonthVoucherCount} vcr)
+            </Trans>
+          }
           value={formatCurrency(statsOverviewQuery.data.revenue.today, {
             currency,
             locale: language,
           })}
-          subValue={
-            <Trans>{`${statsOverviewQuery.data.revenue.todayVoucher} vcr`}</Trans>
-          }
+          subValue={<Trans>{todayVoucherCount} vcr</Trans>}
         />
       </div>
 

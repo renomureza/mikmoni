@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type * as z from "zod/v4-mini";
+import type * as z from "zod/v4";
 import HotspotProfileCombobox from "~/components/hotspot-profile-combobox";
 import HotspotServerCombobox from "~/components/hotspot-server-combobox";
 import Input from "~/components/input";
@@ -79,16 +79,19 @@ export default function HotspotUserGeneratorForm<
     dataLimitUnit: "mb",
     comment: initialState?.comment || "",
 
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     ...(mode === "generate" ? { quantity: initialState?.quantity || "1" } : {}),
-    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     ...(mode === "quick_print" ? { name: initialState?.name || "" } : {}),
   } as TState);
 
   return (
     <DialogForm
       onSubmit={() => {
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         onSubmit({
           ...state,
           server: state.server || "all",
@@ -101,23 +104,27 @@ export default function HotspotUserGeneratorForm<
         <Input
           label={t`Quantity`}
           min={1}
-          // @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
           value={state.quantity}
           onChange={(e) => {
             setState((prev) => ({ ...prev, quantity: e.target.value }));
           }}
-          // @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
           error={errors?.quantity?.[0]}
         />
       ) : (
         <Input
           label={t`Name`}
-          // @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
           value={state.name}
           onChange={(e) => {
             setState((prev) => ({ ...prev, name: e.target.value }));
           }}
-          // @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
           error={errors?.name?.[0]}
         />
       )}
