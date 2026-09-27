@@ -1,4 +1,5 @@
 # Mikmoni - Mikrotik Hotspot Management
+<img width="1669" height="945" alt="localhost-app" src="https://github.com/user-attachments/assets/b52c376e-4678-4578-bbc1-c13f9cf4d785" />
 
 A self-hosted management tool for MikroTik RouterOS hotspot networks. Built with TanStack Start, Bun, and SQLite — ships as a single portable executable (Windows / Linux / macOS) or as a Docker image for server deployments.
 
