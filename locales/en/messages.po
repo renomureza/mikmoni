@@ -15,18 +15,18 @@ msgstr ""
 
 #. placeholder {0}: statsOverviewQuery.data.actives.avgUptimeSeconds
 #. placeholder {0}: statsOverviewQuery.data.ppp.pppAvgUptime
-#: src/routes/(authed)/app/index.tsx:319
-#: src/routes/(authed)/app/index.tsx:335
+#: src/routes/(authed)/app/index.tsx:308
+#: src/routes/(authed)/app/index.tsx:324
 msgid "{0} avg uptime"
 msgstr "{0} avg uptime"
 
 #. placeholder {0}: statsOverviewQuery.data.voucher.used
-#: src/routes/(authed)/app/index.tsx:327
+#: src/routes/(authed)/app/index.tsx:316
 msgid "{0} used"
 msgstr "{0} used"
 
 #. placeholder {0}: statsOverviewQuery.data.revenue.todayVoucher
-#: src/routes/(authed)/app/index.tsx:348
+#: src/routes/(authed)/app/index.tsx:337
 msgid "{0} vcr"
 msgstr "{0} vcr"
 
@@ -45,11 +45,11 @@ msgstr "Account"
 msgid "Active Mac Address"
 msgstr "Active Mac Address"
 
-#: src/routes/(authed)/app/index.tsx:332
+#: src/routes/(authed)/app/index.tsx:321
 msgid "Active PPP"
 msgstr "Active PPP"
 
-#: src/routes/(authed)/index.tsx:402
+#: src/routes/(authed)/index.tsx:403
 msgid "Add"
 msgstr "Add"
 
@@ -57,7 +57,7 @@ msgstr "Add"
 #: src/routes/(authed)/app/hotspot/actives/-components/hotspot-actives-table.tsx:65
 #: src/routes/(authed)/app/hotspot/hosts/-components/hotspot-hosts-table.tsx:89
 #: src/routes/(authed)/app/hotspot/ip-bindings/-components/ip-bindings-table.tsx:99
-#: src/routes/(authed)/app/index.tsx:457
+#: src/routes/(authed)/app/index.tsx:446
 #: src/routes/(authed)/app/log/user/-components/user-log-table.tsx:36
 #: src/routes/(authed)/app/ppp/actives/-components/ppp-actives-table.tsx:59
 msgid "Address"
@@ -85,19 +85,21 @@ msgstr "Admin"
 msgid "Are you sure you want to delete it?"
 msgstr "Are you sure you want to delete it?"
 
+#: src/components/default-catch-boundary.tsx:54
+#: src/components/not-found.tsx:23
 #: src/routes/install/-components/section-form.tsx:50
 msgid "Back"
 msgstr "Back"
 
 #: src/routes/(authed)/app/hotspot/actives/-components/hotspot-actives-table.tsx:74
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:140
-#: src/routes/(authed)/app/index.tsx:460
+#: src/routes/(authed)/app/index.tsx:449
 msgid "Bytes In"
 msgstr "Bytes In"
 
 #: src/routes/(authed)/app/hotspot/actives/-components/hotspot-actives-table.tsx:77
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:143
-#: src/routes/(authed)/app/index.tsx:463
+#: src/routes/(authed)/app/index.tsx:452
 msgid "Bytes Out"
 msgstr "Bytes Out"
 
@@ -151,7 +153,7 @@ msgstr "Comment"
 msgid "Cookies"
 msgstr "Cookies"
 
-#: src/routes/(authed)/app/index.tsx:370
+#: src/routes/(authed)/app/index.tsx:359
 msgid "CPU Usage"
 msgstr "CPU Usage"
 
@@ -202,7 +204,7 @@ msgstr "Currency"
 msgid "Current password"
 msgstr "Current password"
 
-#: src/routes/(authed)/app/index.tsx:57
+#: src/routes/(authed)/app/index.tsx:55
 msgid "Dashboard"
 msgstr "Dashboard"
 
@@ -217,7 +219,7 @@ msgstr "Data Limit"
 msgid "Date"
 msgstr "Date"
 
-#: src/routes/(authed)/index.tsx:370
+#: src/routes/(authed)/index.tsx:371
 #: src/routes/(authed)/voucher-templates/index.tsx:70
 msgid "Delete"
 msgstr "Delete"
@@ -234,7 +236,7 @@ msgstr "Disable PPP"
 msgid "Disable user"
 msgstr "Disable user"
 
-#: src/routes/(authed)/app/index.tsx:384
+#: src/routes/(authed)/app/index.tsx:373
 msgid "Disk"
 msgstr "Disk"
 
@@ -246,7 +248,7 @@ msgstr "Does not have a scheduler"
 msgid "Domain"
 msgstr "Domain"
 
-#: src/routes/(authed)/index.tsx:346
+#: src/routes/(authed)/index.tsx:347
 #: src/routes/(authed)/voucher-templates/index.tsx:56
 msgid "Edit"
 msgstr "Edit"
@@ -282,13 +284,16 @@ msgid "Generate"
 msgstr "Generate"
 
 #: src/routes/(authed)/app/hotspot/users/index.tsx:99
-#: src/routes/(authed)/app/index.tsx:310
 msgid "Generate Users"
 msgstr "Generate Users"
 
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-profiles-table.tsx:118
 msgid "Has a scheduler"
 msgstr "Has a scheduler"
+
+#: src/components/default-catch-boundary.tsx:39
+msgid "Home"
+msgstr "Home"
 
 #: src/routes/(authed)/app/dhcp-leases/-components/dhcp-lease-table.tsx:55
 msgid "Host Name"
@@ -298,7 +303,7 @@ msgstr "Host Name"
 msgid "Hosts"
 msgstr "Hosts"
 
-#: src/routes/(authed)/app/index.tsx:443
+#: src/routes/(authed)/app/index.tsx:432
 msgid "Hotspot Active"
 msgstr "Hotspot Active"
 
@@ -310,12 +315,12 @@ msgstr "Hotspot Actives"
 msgid "Hotspot Hosts"
 msgstr "Hotspot Hosts"
 
-#: src/routes/(authed)/app/index.tsx:399
+#: src/routes/(authed)/app/index.tsx:388
 #: src/routes/(authed)/app/log/hotspot/index.tsx:18
 msgid "Hotspot Log"
 msgstr "Hotspot Log"
 
-#: src/routes/(authed)/app/index.tsx:316
+#: src/routes/(authed)/app/index.tsx:305
 msgid "Hotspot User"
 msgstr "Hotspot User"
 
@@ -398,7 +403,7 @@ msgstr "Logout"
 msgid "Mac Address"
 msgstr "Mac Address"
 
-#: src/routes/(authed)/app/index.tsx:377
+#: src/routes/(authed)/app/index.tsx:366
 msgid "Memory"
 msgstr "Memory"
 
@@ -406,7 +411,7 @@ msgstr "Memory"
 msgid "Message"
 msgstr "Message"
 
-#: src/routes/(authed)/app/index.tsx:413
+#: src/routes/(authed)/app/index.tsx:402
 msgid "Messages"
 msgstr "Messages"
 
@@ -451,9 +456,9 @@ msgstr "Next"
 #: src/components/routeros-popover.tsx:74
 #: src/components/table.tsx:40
 #: src/routes/(authed)/app/hotspot/users/-components/print-button.tsx:41
-#: src/routes/(authed)/app/index.tsx:430
-#: src/routes/(authed)/app/index.tsx:482
-#: src/routes/(authed)/index.tsx:414
+#: src/routes/(authed)/app/index.tsx:419
+#: src/routes/(authed)/app/index.tsx:471
+#: src/routes/(authed)/index.tsx:415
 #: src/routes/(authed)/voucher-templates/index.tsx:102
 msgid "No Results Found"
 msgstr "No Results Found"
@@ -470,6 +475,10 @@ msgstr "One or more fields are invalid."
 #: src/routes/(authed)/app/ppp/profiles/-components/ppp-profiles-table.tsx:86
 msgid "Only One"
 msgstr "Only One"
+
+#: src/components/not-found.tsx:11
+msgid "Page Not Found"
+msgstr "Page Not Found"
 
 #: src/routes/(authed)/app/hotspot/profiles/-components/hotspot-user-profile-form.tsx:178
 msgid "Parent Queue"
@@ -547,7 +556,7 @@ msgstr "Rate Limit"
 msgid "Remote Address"
 msgstr "Remote Address"
 
-#: src/routes/(authed)/app/index.tsx:365
+#: src/routes/(authed)/app/index.tsx:354
 msgid "RouterOS Health"
 msgstr "RouterOS Health"
 
@@ -680,11 +689,23 @@ msgstr "Settings"
 msgid "Shared Users"
 msgstr "Shared Users"
 
+#: src/components/default-catch-boundary.tsx:19
+msgid "Something Went Wrong"
+msgstr "Something Went Wrong"
+
+#: src/components/not-found.tsx:28
+msgid "Start over"
+msgstr "Start over"
+
 #: src/routes/(authed)/app/dhcp-leases/-components/dhcp-lease-table.tsx:58
 msgid "Status"
 msgstr "Status"
 
-#: src/routes/(authed)/app/index.tsx:407
+#: src/components/not-found.tsx:17
+msgid "The page you are looking for does not exist."
+msgstr "The page you are looking for does not exist."
+
+#: src/routes/(authed)/app/index.tsx:396
 #: src/routes/(authed)/app/log/hotspot/-components/hotspot-log-table.tsx:23
 #: src/routes/(authed)/app/log/user/-components/user-log-table.tsx:30
 #: src/routes/(authed)/app/report/-components/selling-report-table.tsx:29
@@ -706,15 +727,19 @@ msgstr "Time Limit"
 msgid "To Address"
 msgstr "To Address"
 
-#: src/routes/(authed)/app/index.tsx:340
+#: src/routes/(authed)/app/index.tsx:329
 msgid "Today's Revenue"
 msgstr "Today's Revenue"
 
-#: src/routes/(authed)/app/index.tsx:356
+#: src/routes/(authed)/app/index.tsx:345
 msgid "Traffic"
 msgstr "Traffic"
 
-#: src/routes/(authed)/app/index.tsx:324
+#: src/components/default-catch-boundary.tsx:33
+msgid "Try Again"
+msgstr "Try Again"
+
+#: src/routes/(authed)/app/index.tsx:313
 msgid "Unused Voucher"
 msgstr "Unused Voucher"
 
@@ -739,7 +764,7 @@ msgstr "Update Profile"
 msgid "Update Quick Print"
 msgstr "Update Quick Print"
 
-#: src/routes/(authed)/index.tsx:342
+#: src/routes/(authed)/index.tsx:343
 msgid "Update RouterOS"
 msgstr "Update RouterOS"
 
@@ -749,14 +774,14 @@ msgstr "Update User"
 
 #: src/routes/(authed)/app/hotspot/actives/-components/hotspot-actives-table.tsx:71
 #: src/routes/(authed)/app/hotspot/users/-components/hotspot-user-table.tsx:137
-#: src/routes/(authed)/app/index.tsx:454
+#: src/routes/(authed)/app/index.tsx:443
 #: src/routes/(authed)/app/ppp/actives/-components/ppp-actives-table.tsx:62
 msgid "Uptime"
 msgstr "Uptime"
 
 #: src/routes/(authed)/app/hotspot/actives/-components/hotspot-actives-table.tsx:62
 #: src/routes/(authed)/app/hotspot/cookies/-components/hotspot-cookies-table.tsx:49
-#: src/routes/(authed)/app/index.tsx:451
+#: src/routes/(authed)/app/index.tsx:440
 #: src/routes/(authed)/app/log/hotspot/-components/hotspot-log-table.tsx:26
 #: src/routes/(authed)/app/log/user/-components/user-log-table.tsx:33
 #: src/routes/(authed)/app/report/-components/selling-report-table.tsx:32
@@ -788,7 +813,7 @@ msgstr "Username"
 msgid "Users"
 msgstr "Users"
 
-#: src/routes/(authed)/app/index.tsx:410
+#: src/routes/(authed)/app/index.tsx:399
 msgid "Users IP"
 msgstr "Users IP"
 
