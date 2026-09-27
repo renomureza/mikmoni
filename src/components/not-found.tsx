@@ -2,6 +2,7 @@ import { Trans } from "@lingui/react/macro";
 import { Link } from "@tanstack/react-router";
 import Button from "./button";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function NotFound({ children }: { children?: any }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">

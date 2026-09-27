@@ -162,7 +162,7 @@ function MenuWithChildren({
   menu,
   onMenuClicked,
 }: {
-  menu: Extract<MenuItem, { children: any[] }>;
+  menu: Extract<MenuItem, { children: unknown[] }>;
   onMenuClicked: () => void;
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -259,6 +259,7 @@ function useIsRouterosManagementPage() {
     return () => {
       unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return isRouterosManagementPage;
@@ -331,6 +332,7 @@ function Sidebar({
             target="_blank"
             className="flex h-9 w-full items-center gap-2 rounded-lg px-3 text-neutral-700 hover:bg-neutral-100"
             onClick={closeSidebar}
+            rel="noreferrer"
           >
             <MegaphoneIcon className="size-4.5" /> Feedback
           </a>

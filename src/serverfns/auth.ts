@@ -1,6 +1,6 @@
 import { createServerFn, useServerFn } from "@tanstack/react-start";
 import { redirect } from "@tanstack/react-router";
-import * as z from "zod/v4-mini";
+import * as z from "zod/v4";
 import { db } from "~/lib/db";
 import { getSession } from "~/lib/session";
 import { verifyPasswordHash } from "~/utils/encryption";

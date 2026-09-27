@@ -76,7 +76,8 @@ function RouterosList({ activeRouterosId }: { activeRouterosId: number }) {
             {searchQuery && (
               <div className="text-xs text-neutral-500">
                 <Trans>
-                  Your search for "{searchQuery}" did not return any results.
+                  Your search for &ldquo;{searchQuery}&rdquo; did not return any
+                  results.
                 </Trans>
               </div>
             )}

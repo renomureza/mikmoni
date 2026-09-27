@@ -8,7 +8,7 @@ import {
   DataLimitUnitValue,
 } from "~/contants/hotspot-user";
 import { fromBytes } from "~/utils/routeros";
-import type * as z from "zod/v4-mini";
+import type * as z from "zod/v4";
 import DialogForm from "~/components/dialog-form";
 import { useLingui } from "@lingui/react/macro";
 

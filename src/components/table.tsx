@@ -41,7 +41,9 @@ function Empty({ query, className }: { query?: string; className?: string }) {
       </div>
       {query && (
         <div>
-          <Trans>Your search for "{query}" did not return any results.</Trans>
+          <Trans>
+            Your search for &ldquo;{query}&rdquo; did not return any results.
+          </Trans>
         </div>
       )}
     </div>

@@ -37,14 +37,17 @@ export default function Select<
       <SelectPrimitive.Root
         required={required}
         items={options}
-        // @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         value={value}
         onValueChange={(value) => {
           if (required && value != null) {
-            // @ts-ignore
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             onChange(value);
           } else {
-            // @ts-ignore
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             onChange(value);
           }
         }}

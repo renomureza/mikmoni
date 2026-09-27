@@ -42,7 +42,7 @@ type GetPppSecretsInputSchema = z.input<typeof getPppSecretsInputSchema>;
 
 const $getPppSecrets = createServerFn()
   .middleware([routerosMiddleware])
-  .validator((d: GetPppSecretsInputSchema) => d)
+  .validator(getPppSecretsInputSchema)
   .handler(async ({ context, data }) => {
     const [secrets, activeNames] = await Promise.all([
       context.routerosClient.write("/ppp/secret/print", {}, [
@@ -70,7 +70,7 @@ function getPppSecretsQueryOptions({
   queryFn: (
     ...args: Parameters<typeof $getPppSecrets>
   ) => ReturnType<typeof $getPppSecrets>;
-  opts: GetPppSecretsInputSchema;
+  opts?: GetPppSecretsInputSchema;
 }) {
   return queryOptions({
     queryKey: ["routeros", "ppp-secrets", opts],
@@ -79,7 +79,7 @@ function getPppSecretsQueryOptions({
   });
 }
 
-export function useGetPppSecretsQuery(opts: GetPppSecretsInputSchema) {
+export function useGetPppSecretsQuery(opts?: GetPppSecretsInputSchema) {
   const query = useServerFn($getPppSecrets);
   return useQuery(getPppSecretsQueryOptions({ queryFn: query, opts }));
 }
@@ -89,14 +89,14 @@ export function ensureGetPppSecretsQuery({
   opts,
 }: {
   queryClient: QueryClient;
-  opts: GetPppSecretsInputSchema;
+  opts?: GetPppSecretsInputSchema;
 }) {
   return queryClient.query(
     getPppSecretsQueryOptions({ queryFn: $getPppSecrets, opts }),
   );
 }
 
-export function useGetPppSecretsSuspenseQuery(opts: GetPppSecretsInputSchema) {
+export function useGetPppSecretsSuspenseQuery(opts?: GetPppSecretsInputSchema) {
   const getter = useServerFn($getPppSecrets);
   return useSuspenseQuery(getPppSecretsQueryOptions({ queryFn: getter, opts }));
 }

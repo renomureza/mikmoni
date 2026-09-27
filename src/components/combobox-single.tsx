@@ -49,6 +49,7 @@ export default function ComboboxSingle<TOption extends Option>({
   const trimmedSearchValue = searchValue.trim();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearchResults(options);
   }, [options]);
 
@@ -59,7 +60,8 @@ export default function ComboboxSingle<TOption extends Option>({
           <p className="text-foreground">No Results Found</p>
           {trimmedSearchValue && (
             <p>
-              Your search for "{trimmedSearchValue}" did not return any results.
+              Your search for &ldquo;{trimmedSearchValue}&rdquo; did not return
+              any results.
             </p>
           )}
         </>

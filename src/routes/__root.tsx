@@ -9,7 +9,6 @@ import {
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import * as React from "react";
-import type { QueryClient } from "@tanstack/react-query";
 import DefaultCatchBoundary from "~/components/default-catch-boundary";
 import NotFound from "~/components/not-found";
 import appCss from "~/styles/app.css?url";
@@ -20,6 +19,7 @@ import { $getLocalization } from "~/serverfns/localization";
 import { type I18n } from "@lingui/core";
 import { APP_NAME } from "~/contants/app";
 import { loadAndActivateLocale } from "~/lib/localization";
+import type { QueryClient } from "@tanstack/react-query";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;

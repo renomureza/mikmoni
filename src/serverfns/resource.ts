@@ -101,7 +101,7 @@ function getRouterosResourceQueryOptions({
   });
 }
 
-export function usegetRouterosResourceQuery(
+export function useGetRouterosResourceQuery(
   opts: GetRouterosResourceInputSchema,
 ) {
   const query = useServerFn($getRouterosResource);

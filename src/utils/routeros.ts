@@ -1,4 +1,4 @@
-import * as z from "zod/v4-mini";
+import * as z from "zod/v4";
 import { randomInt } from "./number";
 import { UserModeValue, UsernameCharacterValue } from "~/contants/hotspot-user";
 

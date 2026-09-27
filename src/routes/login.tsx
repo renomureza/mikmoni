@@ -32,7 +32,10 @@ function RouteComponent() {
           onSubmit={(e) => {
             e.preventDefault();
             loginMutation.mutate({
-              data: Object.fromEntries(new FormData(e.currentTarget)) as any,
+              data: Object.fromEntries(new FormData(e.currentTarget)) as {
+                username: string;
+                password: string;
+              },
             });
           }}
           className="flex flex-col gap-3"

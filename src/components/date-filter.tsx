@@ -43,6 +43,7 @@ export default function DateFilter({
   });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFilter({
       day: value?.day || null,
       month: value?.month || null,
