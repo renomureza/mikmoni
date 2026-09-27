@@ -11,27 +11,21 @@ export function setupRouterSsrLinguiIntegration<TRouter extends AnyRouter>({
   i18n: I18n;
 }) {
   const ogOptions = router.options;
+  const OgWrap = ogOptions.Wrap || Fragment;
+  const ogDehydrate = ogOptions.dehydrate;
+  const ogHydrate = ogOptions.hydrate;
 
-  router.options = {
-    ...router.options,
-    context: {
-      ...ogOptions.context,
-      i18n,
-    },
-    Wrap: ({ children }) => {
-      const Wrap = ogOptions.Wrap || Fragment;
-
-      return (
-        <I18nProvider i18n={i18n}>
-          <Wrap>{children}</Wrap>
-        </I18nProvider>
-      );
-    },
+  router.options.Wrap = ({ children }) => {
+    return (
+      <I18nProvider i18n={i18n}>
+        <OgWrap>{children}</OgWrap>
+      </I18nProvider>
+    );
   };
 
   if (router.isServer) {
     router.options.dehydrate = async () => {
-      const ogDhydrated = await ogOptions.dehydrate?.();
+      const ogDhydrated = await ogDehydrate?.();
 
       return {
         ...ogDhydrated,
@@ -43,7 +37,8 @@ export function setupRouterSsrLinguiIntegration<TRouter extends AnyRouter>({
     };
   } else {
     router.options.hydrate = async (dehydrated) => {
-      await ogOptions.hydrate?.(dehydrated);
+      await ogHydrate?.(dehydrated);
+
       i18n.loadAndActivate({
         locale: dehydrated.dehydratedI18n.locale,
         messages: dehydrated.dehydratedI18n.messages,
